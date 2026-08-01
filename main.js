@@ -77,11 +77,13 @@
   if (reduced) {
     loader.classList.add("done");
     startHero();
+    armTerm();
   } else {
     typeInto(loaderName, "shashank.madala", 38, function () {
       setTimeout(function () {
         loader.classList.add("done");
         startHero();
+        armTerm();
       }, 260);
     });
   }
@@ -152,12 +154,14 @@
     })();
   }
 
-  if (reduced) {
-    SEQ.forEach(function (item) {
-      termLine("<span class='t-prompt'>$</span> <span class='t-cmd'>" + item.cmd + "</span>");
-      item.out.forEach(function (l) { termLine("<span class='t-out'>" + l + "</span>"); });
-    });
-  } else {
+  function armTerm() {
+    if (reduced) {
+      SEQ.forEach(function (item) {
+        termLine("<span class='t-prompt'>$</span> <span class='t-cmd'>" + item.cmd + "</span>");
+        item.out.forEach(function (l) { termLine("<span class='t-out'>" + l + "</span>"); });
+      });
+      return;
+    }
     var termStarted = false;
     var termIO = new IntersectionObserver(function (entries) {
       if (entries[0].isIntersecting && !termStarted) {
@@ -266,6 +270,7 @@
   var statementSec = document.getElementById("statement");
   var stackCards = Array.prototype.slice.call(document.querySelectorAll(".stack-card"));
   var lastY = 0;
+  var navAccum = 0;
 
   function onFrame() {
     var y = window.scrollY;
@@ -275,10 +280,15 @@
     /* progress bar */
     if (progress) progress.style.transform = "scaleX(" + (docH > 0 ? y / docH : 0) + ")";
 
-    /* nav state */
+    /* nav state: accumulate scroll direction so slow scrolls still toggle it */
     if (y > 30) nav.classList.add("scrolled"); else nav.classList.remove("scrolled");
-    if (y > 500 && y > lastY + 4) nav.classList.add("hidden");
-    else if (y < lastY - 4 || y < 500) nav.classList.remove("hidden");
+    var dy = y - lastY;
+    if (dy !== 0) {
+      if ((dy > 0) !== (navAccum > 0)) navAccum = 0;
+      navAccum += dy;
+      if (y > 500 && navAccum > 12) nav.classList.add("hidden");
+      else if (navAccum < -12 || y <= 500) nav.classList.remove("hidden");
+    }
     lastY = y;
 
     if (!reduced) {

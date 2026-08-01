@@ -239,6 +239,7 @@ img { max-width: 100%; display: block; }
   animation: blink 0.8s steps(1) infinite;
 }
 .caret-sm { height: 1em; width: 7px; }
+.hero.typed .caret:not(.caret-sm) { display: none; }
 @keyframes blink { 50% { opacity: 0; } }
 
 .hero-role {
@@ -355,13 +356,14 @@ img { max-width: 100%; display: block; }
   overflow: hidden;
 }
 .marquee-track {
-  display: flex; align-items: center; gap: 36px;
+  display: flex; align-items: center;
   width: max-content;
   font-family: var(--mono);
   font-size: 11.5px; letter-spacing: 0.22em;
   color: var(--faint);
   animation: marquee 40s linear infinite;
 }
+.marquee-track > * { margin-right: 36px; }
 .marquee-track span { white-space: nowrap; }
 .marquee-track i { color: var(--blue); font-style: normal; opacity: 0.6; }
 .marquee:hover .marquee-track { animation-play-state: paused; }
