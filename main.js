@@ -24,7 +24,7 @@
     "I research autism at Yale.",
     "I represented Team USA.",
     "I teach ML to 15,000+ students.",
-    "I lead 8,000+ FBLA members."
+    "I run a 50-chapter nonprofit."
   ];
 
   function typeInto(el, text, speed, done) {
@@ -106,7 +106,7 @@
             "team usa &middot; econ olympiad 2026 <span class='t-hl'>[6TH OF 52]</span>",
             "lumin ai &middot; 50+ chapters <span class='t-hl'>[15,000+ STUDENTS]</span>",
             "kora &middot; 25 therapy centers <span class='t-hl'>[700+ USERS]</span>",
-            "nj fbla &middot; state president <span class='t-hl'>[8,000+ MEMBERS]</span>"] }
+            "fbla &middot; chapter president <span class='t-hl'>[2X STATE TECH COMMITTEE]</span>"] }
   ];
 
   function termLine(html) {
@@ -262,6 +262,58 @@
     });
   }
 
+  /* ---------- card spotlight follows the cursor ---------- */
+  if (!touch && !reduced) {
+    document.querySelectorAll(".spot").forEach(function (el) {
+      el.addEventListener("mousemove", function (e) {
+        var r = el.getBoundingClientRect();
+        el.style.setProperty("--mx", (e.clientX - r.left) + "px");
+        el.style.setProperty("--my", (e.clientY - r.top) + "px");
+      });
+    });
+  }
+
+  /* ---------- hero: cursor glow + floating chip parallax + terminal tilt ---------- */
+  var heroCursor = document.getElementById("heroCursor");
+  var chips = Array.prototype.slice.call(document.querySelectorAll(".float-chip"));
+  var CHIP_F = [0.018, 0.028, 0.022];
+  var hcX = 0, hcY = 0, hcTX = 0, hcTY = 0;
+  var tiltTX = 0, tiltTY = 0, tiltX = 0, tiltY = 0;
+  if (!touch && !reduced && hero) {
+    hero.addEventListener("mousemove", function (e) {
+      var hr = hero.getBoundingClientRect();
+      hcTX = e.clientX;
+      hcTY = e.clientY - hr.top;
+      hero.classList.add("mouse-in");
+      var cx = e.clientX - window.innerWidth / 2;
+      var cy = e.clientY - window.innerHeight / 2;
+      chips.forEach(function (chip, i) {
+        var px = Math.max(-16, Math.min(16, cx * CHIP_F[i]));
+        var py = Math.max(-12, Math.min(12, cy * CHIP_F[i]));
+        chip.style.setProperty("--px", px + "px");
+        chip.style.setProperty("--py", py + "px");
+      });
+    });
+    hero.addEventListener("mouseleave", function () {
+      hero.classList.remove("mouse-in");
+      chips.forEach(function (chip) {
+        chip.style.setProperty("--px", "0px");
+        chip.style.setProperty("--py", "0px");
+      });
+    });
+  }
+  var termWrapEl = document.getElementById("termWrap");
+  if (!touch && !reduced && termWrapEl) {
+    termWrapEl.addEventListener("mousemove", function (e) {
+      var r = termWrapEl.getBoundingClientRect();
+      tiltTY = ((e.clientX - r.left) / r.width - 0.5) * 4.5;
+      tiltTX = -((e.clientY - r.top) / r.height - 0.5) * 3;
+    });
+    termWrapEl.addEventListener("mouseleave", function () {
+      tiltTX = 0; tiltTY = 0;
+    });
+  }
+
   /* ---------- scroll-driven engine (rAF) ---------- */
   var nav = document.getElementById("nav");
   var progress = document.getElementById("progress");
@@ -292,12 +344,21 @@
     lastY = y;
 
     if (!reduced) {
-      /* terminal lift + tilt on scroll */
+      /* terminal: scroll lift + mouse tilt */
       if (term && termWrap) {
         var r = termWrap.getBoundingClientRect();
         var p = clamp(1 - (r.top + r.height * 0.5 - vh * 0.5) / vh, 0, 2);
         var rot = clamp(4.5 - p * 4.5, 0, 4.5);
-        term.style.transform = "rotateX(" + rot + "deg) translateY(" + (1 - clamp(p, 0, 1)) * 26 + "px)";
+        tiltX = lerp(tiltX, tiltTX, 0.08);
+        tiltY = lerp(tiltY, tiltTY, 0.08);
+        term.style.transform = "rotateX(" + (rot + tiltX) + "deg) rotateY(" + tiltY + "deg) translateY(" + (1 - clamp(p, 0, 1)) * 26 + "px)";
+      }
+
+      /* hero cursor glow lerp */
+      if (heroCursor && hero.classList.contains("mouse-in")) {
+        hcX = lerp(hcX, hcTX, 0.1);
+        hcY = lerp(hcY, hcTY, 0.1);
+        heroCursor.style.transform = "translate(" + (hcX - 320) + "px," + (hcY - 320) + "px)";
       }
 
       /* statement scrub */

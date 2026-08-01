@@ -16,7 +16,7 @@
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="styles.css" />
 <script type="application/ld+json">
 {
@@ -75,6 +75,7 @@
   <!-- ============ HERO ============ -->
   <section class="hero">
     <div class="hero-glow" aria-hidden="true"></div>
+    <div class="hero-cursor" id="heroCursor" aria-hidden="true"></div>
 
     <div class="wrap hero-inner">
       <p class="eyebrow-pill mono hero-eyebrow"><span class="pulse"></span>ROBBINSVILLE, NEW JERSEY&ensp;&middot;&ensp;CLASS OF 2027</p>
@@ -93,7 +94,7 @@
     <div class="wrap term-wrap" id="termWrap">
       <div class="float-chip float-a mono" aria-hidden="true"><b>KORA</b>700+ users &middot; 12 countries</div>
       <div class="float-chip float-b mono" aria-hidden="true"><b>TEAM USA</b>6th of 52 &middot; Shenzhen '26</div>
-      <div class="float-chip float-c mono" aria-hidden="true"><b>YALE</b>Cha Lab &middot; multimodal ML</div>
+      <div class="float-chip float-c mono" aria-hidden="true"><b>YALE</b>autism research &middot; Cha Lab</div>
       <div class="term" id="term">
         <div class="term-bar">
           <span class="term-dots"><i></i><i></i><i></i></span>
@@ -111,7 +112,7 @@
   <div class="marquee" aria-hidden="true">
     <div class="marquee-track" id="marqueeTrack">
       <span>TEAM USA &middot; ECON OLYMPIAD 2026</span><i>&#10022;</i>
-      <span>NJ FBLA STATE PRESIDENT</span><i>&#10022;</i>
+      <span>FBLA CHAPTER PRESIDENT</span><i>&#10022;</i>
       <span>YALE CHILD STUDY CENTER</span><i>&#10022;</i>
       <span>CONGRESSIONAL APP CHALLENGE WINNER</span><i>&#10022;</i>
       <span>15,000+ STUDENTS TAUGHT</span><i>&#10022;</i>
@@ -127,7 +128,7 @@
     <div class="statement-sticky">
       <div class="wrap">
         <p class="eyebrow reveal">THE THREAD</p>
-        <p class="statement-text" id="statementText">I build AI that helps people understand each other: an app that reads emotion, research that measures connection, and free AI classrooms in 16 countries.</p>
+        <p class="statement-text" id="statementText">I build AI that helps people understand each other: an app that reads emotion, research that measures connection, and free AI classes in 16 countries.</p>
       </div>
     </div>
   </section>
@@ -137,20 +138,20 @@
     <div class="wrap">
       <div class="sec-head reveal">
         <p class="eyebrow">NOW</p>
-        <h2 class="sec-title">Where my time goes.</h2>
+        <h2 class="sec-title">Right now.</h2>
       </div>
       <div class="now-grid">
-        <div class="now-item reveal">
+        <div class="now-item spot reveal">
           <span class="mono chip">RESEARCH</span>
-          <p>Research intern at the <strong>Yale Child Study Center</strong>, building the child-vs-adult detection module for models that score parent and child interaction synchrony from video, audio, and pose data.</p>
+          <p>Research intern at the <strong>Yale Child Study Center</strong>, building AI that models autism-related social communication from real parent and child interactions: video, audio, and pose data.</p>
         </div>
-        <div class="now-item reveal d1">
+        <div class="now-item spot reveal d1">
           <span class="mono chip">TEAM USA</span>
-          <p>Fresh off representing the United States at the <strong>2026 International Economics Olympiad</strong> in Shenzhen, where Team USA placed 6th of 52 nations in the business case competition.</p>
+          <p>Just got back from Shenzhen, where I represented the USA at the <strong>2026 International Economics Olympiad</strong>. Team USA placed 6th of 52 countries in the business case competition.</p>
         </div>
-        <div class="now-item reveal d2">
+        <div class="now-item spot reveal d2">
           <span class="mono chip">FOUNDER</span>
-          <p>Running <strong>Lumin AI</strong>, a 501(c)(3) nonprofit delivering free AI education through 50+ chapters in 16+ countries, and preparing it to outlast my graduation.</p>
+          <p>Running <strong>Lumin AI</strong>, a 501(c)(3) nonprofit that teaches AI for free through 50+ chapters in 16+ countries, and setting it up to keep running after I graduate.</p>
         </div>
       </div>
     </div>
@@ -162,7 +163,7 @@
       <div class="stat reveal"><span class="num"><span data-count="15000">0</span><em>+</em></span><p>students reached through Lumin AI</p></div>
       <div class="stat reveal d1"><span class="num"><span data-count="700">0</span><em>+</em></span><p>Kora users across 25 therapy centers</p></div>
       <div class="stat reveal d2"><span class="num"><span data-count="6">0</span><em>th</em></span><p>of 52 nations, IEO Business Case, Team USA</p></div>
-      <div class="stat reveal d3"><span class="num"><span data-count="8000">0</span><em>+</em></span><p>FBLA members served as NJ State President</p></div>
+      <div class="stat reveal d3"><span class="num"><span data-count="5200">0</span><em>+</em></span><p>course certificates issued through Lumin AI</p></div>
     </div>
   </section>
 
@@ -178,7 +179,7 @@
     <div class="wrap stack" id="stack">
 
       <article class="stack-card">
-        <div class="stack-in">
+        <div class="stack-in spot">
           <div class="stack-meta">
             <span class="stack-num mono">01</span>
             <span class="mono chip chip-blue">CO-CREATOR</span>
@@ -199,14 +200,14 @@
       </article>
 
       <article class="stack-card">
-        <div class="stack-in">
+        <div class="stack-in spot">
           <div class="stack-meta">
             <span class="stack-num mono">02</span>
             <span class="mono chip chip-blue">FOUNDER</span>
           </div>
           <div class="stack-main">
             <h3 class="stack-title">Lumin AI</h3>
-            <p class="stack-desc">A 501(c)(3) nonprofit making AI education free and global: a 20-module curriculum, completion certificates, and scholarships for students in small towns. 15,000+ students, 5,200+ certificates issued, 50+ chapter locations across 16+ countries, and a 125+ intern team. I now spend most of my time on succession, building chapter standards, training, and governance so it runs without me.</p>
+            <p class="stack-desc">A 501(c)(3) nonprofit making AI education free and global: a 20-module curriculum, completion certificates, and scholarships for students in small towns. 15,000+ students, 5,200+ certificates issued, 50+ chapter locations across 16+ countries, and a 125+ intern team. These days most of my time goes into chapter standards, training, and handoff so it keeps running long after I graduate.</p>
             <ul class="tags">
               <li>50+ chapters, 16+ countries</li>
               <li>LuminHacks: a 450+ participant hackathon</li>
@@ -218,14 +219,14 @@
       </article>
 
       <article class="stack-card">
-        <div class="stack-in">
+        <div class="stack-in spot">
           <div class="stack-meta">
             <span class="stack-num mono">03</span>
             <span class="mono chip chip-blue">RESEARCH INTERN</span>
           </div>
           <div class="stack-main">
             <h3 class="stack-title">Yale Child Study Center</h3>
-            <p class="stack-desc">In the Cha Lab, I work on models that quantify parent and child interaction synchrony from multimodal data: video, audio, and pose trajectories across 120+ hours of family interaction data from 40 families. My work covers a child-vs-adult detection module, temporal buffering that stabilizes predictions through occlusions, and early and late fusion models reaching AUC 0.80. First-author work in preparation for MIT URTC 2026.</p>
+            <p class="stack-desc">In the Cha Lab, I build AI that models autism-related social communication differences from real parent and child interactions. The work spans 120+ hours of video, audio, and pose data from 40 families: a child-vs-adult detection module, synchrony scoring, and fusion models reaching AUC 0.80 for predicting anxiety risk in autism. It is the research version of the same question behind Kora: can a machine help you understand what someone is feeling? First-author work in prep for MIT URTC 2026.</p>
             <ul class="tags">
               <li>Multimodal ML: vision, audio, pose</li>
               <li>Fusion models reaching AUC 0.80</li>
@@ -237,7 +238,7 @@
       </article>
 
       <article class="stack-card">
-        <div class="stack-in">
+        <div class="stack-in spot">
           <div class="stack-meta">
             <span class="stack-num mono">04</span>
             <span class="mono chip chip-blue">CO-FOUNDER</span>
@@ -255,7 +256,7 @@
       </article>
 
       <article class="stack-card">
-        <div class="stack-in">
+        <div class="stack-in spot">
           <div class="stack-meta">
             <span class="stack-num mono">05</span>
             <span class="mono chip chip-blue">SOFTWARE LEAD</span>
@@ -274,16 +275,16 @@
       </article>
 
       <article class="stack-card">
-        <div class="stack-in">
+        <div class="stack-in spot">
           <div class="stack-meta">
             <span class="stack-num mono">06</span>
-            <span class="mono chip chip-blue">NJ STATE PRESIDENT</span>
+            <span class="mono chip chip-blue">CHAPTER PRESIDENT</span>
           </div>
           <div class="stack-main">
             <h3 class="stack-title">FBLA</h3>
-            <p class="stack-desc">New Jersey FBLA State President for 2026-27, serving 8,000+ members statewide after two years on the State Technology Committee, where I built the State Leadership Conference app and website. At Robbinsville: grew the chapter from 45 to 175+ members, took state qualifiers from 2 to 23, and founded a middle-school chapter of 70+ students.</p>
+            <p class="stack-desc">President of Robbinsville FBLA and a two-year member of the NJ FBLA State Technology Committee, where I helped build the State Leadership Conference app and website used by 8,000+ members. Grew our chapter from 45 to 175+ members, took state qualifiers from 2 to 23, and started a middle school chapter with 70+ students.</p>
             <ul class="tags">
-              <li>Serving 8,000+ members statewide</li>
+              <li>Built the SLC app used by 8,000+ members</li>
               <li>1st, Computer Problem Solving, Central Region</li>
               <li>1st, Data Science &amp; AI, Central Region</li>
             </ul>
@@ -299,9 +300,9 @@
     <div class="wrap">
       <div class="sec-head reveal">
         <p class="eyebrow">HONORS</p>
-        <h2 class="sec-title">Receipts.</h2>
+        <h2 class="sec-title">Honors.</h2>
       </div>
-      <div class="receipt reveal" id="receipt">
+      <div class="receipt spot reveal" id="receipt">
         <div class="receipt-head mono">
           <span>HONORS &middot; LEDGER</span>
           <span>NO. SM-2027</span>
@@ -313,7 +314,7 @@
           <li class="r-row"><span>USACO Gold Division</span><b>NATL</b></li>
           <li class="r-row"><span>Congressional App Challenge winner, NJ-10</span><b>NATL</b></li>
           <li class="r-row"><span>Y Combinator Startup School, selected</span><b>NATL</b></li>
-          <li class="r-row"><span>Blue Ocean, Top 250 of 23,000+</span><b>NATL</b></li>
+          <li class="r-row"><span>Blue Ocean, Top 250 of 23,000+ (2x)</span><b>INTL</b></li>
           <li class="r-row"><span>EconBowl, 4th of 263 teams</span><b>INTL</b></li>
           <li class="r-row"><span>AMC 12B Honor Roll, top 5%</span><b>NATL</b></li>
           <li class="r-row"><span>Presidential Volunteer Service Award, Gold (2x)</span><b>NATL</b></li>
@@ -324,11 +325,35 @@
         <div class="receipt-rule"></div>
         <div class="receipt-total mono r-row">
           <span>SCOPE</span>
-          <b>2 INTL &middot; 8 NATL &middot; 2 STATE</b>
+          <b>3 INTL &middot; 7 NATL &middot; 2 STATE</b>
         </div>
         <div class="receipt-bar" aria-hidden="true"></div>
         <p class="receipt-foot mono">VERIFIED &middot; ROBBINSVILLE, NJ &middot; EST. 2009</p>
       </div>
+    </div>
+  </section>
+
+  <!-- ============ PHOTOS ============ -->
+  <section class="photos" id="photos">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <p class="eyebrow">PHOTOS</p>
+        <h2 class="sec-title">Some pictures.</h2>
+      </div>
+    </div>
+    <div class="wrap photo-strip">
+      <figure class="photo spot reveal">
+        <img src="assets/photos/team-usa.jpg" alt="The five members of Team USA holding the American flag at the 2026 International Economics Olympiad in Shenzhen" loading="lazy" width="1400" height="300" />
+        <figcaption class="mono"><b>TEAM USA</b><span>INTERNATIONAL ECONOMICS OLYMPIAD &middot; SHENZHEN 2026</span></figcaption>
+      </figure>
+      <figure class="photo spot reveal d1">
+        <img src="assets/photos/shenzhen.jpg" alt="Shashank standing in front of the IEO 2026 Shenzhen closing screen" loading="lazy" width="1050" height="1400" />
+        <figcaption class="mono"><b>CLOSING DAY</b><span>IEO 2026 &middot; SHENZHEN</span></figcaption>
+      </figure>
+      <figure class="photo spot reveal d2">
+        <img src="assets/photos/youth-talks.jpg" alt="Shashank next to the IEOx Youth Talks banner at IEO 2026" loading="lazy" width="1050" height="1400" />
+        <figcaption class="mono"><b>YOUTH TALKS</b><span>PUBLIC SPEAKING STAGE &middot; JULY 18</span></figcaption>
+      </figure>
     </div>
   </section>
 
@@ -341,35 +366,35 @@
       </div>
       <div class="press-grid">
 
-        <a class="press-card press-feature reveal" href="https://canvasrebel.com/meet-shashank-madala/" target="_blank" rel="noopener">
+        <a class="press-card press-feature spot reveal" href="https://canvasrebel.com/meet-shashank-madala/" target="_blank" rel="noopener">
           <div class="press-top mono"><span>CANVASREBEL &middot; INTERVIEW</span><span>JAN 2025</span></div>
           <h3>Meet Shashank Madala: the story behind Kora</h3>
           <p class="press-peek">"We're not just building features, we're creating tools that families rely on."</p>
           <span class="press-cta mono">READ THE INTERVIEW<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 9L9 3M4.5 3H9v4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
         </a>
 
-        <a class="press-card reveal" href="https://indiawest.com/teen-competes-for-team-usa-at-international-economics-olympiad-in-china/" target="_blank" rel="noopener">
+        <a class="press-card spot reveal" href="https://indiawest.com/teen-competes-for-team-usa-at-international-economics-olympiad-in-china/" target="_blank" rel="noopener">
           <div class="press-top mono"><span>INDIA-WEST</span><span>JUL 2026</span></div>
           <h3>NJ teen competes for Team USA at the International Economics Olympiad in China</h3>
           <p class="press-peek">"One of the proudest moments of my life."</p>
           <span class="press-cta mono">READ<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 9L9 3M4.5 3H9v4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
         </a>
 
-        <a class="press-card reveal d1" href="https://www.newjerseystage.com/articles2/2026/07/23/two-new-jersey-students-among-five-to-represent-usa-at-2026-international-economics-olympiad-in-china/" target="_blank" rel="noopener">
+        <a class="press-card spot reveal d1" href="https://www.newjerseystage.com/articles2/2026/07/23/two-new-jersey-students-among-five-to-represent-usa-at-2026-international-economics-olympiad-in-china/" target="_blank" rel="noopener">
           <div class="press-top mono"><span>NEW JERSEY STAGE</span><span>JUL 2026</span></div>
           <h3>Two NJ students among five to represent the USA at the 2026 IEO</h3>
           <p class="press-peek">"One of five students selected to represent the United States."</p>
           <span class="press-cta mono">READ<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 9L9 3M4.5 3H9v4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
         </a>
 
-        <a class="press-card reveal" href="https://mciver.house.gov/media/press-releases/mciver-announces-kora-app-as-winner-of-nj-10-congressional-app-challenge" target="_blank" rel="noopener">
+        <a class="press-card spot reveal" href="https://mciver.house.gov/media/press-releases/mciver-announces-kora-app-as-winner-of-nj-10-congressional-app-challenge" target="_blank" rel="noopener">
           <div class="press-top mono"><span>U.S. HOUSE</span><span>JAN 2026</span></div>
           <h3>Rep. McIver announces Kora as winner of the NJ-10 Congressional App Challenge</h3>
           <p class="press-peek">"Seeing the change that occurs when technology unlocks connection."</p>
           <span class="press-cta mono">READ<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 9L9 3M4.5 3H9v4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
         </a>
 
-        <a class="press-card reveal d1" href="https://www.congressionalappchallenge.us/25-nj10/" target="_blank" rel="noopener">
+        <a class="press-card spot reveal d1" href="https://www.congressionalappchallenge.us/25-nj10/" target="_blank" rel="noopener">
           <div class="press-top mono"><span>CONGRESSIONAL APP CHALLENGE</span><span>2025</span></div>
           <h3>Official winner page, New Jersey's 10th District</h3>
           <p class="press-peek">"An emotion-recognition app helping caregivers understand autistic children."</p>
@@ -384,14 +409,14 @@
   <section class="beyond">
     <div class="wrap">
       <div class="sec-head reveal">
-        <p class="eyebrow">ELSEWHERE</p>
-        <h2 class="sec-title">Off the clock.</h2>
+        <p class="eyebrow">ALSO</p>
+        <h2 class="sec-title">Everything else.</h2>
       </div>
       <div class="beyond-grid">
-        <div class="beyond-card reveal"><span class="mono chip">TEACHING</span><p>Manabadi Telugu School, 50+ students. I built the classroom's Python progress tracker too.</p></div>
-        <div class="beyond-card reveal d1"><span class="mono chip">LEADERSHIP</span><p>Incoming Executive Council VP, representing 1,000+ students at RHS.</p></div>
-        <div class="beyond-card reveal d2"><span class="mono chip">SPORT</span><p>Varsity tennis, team captain junior year. Two-a-days before lab meetings.</p></div>
-        <div class="beyond-card reveal d3"><span class="mono chip">SCHOLAR</span><p>Yale Young Global Scholars '25, Innovations in Science &amp; Technology.</p></div>
+        <div class="beyond-card spot reveal"><span class="mono chip">TEACHING</span><p>I teach Telugu to 50+ kids every weekend, and built the class a Python progress tracker.</p></div>
+        <div class="beyond-card spot reveal d1"><span class="mono chip">LEADERSHIP</span><p>Incoming student government VP, representing 1,000+ students.</p></div>
+        <div class="beyond-card spot reveal d2"><span class="mono chip">SPORT</span><p>Varsity tennis. Team captain junior year.</p></div>
+        <div class="beyond-card spot reveal d3"><span class="mono chip">SCHOLAR</span><p>Yale Young Global Scholars '25, Innovations in Science &amp; Technology track.</p></div>
       </div>
     </div>
   </section>
@@ -402,7 +427,7 @@
     <div class="wrap">
       <p class="eyebrow reveal">CONTACT</p>
       <h2 class="contact-big reveal"><em>Let's</em> talk.</h2>
-      <p class="contact-sub reveal d1">Research, building, or anything in between. My inbox is open.</p>
+      <p class="contact-sub reveal d1">Always down to talk research, startups, or anything in between.</p>
       <div class="hero-actions reveal d2">
         <a class="btn btn-primary" href="mailto:shashankmadala09@gmail.com" data-magnet><span>shashankmadala09@gmail.com</span></a>
         <a class="btn btn-ghost" href="https://www.linkedin.com/in/shashank-madala/" target="_blank" rel="noopener" data-magnet><span>LinkedIn</span><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 9L9 3M4.5 3H9v4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
@@ -415,7 +440,7 @@
 <footer class="foot">
   <div class="wrap foot-row mono">
     <span>&copy; 2026 SHASHANK MADALA</span>
-    <span>DESIGNED &amp; BUILT FROM SCRATCH</span>
+    <span>BUILT BY ME, NO TEMPLATES</span>
     <span>ROBBINSVILLE, NJ</span>
   </div>
 </footer>
