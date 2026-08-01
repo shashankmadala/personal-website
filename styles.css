@@ -618,6 +618,11 @@ img { max-width: 100%; display: block; }
 .photo:nth-child(2) img, .photo:nth-child(3) img {
   aspect-ratio: 4 / 4.6; object-fit: cover;
 }
+.photo:nth-child(4) { transform: rotate(0.7deg); }
+.photo:nth-child(5) { transform: rotate(-0.6deg); }
+.photo:nth-child(4) img, .photo:nth-child(5) img {
+  aspect-ratio: 4 / 2.95; object-fit: cover;
+}
 .photo figcaption {
   padding: 12px 6px 4px;
   font-size: 10.5px; letter-spacing: 0.2em;
@@ -770,3 +775,110 @@ img { max-width: 100%; display: block; }
   .statement-text .w { color: var(--ink); }
   .stack-card { position: static; }
 }
+
+
+
+/* ============ hero tile grid ============ */
+#tileCanvas {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: block;
+  pointer-events: none;
+}
+@media (hover: none), (pointer: coarse) {
+  #tileCanvas { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #tileCanvas { display: none; }
+}
+
+
+
+/* ============ micro-delights ============ */
+#typeTitle .tl {
+  display: inline-block;
+  white-space: pre;
+  transition: transform 0.25s ease-out;
+  will-change: transform;
+}
+.nav-dot.md-spin {
+  background: var(--grad);
+  animation: md-dotspin 0.7s var(--ease);
+}
+@keyframes md-dotspin {
+  0% { transform: rotate(0deg) scale(1); box-shadow: 0 0 0 0 rgba(56, 225, 232, 0); }
+  40% { transform: rotate(150deg) scale(1.25); box-shadow: 0 0 12px 3px rgba(56, 225, 232, 0.55); }
+  100% { transform: rotate(360deg) scale(1); box-shadow: 0 0 0 0 rgba(56, 225, 232, 0); }
+}
+
+
+/* ============ tilt glare + button ripples ============ */
+/* JS owns hover motion on these cards; keep border-color changes from the earlier rules */
+.press-card:hover { transform: none; }
+.photo:hover { transform: none; }
+
+.tilt-glare {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s;
+  z-index: 2;
+}
+.tilt-glare-dot {
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0.028) 38%, transparent 66%);
+  will-change: transform;
+}
+
+.btn, .nav-cta {
+  position: relative;
+  overflow: hidden;
+}
+.ripple-fx {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(92, 157, 255, 0.2);
+  transform: scale(0);
+  pointer-events: none;
+  animation: ripple-grow 0.6s var(--ease) forwards;
+}
+.ripple-bright { background: rgba(255, 255, 255, 0.25); }
+@keyframes ripple-grow {
+  to { transform: scale(1); opacity: 0; }
+}
+
+
+/* ============ terminal: live input after the demo ============ */
+#term { position: relative; }
+#term.term-live { cursor: text; transition: border-color 0.3s; }
+#term.term-typing { border-color: rgba(92, 157, 255, 0.35); }
+.term-cli-input {
+  position: absolute;
+  left: 10px;
+  bottom: 10px;
+  width: 2px;
+  height: 2px;
+  padding: 0;
+  border: 0;
+  opacity: 0;
+  background: transparent;
+  color: transparent;
+  font-size: 16px;
+  pointer-events: none;
+}
+.term-cli-input:focus { outline: none; }
+#term.term-live .term-body {
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(226, 232, 244, 0.18) transparent;
+}
+#term.term-live .term-body::-webkit-scrollbar { width: 8px; }
+#term.term-live .term-body::-webkit-scrollbar-thumb { background: rgba(226, 232, 244, 0.14); border-radius: 4px; }
+#term.term-live .term-body::-webkit-scrollbar-track { background: transparent; }
