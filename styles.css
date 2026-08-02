@@ -882,3 +882,117 @@ img { max-width: 100%; display: block; }
 #term.term-live .term-body::-webkit-scrollbar { width: 8px; }
 #term.term-live .term-body::-webkit-scrollbar-thumb { background: rgba(226, 232, 244, 0.14); border-radius: 4px; }
 #term.term-live .term-body::-webkit-scrollbar-track { background: transparent; }
+
+
+
+
+/* ============================================================
+   PHOTOS, REBUILT
+   The "Some pictures." strip is dissolved. Three pictures now sit
+   next to the sentences they prove: the flag under NOW, the
+   classroom in the margin of work card 02, and Shenzhen as the
+   sign-off. Appended last, so equal-specificity ties go to these.
+   ============================================================ */
+
+/* --- the actual cause of the cropping --------------------------------
+   .photo img set a width but never a height, so the HTML height
+   attribute survived as a literal pixel height. With both axes
+   definite, aspect-ratio was ignored and object-fit: cover carved each
+   photo down to that height. height: auto is the repair. */
+.photo img { height: auto; max-width: 100%; object-fit: contain; }
+
+/* --- neutralize the dead strip rules ---------------------------------
+   .photo:nth-child(1..5) above is not scoped to .photo-strip, so any new
+   .photo landing on sibling index 1-5 anywhere on the page would still
+   inherit those crops. Reset them at equal specificity; each figure
+   re-declares what it actually wants further down. */
+.photos, .photo-strip { display: none; }
+.photo:nth-child(1), .photo:nth-child(2), .photo:nth-child(3),
+.photo:nth-child(4), .photo:nth-child(5) { grid-column: auto; }
+.photo:nth-child(1) img, .photo:nth-child(2) img, .photo:nth-child(3) img,
+.photo:nth-child(4) img, .photo:nth-child(5) img {
+  aspect-ratio: auto;
+  object-fit: contain;
+}
+
+/* --- shared frame ----------------------------------------------------- */
+.photo { position: relative; }   /* containing block for .tilt-glare */
+.photo.pic { margin: 0; }
+.photo.pic img { width: 100%; height: auto; display: block; border-radius: 10px; }
+.photo.pic figcaption {
+  padding: 12px 6px 2px;
+  display: flex; justify-content: space-between; align-items: baseline;
+  gap: 10px; flex-wrap: wrap;
+  font-size: 10.5px; letter-spacing: 0.2em; color: var(--faint);
+}
+.photo.pic figcaption b { color: var(--sky); font-weight: 500; }
+
+/* --- 1. the band: closes NOW, right above the 6th-of-52 counter -------- */
+.photo.pic-band {
+  margin-top: 20px;              /* same gap the .now-grid uses */
+  padding: 14px 14px 10px;
+  transform: rotate(-0.35deg);
+}
+.photo.pic-band img {
+  aspect-ratio: 1400 / 350;      /* the file's real 4:1, nothing cropped */
+  object-fit: contain;
+  filter: saturate(0.85);        /* the IEO backdrop is hot pink; this seats it */
+}
+
+/* --- 2. the classroom: margin column of work card 02 ------------------- */
+.stack-in.has-pic { grid-template-columns: clamp(200px, 21vw, 250px) minmax(0, 1fr); }
+.photo.pic-margin {
+  width: 100%; margin-top: 6px;
+  padding: 10px 10px 8px;
+  border-radius: 14px;
+  box-shadow: 0 14px 40px rgba(4, 7, 14, 0.4);
+  transform: rotate(-0.8deg);
+}
+.photo.pic-margin img {
+  aspect-ratio: 1179 / 871;      /* the file's real ratio */
+  object-fit: contain;
+  border-radius: 8px;
+}
+.photo.pic-margin figcaption {
+  flex-direction: column; gap: 4px;
+  padding: 10px 4px 0;
+  font-size: 9.5px; letter-spacing: 0.16em;
+}
+
+/* --- 3. the sign-off: last thing before the footer --------------------- */
+.photo.pic-sign {
+  width: 300px; max-width: 100%;
+  margin: 76px auto 0;
+  transform: rotate(0.7deg);
+}
+.photo.pic-sign img {
+  aspect-ratio: 1050 / 1400;     /* EXIF orientation 6: this file is portrait */
+  object-fit: contain;
+}
+.photo.pic-sign figcaption {
+  flex-direction: column; align-items: center;
+  gap: 5px; text-align: center;
+  padding: 12px 4px 2px;
+}
+
+/* --- responsive -------------------------------------------------------- */
+@media (max-width: 960px) {
+  /* the stack collapses to one column here, so the margin photo has to
+     leave the meta row instead of sitting beside the number and chip */
+  .stack-in.has-pic { grid-template-columns: 1fr; }
+  .stack-in.has-pic .stack-meta { flex-wrap: wrap; }
+  .photo.pic-margin { flex: 0 0 100%; max-width: 320px; margin-top: 4px; }
+}
+@media (max-width: 700px) {
+  /* a 4:1 band is 75px tall on a phone and the five of them vanish.
+     2.2:1 with cover is height-driven, so it only trims illustrated
+     skyline off the sides: no face, no flag, no headline is cut. */
+  .photo.pic-band { padding: 10px 10px 8px; }
+  .photo.pic-band img {
+    aspect-ratio: 2.2 / 1;
+    object-fit: cover;
+    object-position: 48% 50%;
+  }
+  .photo.pic figcaption { font-size: 9.5px; letter-spacing: 0.14em; }
+  .photo.pic-sign { width: 260px; margin-top: 56px; }
+}

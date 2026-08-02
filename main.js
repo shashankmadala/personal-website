@@ -1091,7 +1091,7 @@
       for (i = 0; i < PRESS.length; i++) outLine(PRESS[i]);
       return;
     }
-    if (head === "photos") { outLine("three photos from shenzhen are further down this page."); return; }
+    if (head === "photos") { outLine("three pictures are spread through this page: team usa in shenzhen, a lumin class, and closing day."); return; }
     if (head === "contact") {
       outLine("email: " + EMAIL);
       outLine("linkedin: " + LINKEDIN);
