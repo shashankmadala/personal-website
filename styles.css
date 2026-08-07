@@ -2668,350 +2668,6 @@ body.ks-lock .nav { padding-right: var(--ks-sbw, 0px); }
 
 
 /* ============================================================
-   KORA, THE IDEA
-   A four slider illustration of what the app is looking at.
-   Panel, cue sliders, a line drawn figure that is deliberately
-   not a person, and five bars that move with the sliders.
-   Appended last, so equal specificity ties resolve here.
-   ============================================================ */
-
-#koraDemo { scroll-margin-top: 88px; }
-
-/* the section sits in the gap the honors and press paddings already
-   leave behind it, so it adds no vertical rhythm of its own */
-.kd { padding-block: 0; }
-
-.kd-note {
-  margin-top: 18px;
-  max-width: 52ch;
-  font-size: 15.5px;
-  color: var(--body);
-  text-wrap: pretty;
-}
-
-/* ---- the label that has to be read before anything is believed ---- */
-.kd-disc {
-  display: flex;
-  align-items: flex-start;
-  gap: 14px;
-  flex-wrap: wrap;
-  max-width: 74ch;
-  margin-bottom: clamp(22px, 2.6vw, 32px);
-  padding: 14px 18px;
-  border: 1px solid var(--line-2);
-  border-left: 2px solid var(--blue);
-  border-radius: 12px;
-  background: rgba(92, 157, 255, 0.045);
-}
-.kd-disc b {
-  flex: none;
-  font-weight: 500;
-  font-size: 9.5px;
-  letter-spacing: 0.2em;
-  line-height: 1.9;
-  color: var(--blue-2);
-}
-.kd-disc span {
-  flex: 1 1 260px;
-  min-width: 0;
-  font-size: 13.5px;
-  line-height: 1.6;
-  color: var(--dim);
-  text-wrap: pretty;
-}
-
-/* ---- the panel ---- */
-.kd-panel {
-  border: 1px solid var(--line-2);
-  border-radius: 20px;
-  padding: clamp(24px, 3.2vw, 40px);
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.028), rgba(255, 255, 255, 0) 42%),
-    linear-gradient(180deg, var(--panel-2), var(--panel));
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 18px 46px rgba(4, 7, 14, 0.42);
-}
-.kd-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: clamp(28px, 3.4vw, 44px);
-}
-.kd-controls, .kd-read { min-width: 0; }
-
-.kd-lab {
-  display: flex;
-  align-items: baseline;
-  flex-wrap: wrap;
-  gap: 4px 10px;
-  font-size: 9.5px;
-  letter-spacing: 0.2em;
-  color: var(--dim);
-}
-.kd-lab i {
-  font-style: normal;
-  font-size: 9px;
-  letter-spacing: 0.06em;
-  color: var(--faint);
-}
-
-/* ---- one cue ---- */
-.kd-cue { margin-top: 22px; }
-.kd-cue-top {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 12px;
-}
-.kd-cue-top label {
-  font-size: 14.5px;
-  color: var(--ink);
-  cursor: pointer;
-}
-.kd-cue-top b {
-  flex: none;
-  font-weight: 500;
-  font-size: 10px;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--blue-2);
-}
-.kd-ends {
-  display: flex;
-  justify-content: space-between;
-  gap: 14px;
-  margin-top: 2px;
-  font-size: 9px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--faint);
-}
-.kd-ends span { min-width: 0; }
-
-/* ---- the slider itself, same object in every engine ---- */
-.kd-range {
-  display: block;
-  width: 100%;
-  margin: 10px 0 0;
-  height: 22px;
-  background: transparent;
-  cursor: pointer;
-  -webkit-appearance: none;
-  appearance: none;
-}
-.kd-range:focus { outline: none; }
-.kd-range::-webkit-slider-runnable-track {
-  height: 4px;
-  border-radius: 999px;
-  background: linear-gradient(90deg, rgba(124, 142, 178, 0.28), rgba(92, 157, 255, 0.55));
-}
-.kd-range::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 18px; height: 18px;
-  margin-top: -7px;
-  border-radius: 50%;
-  border: 1px solid rgba(92, 157, 255, 0.7);
-  background: var(--ink);
-  box-shadow: 0 2px 10px rgba(4, 7, 14, 0.5);
-  transition: transform 0.22s var(--ease), box-shadow 0.25s;
-}
-.kd-range::-moz-range-track {
-  height: 4px;
-  border-radius: 999px;
-  background: linear-gradient(90deg, rgba(124, 142, 178, 0.28), rgba(92, 157, 255, 0.55));
-}
-.kd-range::-moz-range-thumb {
-  width: 16px; height: 16px;
-  border-radius: 50%;
-  border: 1px solid rgba(92, 157, 255, 0.7);
-  background: var(--ink);
-  box-shadow: 0 2px 10px rgba(4, 7, 14, 0.5);
-  transition: transform 0.22s var(--ease), box-shadow 0.25s;
-}
-.kd-range:hover::-webkit-slider-thumb { transform: scale(1.12); }
-.kd-range:hover::-moz-range-thumb { transform: scale(1.12); }
-.kd-range:active::-webkit-slider-thumb { transform: scale(1.2); }
-.kd-range:active::-moz-range-thumb { transform: scale(1.2); }
-.kd-range:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 5px rgba(92, 157, 255, 0.22); }
-.kd-range:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 5px rgba(92, 157, 255, 0.22); }
-
-/* ---- presets ---- */
-.kd-try { margin-top: 30px; padding-top: 22px; border-top: 1px solid var(--line); }
-.kd-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
-.kd-preset {
-  font-family: var(--mono);
-  font-size: 10.5px;
-  letter-spacing: 0.1em;
-  line-height: 1.2;
-  color: var(--dim);
-  background: rgba(255, 255, 255, 0.022);
-  border: 1px solid var(--line-2);
-  border-radius: 999px;
-  padding: 8px 13px;
-  cursor: pointer;
-  -webkit-appearance: none;
-  appearance: none;
-  transition: color 0.25s, border-color 0.25s, background 0.25s;
-}
-.kd-preset:hover { color: var(--ink); border-color: rgba(92, 157, 255, 0.45); background: rgba(92, 157, 255, 0.09); }
-
-/* ---- the readout ---- */
-/* the drawing and the verdict sit side by side while the longest state
-   name still fits beside it, and the verdict drops to its own line the
-   moment it does not. no word ever has to break */
-.kd-readtop {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 14px clamp(14px, 2vw, 24px);
-}
-.kd-verdict { flex: 1 1 210px; }
-.kd-face {
-  flex: none;
-  width: clamp(96px, 22vw, 152px);
-  height: auto;
-  overflow: visible;
-}
-.kd-aura { fill: none; stroke: var(--blue); stroke-width: 1; opacity: 0.2; }
-.kd-head { fill: rgba(92, 157, 255, 0.035); stroke: var(--line-2); stroke-width: 1.4; }
-.kd-brow, .kd-mouth { fill: none; stroke: var(--blue-2); stroke-width: 3; stroke-linecap: round; }
-.kd-brow { stroke-width: 2.4; opacity: 0.75; }
-.kd-eye { fill: none; stroke: var(--blue-2); stroke-width: 2.4; stroke-linejoin: round; }
-.kd-pup { fill: var(--blue-2); }
-
-.kd-verdict { min-width: 0; }
-.kd-state {
-  margin-top: 8px;
-  font-family: var(--display);
-  font-weight: 600;
-  font-size: clamp(1.5rem, 2.6vw, 2.4rem);
-  line-height: 1.05;
-  letter-spacing: -0.025em;
-  overflow-wrap: anywhere;
-  background: var(--grad);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-.kd-state.kd-pop { animation: kd-pop 0.44s var(--ease); }
-@keyframes kd-pop {
-  from { opacity: 0; transform: translateY(7px); }
-  to { opacity: 1; transform: none; }
-}
-.kd-driver {
-  margin-top: 10px;
-  font-size: 9px;
-  letter-spacing: 0.18em;
-  line-height: 1.7;
-  color: var(--faint);
-}
-
-/* ---- the bars ---- */
-.kd-bars { margin-top: clamp(24px, 3vw, 34px); }
-.kd-bar {
-  display: grid;
-  grid-template-columns: 104px minmax(0, 1fr) 40px;
-  align-items: center;
-  gap: 12px;
-  padding: 8px 0;
-}
-.kd-bar:first-of-type { margin-top: 6px; }
-.kd-b-name {
-  font-size: 13px;
-  color: var(--dim);
-  overflow-wrap: anywhere;
-  transition: color 0.3s;
-}
-.kd-bar.is-top .kd-b-name { color: var(--ink); }
-.kd-b-track {
-  position: relative;
-  height: 6px;
-  border-radius: 999px;
-  overflow: hidden;
-  background: rgba(124, 142, 178, 0.22);
-}
-.kd-b-fill {
-  position: absolute;
-  inset: 0;
-  border-radius: 999px;
-  transform-origin: 0 50%;
-  background: linear-gradient(90deg, rgba(109, 127, 242, 0.5), rgba(76, 195, 255, 0.5));
-  transition: background 0.4s var(--ease);
-}
-.kd-bar.is-top .kd-b-fill { background: var(--grad); }
-.kd-b-val {
-  font-size: 10.5px;
-  letter-spacing: 0.04em;
-  text-align: right;
-  color: var(--faint);
-  font-variant-numeric: tabular-nums;
-  font-feature-settings: "tnum" 1;
-  transition: color 0.3s;
-}
-.kd-bar.is-top .kd-b-val { color: var(--blue-2); }
-
-/* screen reader announcement, debounced by the script */
-.kd-sr {
-  position: absolute;
-  width: 1px; height: 1px;
-  margin: -1px; padding: 0;
-  overflow: hidden;
-  clip: rect(0 0 0 0);
-  clip-path: inset(50%);
-  white-space: nowrap;
-  border: 0;
-}
-
-/* ---- two columns once there is room for them ---- */
-@media (min-width: 881px) {
-  .kd-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
-  .kd-read {
-    border-left: 1px solid var(--line);
-    padding-left: clamp(28px, 3.4vw, 44px);
-  }
-}
-
-/* on one column the order changes rather than the content: the answer
-   on top, the sliders under it, the split last. display: contents lifts
-   the two halves of the readout into the same grid so they can be
-   ordered around the controls. */
-@media (max-width: 880px) {
-  .kd-read { display: contents; }
-  .kd-readtop { order: -2; }
-  .kd-controls {
-    order: -1;
-    border-top: 1px solid var(--line);
-    padding-top: clamp(20px, 3.4vw, 28px);
-  }
-  .kd-bars { order: 0; margin-top: 0; }
-  .kd-grid { gap: clamp(24px, 4vw, 34px); }
-}
-
-@media (max-width: 640px) {
-  .kd-note { font-size: 14.5px; }
-  .kd-bar { grid-template-columns: 92px minmax(0, 1fr) 38px; gap: 10px; }
-  .kd-b-name { font-size: 12.5px; }
-  .kd-lab i { display: block; width: 100%; }
-  .kd-ends { font-size: 8.5px; letter-spacing: 0.1em; }
-  .kd-disc { padding: 13px 15px; gap: 10px; }
-}
-
-/* a coarse pointer needs a bigger thumb to grab */
-@media (hover: none), (pointer: coarse) {
-  .kd-range { height: 30px; }
-  .kd-range::-webkit-slider-thumb { width: 22px; height: 22px; margin-top: -9px; }
-  .kd-range::-moz-range-thumb { width: 20px; height: 20px; }
-  .kd-preset { padding: 10px 14px; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .kd-state.kd-pop { animation: none; }
-  .kd-b-fill, .kd-range::-webkit-slider-thumb, .kd-range::-moz-range-thumb { transition: none; }
-}
-
-
-/* ===== module 6 ===== */
-
-/* ============================================================
    LIGHT MODE
    One alternate token set on :root[data-theme="light"], so every
    component that already reads a token flips for free. Under the
@@ -3306,10 +2962,7 @@ html.th-x, html.th-x *, html.th-x *::before, html.th-x *::after {
 [data-theme="light"] .stack-in { filter: none !important; }
 
 /* ---- the Kora slider demo ---- */
-[data-theme="light"] .kd-panel {
-  background: linear-gradient(180deg, var(--panel-2), var(--panel));
-  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05), 0 18px 44px rgba(15, 23, 42, 0.07);
-}
+
 [data-theme="light"] .kd-preset { background: rgba(15, 23, 42, 0.03); }
 [data-theme="light"] .kd-b-track { background: rgba(15, 23, 42, 0.08); }
 [data-theme="light"] .kd-b-fill {
@@ -3689,4 +3342,1026 @@ main { overflow-x: clip; }
   }
   .sec-title .wi { transform: none !important; }
   .band-shot.ch { opacity: 1 !important; transform: none !important; filter: none !important; }
+}
+
+
+/* ===== seo module 2 ===== */
+
+
+/* ============================================================
+   SELECTED WORK v3
+   The sticky stack becomes a project switcher: a persistent
+   index on one side, one live detail panel on the other. Every
+   panel stays in the DOM at all times. Without JavaScript the
+   index is hidden and all six panels render in a plain column,
+   so the section reads the same to a crawler and to a reader
+   with scripts off.
+   ============================================================ */
+
+.work .stack.wkx { padding-bottom: 60px; }
+
+/* ---- head row: where you are, and what to press ---- */
+.wkx-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  padding-bottom: 14px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid var(--line);
+}
+.wkx-idx {
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: var(--blue);
+}
+.wkx-tip {
+  font-size: 10.5px;
+  letter-spacing: 0.18em;
+  color: var(--faint);
+}
+.wkx-head + .wkx-grid { margin-top: 0; }
+
+/* ---- the two column frame ---- */
+.wkx-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 22px;
+}
+.wkx-rail { display: none; }
+[data-wkx-on] .wkx-rail { display: block; }
+
+@media (min-width: 1000px) {
+  [data-wkx-on] .wkx-grid {
+    grid-template-columns: minmax(238px, 28%) minmax(0, 1fr);
+    gap: 34px;
+    align-items: start;
+  }
+  [data-wkx-on] .wkx-rail {
+    position: sticky;
+    top: 104px;
+  }
+}
+
+/* ---- the index ---- */
+.wkx-list {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.wkx-tab {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr) 12px;
+  grid-template-rows: auto auto;
+  align-items: center;
+  gap: 0 11px;
+  width: 100%;
+  padding: 11px 14px;
+  border: 0;
+  border-radius: 13px;
+  background: none;
+  text-align: left;
+  font-family: var(--sans);
+  color: var(--dim);
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+  transition: transform 0.4s var(--ease), color 0.3s;
+}
+.wkx-tab-n {
+  grid-column: 1;
+  grid-row: 1 / span 2;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  color: var(--faint);
+  transition: color 0.3s;
+}
+.wkx-tab-t {
+  grid-column: 2;
+  grid-row: 1;
+  font-family: var(--display);
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: -0.012em;
+  line-height: 1.3;
+  color: var(--body);
+  transition: color 0.3s;
+}
+.wkx-tab-r {
+  grid-column: 2;
+  grid-row: 2;
+  font-size: 9.5px;
+  letter-spacing: 0.18em;
+  color: var(--faint);
+  transition: color 0.3s;
+}
+.wkx-tab-go {
+  grid-column: 3;
+  grid-row: 1 / span 2;
+  color: var(--blue);
+  opacity: 0;
+  transform: translateX(-5px);
+  transition: opacity 0.3s, transform 0.35s var(--ease);
+}
+.wkx-tab:hover { transform: translateX(3px); }
+.wkx-tab:hover .wkx-tab-t { color: var(--ink); }
+.wkx-tab:hover .wkx-tab-n { color: var(--dim); }
+.wkx-tab:active { transform: translateX(3px) scale(0.988); }
+.wkx-tab:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+.wkx-tab[aria-selected="true"] { transform: none; }
+.wkx-tab[aria-selected="true"] .wkx-tab-t { color: var(--ink); }
+.wkx-tab[aria-selected="true"] .wkx-tab-n { color: var(--blue); }
+.wkx-tab[aria-selected="true"] .wkx-tab-r { color: var(--dim); }
+.wkx-tab[aria-selected="true"] .wkx-tab-go { opacity: 1; transform: none; }
+
+/* the selection slides between rows instead of blinking on */
+.wkx-thumb {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  border-radius: 13px;
+  background: rgba(92, 157, 255, 0.08);
+  border: 1px solid rgba(92, 157, 255, 0.28);
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    transform 0.48s var(--ease),
+    width 0.48s var(--ease),
+    height 0.48s var(--ease),
+    opacity 0.3s;
+}
+.wkx-thumb.is-set { opacity: 1; }
+.wkx-thumb::before {
+  content: "";
+  position: absolute;
+  left: -1px;
+  top: 24%;
+  bottom: 24%;
+  width: 2px;
+  border-radius: 2px;
+  background: var(--grad);
+}
+
+/* under the two column breakpoint the index is a scrolling chip row */
+@media (max-width: 999px) {
+  .wkx-list {
+    flex-direction: row;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 2px 2px 10px;
+    scroll-snap-type: x proximity;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .wkx-list::-webkit-scrollbar { display: none; }
+  .wkx-tab {
+    flex: 0 0 auto;
+    width: auto;
+    grid-template-columns: 24px auto;
+    grid-template-rows: auto;
+    padding: 10px 15px;
+    scroll-snap-align: start;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+  }
+  .wkx-tab-n { grid-row: 1; }
+  .wkx-tab-t { white-space: nowrap; font-size: 14px; }
+  .wkx-tab-r, .wkx-tab-go { display: none; }
+  .wkx-tab:hover, .wkx-tab:active { transform: none; }
+  .wkx-thumb { border-radius: 999px; }
+  .wkx-thumb::before {
+    left: 22%;
+    right: 22%;
+    top: auto;
+    bottom: -1px;
+    width: auto;
+    height: 2px;
+  }
+}
+
+/* ---- the stage ---- */
+.wkx-stage { position: relative; }
+[data-wkx-on] .wkx-stage { transition: height 0.45s var(--ease); }
+
+/* the sticky stack is retired: these panels sit where they are put */
+.wkx-panel {
+  position: relative;
+  top: auto;
+  margin-bottom: 24px;
+  will-change: auto;
+}
+.wkx-panel:last-child { margin-bottom: 0; }
+.wkx-null { display: none; }
+
+[data-wkx-on] .wkx-panel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  margin-bottom: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+[data-wkx-on] .wkx-panel.is-active {
+  position: relative;
+  visibility: visible;
+  pointer-events: auto;
+}
+[data-wkx-on] .wkx-panel:focus { outline: none; }
+
+/* the command palette drops stickiness for one measuring read. These
+   panels are not sticky any more, and unstacking them for that read
+   would report the wrong document position, so hold them in place. */
+.cp-measure[data-wkx-on] .wkx-panel { position: absolute !important; }
+.cp-measure[data-wkx-on] .wkx-panel.is-active { position: relative !important; }
+
+/* entry: the card lands from the direction you travelled, its rows follow */
+[data-wkx-on] .wkx-panel .wkx-in {
+  opacity: 0;
+  transform: translateY(var(--wkx-dy, 16px));
+  transition: opacity 0.36s var(--ease), transform 0.5s var(--ease);
+}
+[data-wkx-on] .wkx-panel.is-active .wkx-in {
+  opacity: 1;
+  transform: none;
+}
+[data-wkx-on] .wkx-panel .wkx-col > * {
+  opacity: 0;
+  transform: translateY(9px);
+  transition: opacity 0.4s var(--ease), transform 0.5s var(--ease);
+}
+[data-wkx-on] .wkx-panel.is-active .wkx-col > * {
+  opacity: 1;
+  transform: none;
+}
+/* the photo carries its resting tilt through both states, so the tilt
+   module still reads the same angle it always did */
+[data-wkx-on] .wkx-panel .wkx-shot {
+  opacity: 0;
+  transform: translateY(9px) rotate(-0.8deg);
+  transition: opacity 0.4s var(--ease), transform 0.5s var(--ease);
+}
+[data-wkx-on] .wkx-panel.is-active .wkx-shot {
+  opacity: 1;
+  transform: rotate(-0.8deg);
+}
+[data-wkx-on] .wkx-panel.is-active .wkx-col > *:nth-child(1) { transition-delay: 0.06s; }
+[data-wkx-on] .wkx-panel.is-active .wkx-col > *:nth-child(2) { transition-delay: 0.1s; }
+[data-wkx-on] .wkx-panel.is-active .wkx-col > *:nth-child(3) { transition-delay: 0.14s; }
+[data-wkx-on] .wkx-panel.is-active .wkx-col > *:nth-child(4) { transition-delay: 0.18s; }
+[data-wkx-on] .wkx-panel.is-active .wkx-col > *:nth-child(5) { transition-delay: 0.22s; }
+[data-wkx-on] .wkx-panel.is-active .wkx-col > *:nth-child(6) { transition-delay: 0.26s; }
+[data-wkx-on] .wkx-panel.is-active .wkx-col > *:nth-child(7) { transition-delay: 0.3s; }
+[data-wkx-on] .wkx-panel.is-active .wkx-col > *:nth-child(n + 8) { transition-delay: 0.34s; }
+[data-wkx-on] .wkx-panel.is-active .wkx-shot { transition-delay: 0.14s; }
+
+/* ---- the panel card ---- */
+.wkx-in {
+  position: relative;
+  background: linear-gradient(180deg, var(--panel-2), var(--panel));
+  border: 1px solid var(--line-2);
+  border-radius: 20px;
+  padding: clamp(26px, 3.6vw, 44px);
+  box-shadow: 0 18px 60px rgba(4, 7, 14, 0.45);
+}
+.wkx-in.has-shot {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) clamp(176px, 22%, 236px);
+  gap: 30px;
+  align-items: start;
+}
+@media (max-width: 860px) {
+  .wkx-in.has-shot { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+}
+
+.wkx-top {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px 14px;
+  margin-bottom: 16px;
+}
+.wkx-rule {
+  height: 1px;
+  background: var(--line);
+  margin: 2px 0 20px;
+}
+.wkx-bar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px 14px;
+  margin-top: 22px;
+}
+
+/* the margin photo keeps its tilt and its full frame inside the new grid */
+.wkx-panel .wkx-shot { transform: rotate(-0.8deg); margin: 0; }
+.wkx-panel .wkx-shot img { aspect-ratio: auto; object-fit: contain; }
+
+/* ---- the coverage pill and the next control, both built by script ---- */
+.wkx-cov {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 11px;
+  line-height: 1.2;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--dim);
+  background: none;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 5px 14px;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+  transition: color 0.25s, border-color 0.25s, background 0.25s;
+}
+.wkx-cov:hover { color: var(--ink); border-color: rgba(92, 157, 255, 0.45); }
+.wkx-cov i {
+  flex: none;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--sky);
+  font-style: normal;
+}
+.wkx-next {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 26px;
+  padding: 9px 15px;
+  border: 1px solid var(--line-2);
+  border-radius: 999px;
+  background: rgba(92, 157, 255, 0.05);
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+  transition: border-color 0.25s, background 0.25s, gap 0.3s var(--ease);
+}
+.wkx-next:hover { border-color: rgba(92, 157, 255, 0.45); background: rgba(92, 157, 255, 0.1); gap: 14px; }
+.wkx-next-l { color: var(--faint); letter-spacing: 0.18em; }
+.wkx-next svg { flex: none; color: var(--blue); }
+.wkx-cov:focus-visible,
+.wkx-next:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; }
+
+/* ---- light theme ---- */
+[data-theme="light"] .wkx-in {
+  background: var(--panel);
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05), 0 18px 50px rgba(15, 23, 42, 0.07);
+}
+[data-theme="light"] .wkx-thumb {
+  background: rgba(37, 99, 212, 0.06);
+  border-color: rgba(37, 99, 212, 0.3);
+}
+[data-theme="light"] .wkx-next { background: rgba(37, 99, 212, 0.05); }
+[data-theme="light"] .wkx-next:hover { background: rgba(37, 99, 212, 0.09); }
+
+/* ---- narrow ---- */
+@media (max-width: 700px) {
+  .wkx-tip { display: none; }
+  .wkx-in { border-radius: 16px; }
+  .wkx-bar { gap: 8px 10px; }
+  .wkx-bar .link { margin-left: 0; }
+  .wkx-next { width: 100%; justify-content: center; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-wkx-on] .wkx-stage,
+  .wkx-thumb,
+  .wkx-tab,
+  .wkx-tab-go,
+  [data-wkx-on] .wkx-panel .wkx-in,
+  [data-wkx-on] .wkx-panel .wkx-col > *,
+  [data-wkx-on] .wkx-panel .wkx-shot { transition: none !important; }
+  [data-wkx-on] .wkx-panel .wkx-in,
+  [data-wkx-on] .wkx-panel .wkx-col > *,
+  [data-wkx-on] .wkx-panel .wkx-shot { opacity: 1; transform: none; }
+  .wkx-panel .wkx-shot { transform: none; }
+  .wkx-tab:hover, .wkx-tab:active { transform: none; }
+}
+
+
+/* ===== seo module 3 ===== */
+
+/* ===== module 6 ===== */
+
+
+/* ============================================================
+   THE HONORS BOARD
+   The ledger was a flat list: twelve equal lines, so a world
+   olympiad read the same weight as a school placement. This is
+   a board instead. Three lead cards carry the honors that are
+   hardest to earn and the only three with a public record to
+   point at, then nine standard cards below. A scope lens filters
+   the set, the numbers inside each honor are pulled out in blue
+   so the scale of a field reads at a glance, and every honor
+   that has a verifying URL already on this page links to it.
+
+   The cells keep .r-row and the list keeps .receipt-list so the
+   command palette still indexes every honor without changes:
+   it reads the first <span> as the label and the first <b> as
+   the scope. Everything the old ledger styled on those classes
+   is neutralised under .hb-grid, which outranks it and lands
+   later in this file.
+   ============================================================ */
+
+.hb { position: relative; }
+
+/* ---- the bar: scope lens on the left, live tally on the right ---- */
+.hb-bar {
+  display: flex; flex-wrap: wrap;
+  align-items: center; justify-content: space-between;
+  gap: 14px 20px;
+  margin-bottom: 24px;
+}
+
+/* the lens is hidden until the module that drives it is alive, so a
+   page without JS never shows a control that cannot do anything */
+.hb-lens { display: none; }
+.hb-live .hb-lens {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  padding: 4px;
+  border: 1px solid var(--line-2);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.022);
+}
+.hb-chip {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--sans);
+  font-size: 13px; font-weight: 500; line-height: 1;
+  color: var(--dim);
+  background: transparent;
+  border: 0;
+  border-radius: 999px;
+  padding: 9px 16px;
+  cursor: pointer;
+  white-space: nowrap;
+  -webkit-appearance: none; appearance: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: color 0.25s, background 0.3s var(--ease), box-shadow 0.3s var(--ease);
+}
+.hb-chip:hover { color: var(--ink); }
+.hb-chip:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+.hb-chip[hidden] { display: none; }
+.hb-n {
+  font-style: normal;
+  font-size: 10.5px; letter-spacing: 0.08em;
+  color: var(--faint);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+  transition: color 0.25s;
+}
+.hb-chip[aria-checked="true"] {
+  background: linear-gradient(120deg, #3255e0, #2e6ee6 55%, #2f9bea);
+  color: #f5f8ff;
+  box-shadow: 0 6px 22px rgba(46, 110, 230, 0.28);
+}
+.hb-chip[aria-checked="true"] .hb-n { color: rgba(245, 248, 255, 0.72); }
+
+.hb-tally {
+  font-size: 10.5px; letter-spacing: 0.2em;
+  color: var(--faint);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+/* ---- the board ---- */
+.hb-grid {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  list-style: none;
+}
+
+/* neutralise the ledger row: no flex baseline, no dotted leader, no
+   print-in opacity. The entry animation is owned by [data-fly]. */
+.hb-grid .r-row {
+  display: block;
+  padding: 0;
+  gap: 0;
+  font-size: inherit;
+  color: inherit;
+  border-radius: 16px;
+  opacity: 1;
+  transform: none;
+  /* the only transition the cell itself keeps is the palette's flash ring */
+  transition: outline-color 0.55s var(--ease);
+}
+.hb-grid .r-row::after { content: none; }
+.hb-grid .hb-cell[hidden] { display: none; }
+.hb-grid .r-row.cp-flash { border-radius: 16px; outline-offset: 3px; }
+
+.hb-card {
+  position: relative;
+  height: 100%;
+  display: flex; flex-direction: column;
+  gap: 10px;
+  min-height: 116px;
+  padding: 17px 19px 19px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.028), rgba(255, 255, 255, 0) 46%),
+    var(--panel);
+  box-shadow: 0 10px 28px rgba(4, 7, 14, 0.3);
+  transition: border-color 0.3s, transform 0.45s var(--ease), box-shadow 0.45s var(--ease);
+}
+.hb-card::before {
+  content: "";
+  position: absolute; inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  transition: box-shadow 0.45s var(--ease);
+}
+.hb-cell:hover .hb-card {
+  border-color: rgba(92, 157, 255, 0.34);
+  transform: translateY(-3px);
+  box-shadow: 0 18px 42px rgba(4, 7, 14, 0.44);
+}
+.hb-cell:hover .hb-card::before {
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12), inset 0 0 0 1px rgba(92, 157, 255, 0.17);
+}
+.hb-cell:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; border-radius: 16px; }
+
+/* ---- the three that carry the most weight ---- */
+.hb-lead .hb-card {
+  min-height: 208px;
+  padding: 21px 23px 22px;
+  border-color: var(--line-2);
+  background:
+    var(--grad) top left / 100% 2px no-repeat,
+    linear-gradient(180deg, rgba(92, 157, 255, 0.07), rgba(255, 255, 255, 0) 44%),
+    var(--panel-2);
+}
+
+/* ---- the scope tag row ---- */
+.hb-top {
+  display: flex; align-items: center; flex-wrap: wrap;
+  gap: 9px;
+}
+.hb-grid .hb-top b {
+  order: 0; flex: none;
+  font-weight: 500;
+  font-size: 9.5px; letter-spacing: 0.18em;
+  line-height: 1;
+  color: var(--blue);
+  background: rgba(92, 157, 255, 0.1);
+  border: 1px solid rgba(92, 157, 255, 0.26);
+  border-radius: 5px;
+  padding: 4px 7px 3px;
+}
+.hb-org {
+  font-style: normal;
+  font-size: 9.5px; letter-spacing: 0.14em;
+  line-height: 1.4;
+  color: var(--faint);
+  text-transform: uppercase;
+}
+
+/* ---- the honor itself ---- */
+.hb-name {
+  margin-top: auto;
+  font-size: 15.5px; line-height: 1.44;
+  letter-spacing: -0.005em;
+  color: var(--ink);
+}
+.hb-grid .hb-name span {
+  display: block;
+  flex: none;
+  max-width: none;
+}
+/* a lead card is set from the top so the three titles sit on one line. A
+   standard card is set from the bottom, tag on the top edge and honor on the
+   bottom edge, so a row of them reads as one ruled band. */
+.hb-lead .hb-name {
+  margin-top: 2px;
+  font-family: var(--display);
+  font-size: 23px; line-height: 1.24;
+  letter-spacing: -0.02em;
+}
+/* the figure inside an honor is the thing worth reading first */
+.hb-hi {
+  font-style: normal;
+  color: var(--blue-2);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+.hb-note {
+  font-size: 13.5px; line-height: 1.6;
+  color: var(--body);
+}
+.hb-note .hb-hi { font-weight: 500; }
+
+/* ---- proof ---- */
+.hb-proof {
+  margin-top: auto;
+  display: flex; flex-wrap: wrap; gap: 7px;
+  padding-top: 2px;
+}
+.hb-link {
+  position: relative; z-index: 2;
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: var(--mono);
+  font-size: 9px; letter-spacing: 0.11em;
+  line-height: 1;
+  color: var(--dim);
+  border: 1px solid var(--line-2);
+  border-radius: 999px;
+  padding: 6px 9px;
+  transition: color 0.25s, border-color 0.25s, background 0.25s, gap 0.25s var(--ease);
+}
+.hb-link svg { flex: none; }
+.hb-link:hover {
+  color: var(--blue-2);
+  border-color: rgba(92, 157, 255, 0.5);
+  background: rgba(92, 157, 255, 0.08);
+  gap: 9px;
+}
+.hb-link:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+
+.hb-foot {
+  margin-top: 22px;
+  text-align: center;
+  font-size: 10px; letter-spacing: 0.24em;
+  color: var(--faint);
+}
+
+/* ---- light mode ---- */
+[data-theme="light"] .hb-live .hb-lens { background: rgba(15, 23, 42, 0.028); }
+[data-theme="light"] .hb-card {
+  background: var(--panel);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 12px 30px rgba(15, 23, 42, 0.055);
+}
+[data-theme="light"] .hb-card::before { box-shadow: none; }
+[data-theme="light"] .hb-cell:hover .hb-card {
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.05), 0 20px 44px rgba(15, 23, 42, 0.09);
+}
+[data-theme="light"] .hb-cell:hover .hb-card::before { box-shadow: inset 0 0 0 1px rgba(37, 99, 212, 0.2); }
+[data-theme="light"] .hb-lead .hb-card {
+  background:
+    var(--grad) top left / 100% 2px no-repeat,
+    linear-gradient(180deg, rgba(37, 99, 212, 0.05), rgba(255, 255, 255, 0) 44%),
+    var(--panel);
+}
+[data-theme="light"] .hb-grid .hb-top b {
+  background: rgba(37, 99, 212, 0.07);
+  border-color: rgba(37, 99, 212, 0.26);
+}
+
+/* ---- responsive ---- */
+@media (max-width: 960px) {
+  .hb-grid { grid-template-columns: repeat(2, 1fr); }
+  .hb-lead { grid-column: 1 / -1; }
+  .hb-lead .hb-card { min-height: 0; }
+  .hb-lead .hb-name { font-size: 21px; }
+}
+@media (max-width: 640px) {
+  .hb-grid { grid-template-columns: 1fr; gap: 12px; }
+  .hb-lead { grid-column: auto; }
+  .hb-bar { flex-direction: column; align-items: flex-start; gap: 14px; }
+  .hb-live .hb-lens { border-radius: 16px; max-width: 100%; }
+  .hb-chip { font-size: 12.5px; padding: 8px 12px; gap: 6px; }
+  .hb-card { min-height: 0; padding: 15px 16px 17px; }
+  .hb-lead .hb-card { padding: 18px 18px 19px; }
+  .hb-lead .hb-name { font-size: 19px; }
+  .hb-name { font-size: 15px; }
+  .hb-note { font-size: 13px; }
+  .hb-foot { margin-top: 18px; letter-spacing: 0.18em; }
+}
+
+/* motion off: the board still filters, it just stops moving */
+@media (prefers-reduced-motion: reduce) {
+  .hb-cell:hover .hb-card { transform: none; }
+}
+
+
+/* ===== seo module 0 ===== */
+
+/* ============================================================
+   TECHNICAL SEO PASS
+   a real name in the H1, and a footer link graph
+   ============================================================ */
+
+/* The H1 ships "Shashank Madala" as real text, so the page is correct
+   before the typewriter runs and correct with JS off. Once the
+   typewriter takes over, the name stays in the accessibility tree. */
+.hero-title .h1-name { display: inline; }
+.hero-title.is-typed .h1-name {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* footer link graph: named internal anchors, plus rel=me identity links */
+.foot-nav {
+  display: flex; flex-wrap: wrap;
+  gap: 9px 22px;
+  margin-bottom: 14px;
+  font-size: 10.5px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+.foot-nav a {
+  color: var(--dim);
+  text-decoration: none;
+  transition: color 0.3s var(--ease);
+}
+.foot-nav a:hover,
+.foot-nav a:focus-visible { color: var(--blue); }
+.foot-me { margin-bottom: 22px; }
+.foot-me a { color: var(--faint); }
+
+@media (max-width: 640px) {
+  .foot-nav { justify-content: center; gap: 9px 16px; }
+}
+
+
+/* ===== seo module 1 ===== */
+
+/* ============================================================
+   ABOUT AND FAQ
+   Two blocks of plain language: a profile written the way a
+   person would say it, and the questions that actually get
+   asked. Built entirely from the existing tokens, so the light
+   theme, the scroll entry system and the cursor spotlight pick
+   them up without any extra wiring.
+   ============================================================ */
+
+#about, #faq { scroll-margin-top: 88px; }
+
+.about { padding-block: var(--sec) 0; }
+.faq   { padding-block: 0; }
+
+/* ---------- about: prose on the left, the ledger on the right ---------- */
+.ab-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+  gap: clamp(28px, 4vw, 58px);
+  align-items: start;
+}
+
+.ab-prose p {
+  max-width: 62ch;
+  font-size: clamp(15px, 1.25vw, 16.5px);
+  line-height: 1.72;
+  color: var(--body);
+  text-wrap: pretty;
+}
+.ab-prose p + p { margin-top: 17px; }
+.ab-prose strong { color: var(--ink); font-weight: 600; }
+
+.ab-prose p.ab-lede {
+  font-size: clamp(17px, 1.75vw, 20px);
+  line-height: 1.58;
+  color: var(--ink);
+  letter-spacing: -0.011em;
+}
+
+.ab-prose p.ab-cov { font-size: 14px; color: var(--dim); }
+.ab-cov a {
+  color: var(--blue);
+  border-bottom: 1px solid rgba(92, 157, 255, 0.3);
+  transition: border-color 0.25s;
+}
+.ab-cov a:hover { border-bottom-color: currentColor; }
+.ab-cov a:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; border-radius: 3px; }
+
+/* ---------- the glance card ---------- */
+.ab-card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: clamp(20px, 2.1vw, 26px);
+  box-shadow: 0 14px 36px rgba(4, 7, 14, 0.38);
+}
+.ab-card-h {
+  font-size: 10.5px;
+  letter-spacing: 0.2em;
+  color: var(--blue);
+  margin-bottom: 16px;
+}
+
+.ab-fact {
+  display: grid;
+  grid-template-columns: 88px minmax(0, 1fr);
+  gap: 14px;
+  align-items: baseline;
+  padding: 11px 0;
+  border-top: 1px solid var(--line);
+}
+.ab-fact:first-child { border-top: 0; padding-top: 0; }
+.ab-fact dt {
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  color: var(--faint);
+  line-height: 1.7;
+}
+.ab-fact dd {
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--body);
+  text-wrap: pretty;
+}
+.ab-fact dd b { color: var(--ink); font-weight: 600; }
+
+.ab-links {
+  display: flex; flex-wrap: wrap; gap: 7px;
+  margin-top: 20px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+}
+.ab-link {
+  font-family: var(--mono);
+  font-size: 10px; letter-spacing: 0.14em;
+  color: var(--dim);
+  border: 1px solid var(--line-2);
+  border-radius: 999px;
+  padding: 6px 11px;
+  transition: color 0.25s, border-color 0.25s;
+}
+.ab-link:hover { color: var(--ink); border-color: var(--blue); }
+.ab-link:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+
+/* ---------- faq: hairline rows, native disclosure ---------- */
+.faq-note {
+  margin-top: 18px;
+  max-width: 46ch;
+  font-size: 15.5px;
+  color: var(--body);
+  text-wrap: pretty;
+}
+
+.faq-list {
+  max-width: 880px;
+  border-top: 1px solid var(--line);
+}
+.faq-item { border-bottom: 1px solid var(--line); }
+
+.faq-q {
+  display: flex; align-items: center; justify-content: space-between; gap: 22px;
+  padding: 19px 2px;
+  cursor: pointer;
+  list-style: none;
+  color: var(--ink);
+  transition: color 0.25s;
+  -webkit-tap-highlight-color: transparent;
+}
+.faq-q::-webkit-details-marker { display: none; }
+.faq-q h3 {
+  font-family: var(--display);
+  font-size: clamp(15.5px, 1.45vw, 18px);
+  font-weight: 500;
+  line-height: 1.35;
+  letter-spacing: -0.012em;
+  text-wrap: balance;
+}
+.faq-q:hover { color: var(--blue); }
+.faq-q:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; border-radius: 6px; }
+
+.faq-ico { position: relative; flex: none; width: 13px; height: 13px; }
+.faq-ico::before, .faq-ico::after {
+  content: ""; position: absolute;
+  background: currentColor; opacity: 0.6;
+  transition: transform 0.45s var(--ease), opacity 0.3s;
+}
+.faq-ico::before { left: 0; right: 0; top: 6px; height: 1px; }
+.faq-ico::after { top: 0; bottom: 0; left: 6px; width: 1px; }
+.faq-item[open] .faq-ico::after { transform: rotate(90deg); opacity: 0; }
+.faq-item[open] .faq-q { color: var(--blue); }
+
+/* the wrapper is what the script animates, so the answer itself
+   keeps its padding and never squashes mid transition */
+.faq-a-wrap { transition: height 0.42s var(--ease); }
+.faq-a { max-width: 70ch; padding: 0 2px 24px; }
+.faq-a p {
+  font-size: 15px;
+  line-height: 1.72;
+  color: var(--body);
+  text-wrap: pretty;
+}
+.faq-a a {
+  color: var(--blue);
+  border-bottom: 1px solid rgba(92, 157, 255, 0.3);
+  transition: border-color 0.25s;
+}
+.faq-a a:hover { border-bottom-color: currentColor; }
+.faq-a a:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; border-radius: 3px; }
+
+/* ---------- light theme: the same shapes, softer shadow ---------- */
+[data-theme="light"] .ab-card { box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06); }
+[data-theme="light"] .ab-cov a,
+[data-theme="light"] .faq-a a { border-bottom-color: rgba(37, 99, 212, 0.3); }
+[data-theme="light"] .faq-ico::before,
+[data-theme="light"] .faq-ico::after { opacity: 0.75; }
+
+/* ---------- narrow ---------- */
+@media (max-width: 900px) {
+  .ab-grid { grid-template-columns: 1fr; gap: 34px; }
+  .ab-prose p { max-width: none; }
+  .ab-card { max-width: 560px; }
+}
+@media (max-width: 640px) {
+  .ab-fact { grid-template-columns: 1fr; gap: 3px; }
+  .ab-fact dt { line-height: 1.4; }
+  .faq-q { padding: 17px 2px; gap: 16px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .faq-a-wrap { transition: none; }
+  .faq-ico::before, .faq-ico::after { transition: none; }
+}
+
+
+/* ===== seo module 4 ===== */
+
+/* ============================================================
+   PERFORMANCE: SELF HOSTED TYPE
+   The two families used to arrive from fonts.googleapis.com. That put a
+   second origin on the critical path (DNS, TCP, TLS, then the CSS itself)
+   and, because a pending stylesheet blocks every script after it, it also
+   held main.js back from running, which is what starts the hero.
+
+   The exact files Google serves are now in assets/fonts, split on the same
+   unicode-range boundaries Google uses. The split is what keeps this cheap:
+   the page copy is pure ASCII, so latin-ext is declared but never fetched,
+   and Inter is never fetched at all on a platform where -apple-system or
+   Segoe UI already answers ahead of it in the stack.
+
+   font-display: swap matches the display=swap the old URL asked for, so
+   the fallback-then-swap behaviour is unchanged.
+   ============================================================ */
+
+@font-face {
+  font-family: "IBM Plex Mono";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("assets/fonts/ibm-plex-mono-400-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "IBM Plex Mono";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("assets/fonts/ibm-plex-mono-400-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: "IBM Plex Mono";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("assets/fonts/ibm-plex-mono-500-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "IBM Plex Mono";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("assets/fonts/ibm-plex-mono-500-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+/* Inter ships as one variable file per subset, the same build Google serves,
+   so 400 through 700 all come out of one request instead of four. */
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("assets/fonts/inter-var-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("assets/fonts/inter-var-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }

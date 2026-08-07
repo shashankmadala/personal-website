@@ -3333,324 +3333,6 @@
    line drawing and five bars. Deterministic arithmetic, nothing
    trained, nothing fetched, nothing left running when it settles.
    ============================================================ */
-(function () {
-  "use strict";
-
-  var root = document.documentElement;
-  if (!root || root.hasAttribute("data-kora-demo")) return;
-
-  var panel = document.getElementById("kdPanel");
-  if (!panel) return;
-
-  var reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
-  var touch = matchMedia("(hover: none), (pointer: coarse)").matches;
-
-  /* ---------- the model, such as it is ---------- */
-  var KEYS = ["eye", "voice", "posture", "movement"];
-  var CUE_NAME = ["eye contact", "voice", "posture", "movement"];
-  var WORDS = {
-    eye: ["looking away", "glancing", "steady", "locked on"],
-    voice: ["quiet", "soft", "raised", "loud"],
-    posture: ["turned away", "closed", "settled", "facing you"],
-    movement: ["still", "slow", "restless", "fast"]
-  };
-
-  /* cue weights, and how sharply the read commits to one answer */
-  var W = [1.15, 1, 0.95, 1];
-  var WSUM = 4.1;
-  var SHARP = 4.5;
-
-  /* prototype: where each state sits on the four cues, plus what the
-     drawing does when that state is the whole answer */
-  var STATES = [
-    { k: "calm",        p: [0.62, 0.32, 0.72, 0.24], mouth: 8,   brow: 0,  open: 0.55 },
-    { k: "engaged",     p: [0.88, 0.70, 0.86, 0.62], mouth: 20,  brow: -4, open: 0.78 },
-    { k: "anxious",     p: [0.26, 0.56, 0.30, 0.78], mouth: -6,  brow: 9,  open: 0.86 },
-    { k: "overwhelmed", p: [0.10, 0.92, 0.16, 0.94], mouth: -13, brow: 13, open: 0.96 },
-    { k: "withdrawn",   p: [0.10, 0.14, 0.22, 0.10], mouth: -4,  brow: 3,  open: 0.30 }
-  ];
-  var N = STATES.length;
-
-  /* ---------- the parts, every one of them optional ---------- */
-  var inputs = [], wordEls = [];
-  var i, el;
-  for (i = 0; i < KEYS.length; i++) {
-    el = panel.querySelector('[data-kd-cue="' + KEYS[i] + '"]');
-    if (!el) return;
-    inputs.push(el);
-    wordEls.push(panel.querySelector('[data-kd-word="' + KEYS[i] + '"]'));
-  }
-
-  var bars = [], fills = [], vals = [], lastVal = [];
-  for (i = 0; i < N; i++) {
-    var row = panel.querySelector('[data-kd-state="' + STATES[i].k + '"]');
-    bars.push(row);
-    fills.push(row ? row.querySelector(".kd-b-fill") : null);
-    vals.push(row ? row.querySelector(".kd-b-val") : null);
-    lastVal.push("");
-  }
-
-  var stateEl = document.getElementById("kdState");
-  var driverEl = document.getElementById("kdDriver");
-  var auraEl = document.getElementById("kdAura");
-  var eyeL = document.getElementById("kdEyeL");
-  var eyeR = document.getElementById("kdEyeR");
-  var pupL = document.getElementById("kdPupL");
-  var pupR = document.getElementById("kdPupR");
-  var browL = document.getElementById("kdBrowL");
-  var browR = document.getElementById("kdBrowR");
-  var mouthEl = document.getElementById("kdMouth");
-
-  /* the state names live in the markup, so the copy stays in one place */
-  var LABEL = [];
-  for (i = 0; i < N; i++) {
-    var nameEl = bars[i] ? bars[i].querySelector(".kd-b-name") : null;
-    LABEL.push(nameEl ? (nameEl.textContent || "").trim() : STATES[i].k);
-  }
-
-  root.setAttribute("data-kora-demo", "");
-
-  var live = document.createElement("p");
-  live.className = "kd-sr";
-  live.setAttribute("aria-live", "polite");
-  panel.appendChild(live);
-
-  /* ---------- state ---------- */
-  var tgt = { c: [], open: 0.6, gaze: -3.2, mouth: 7.2, brow: 0.7, aura: 0.33 };
-  var cur = { c: [], open: 0.6, gaze: -3.2, mouth: 7.2, brow: 0.7, aura: 0.33 };
-  for (i = 0; i < N; i++) { tgt.c.push(0); cur.c.push(0); }
-
-  var top = -1, lastDriver = "", raf = 0, sayTimer = 0, first = true;
-
-  function clamp01(v) { return v < 0 ? 0 : (v > 1 ? 1 : v); }
-
-  function read() {
-    var x = [];
-    for (var j = 0; j < inputs.length; j++) {
-      var v = parseFloat(inputs[j].value);
-      if (isNaN(v)) v = 50;
-      x.push(clamp01(v / 100));
-    }
-    return x;
-  }
-
-  function wordFor(j, v) {
-    var list = WORDS[KEYS[j]];
-    var n = Math.floor(v * list.length);
-    if (n >= list.length) n = list.length - 1;
-    if (n < 0) n = 0;
-    return list[n];
-  }
-
-  /* ---------- the arithmetic ---------- */
-  function score(x) {
-    var out = [], sum = 0, j, s, d;
-    for (s = 0; s < N; s++) {
-      d = 0;
-      for (j = 0; j < 4; j++) d += W[j] * Math.abs(x[j] - STATES[s].p[j]);
-      d /= WSUM;
-      var v = Math.pow(d < 1 ? 1 - d : 0, SHARP);
-      out.push(v);
-      sum += v;
-    }
-    for (s = 0; s < N; s++) out[s] = sum > 0 ? out[s] / sum : 1 / N;
-    return out;
-  }
-
-  /* what separates the winner from the runner up, which is the only
-     honest thing this arithmetic can say about why */
-  function driver(x, c) {
-    var a = -1, b = -1, s;
-    for (s = 0; s < N; s++) {
-      if (a < 0 || c[s] > c[a]) { b = a; a = s; }
-      else if (b < 0 || c[s] > c[b]) { b = s; }
-    }
-    if (a < 0 || b < 0) return "";
-    var lead = [];
-    for (var j = 0; j < 4; j++) {
-      var gain = W[j] * (Math.abs(x[j] - STATES[b].p[j]) - Math.abs(x[j] - STATES[a].p[j]));
-      if (gain > 0.02) lead.push({ j: j, g: gain });
-    }
-    lead.sort(function (p, q) { return q.g - p.g; });
-    if (!lead.length) return "AN EVEN SPLIT ACROSS THE FOUR CUES";
-    if (lead.length === 1) return "TIPPED BY " + CUE_NAME[lead[0].j].toUpperCase();
-    return "TIPPED BY " + CUE_NAME[lead[0].j].toUpperCase() + " AND " + CUE_NAME[lead[1].j].toUpperCase();
-  }
-
-  /* ---------- writes only, once per frame ---------- */
-  function eyePath(cx, o) {
-    var up = (96 - (4 + 26 * o)).toFixed(1);
-    var dn = (96 + (4 + 14 * o)).toFixed(1);
-    return "M" + (cx - 13) + " 96Q" + cx + " " + up + " " + (cx + 13) + " 96Q" +
-           cx + " " + dn + " " + (cx - 13) + " 96Z";
-  }
-
-  function paint() {
-    var j;
-    for (j = 0; j < N; j++) {
-      if (fills[j]) fills[j].style.transform = "scaleX(" + cur.c[j].toFixed(4) + ")";
-      if (vals[j]) {
-        var s = Math.round(cur.c[j] * 100) + "%";
-        if (s !== lastVal[j]) { vals[j].textContent = s; lastVal[j] = s; }
-      }
-    }
-    if (auraEl) {
-      auraEl.setAttribute("r", (74 + cur.aura * 18).toFixed(1));
-      auraEl.style.opacity = (0.1 + cur.aura * 0.3).toFixed(3);
-    }
-    if (eyeL) eyeL.setAttribute("d", eyePath(78, cur.open));
-    if (eyeR) eyeR.setAttribute("d", eyePath(122, cur.open));
-    var po = clamp01(cur.open * 1.7 - 0.25) * (0.45 + 0.55 * clamp01((cur.gaze + 8.5) / 8.5));
-    if (pupL) {
-      pupL.setAttribute("cx", (78 + cur.gaze).toFixed(1));
-      pupL.style.opacity = po.toFixed(3);
-    }
-    if (pupR) {
-      pupR.setAttribute("cx", (122 + cur.gaze).toFixed(1));
-      pupR.style.opacity = po.toFixed(3);
-    }
-    if (browL) browL.setAttribute("transform", "rotate(" + cur.brow.toFixed(2) + " 86 76)");
-    if (browR) browR.setAttribute("transform", "rotate(" + (-cur.brow).toFixed(2) + " 114 76)");
-    if (mouthEl) mouthEl.setAttribute("d", "M76 136Q100 " + (136 + cur.mouth).toFixed(1) + " 124 136");
-  }
-
-  function step() {
-    raf = 0;
-    var k = 0.18, max = 0, j, d;
-    for (j = 0; j < N; j++) {
-      d = tgt.c[j] - cur.c[j];
-      if (Math.abs(d) > max) max = Math.abs(d);
-      cur.c[j] += d * k;
-    }
-    var fields = ["open", "gaze", "mouth", "brow", "aura"];
-    var scale = [1, 0.08, 0.06, 0.06, 1];
-    for (j = 0; j < fields.length; j++) {
-      d = tgt[fields[j]] - cur[fields[j]];
-      if (Math.abs(d) * scale[j] > max) max = Math.abs(d) * scale[j];
-      cur[fields[j]] += d * k;
-    }
-    if (max < 0.0012) {
-      for (j = 0; j < N; j++) cur.c[j] = tgt.c[j];
-      for (j = 0; j < fields.length; j++) cur[fields[j]] = tgt[fields[j]];
-      paint();
-      return;
-    }
-    paint();
-    raf = requestAnimationFrame(step);
-  }
-
-  function settle() {
-    if (reduced) {
-      for (var j = 0; j < N; j++) cur.c[j] = tgt.c[j];
-      cur.open = tgt.open; cur.gaze = tgt.gaze; cur.mouth = tgt.mouth;
-      cur.brow = tgt.brow; cur.aura = tgt.aura;
-      paint();
-      return;
-    }
-    if (!raf) raf = requestAnimationFrame(step);
-  }
-
-  /* ---------- one update ---------- */
-  function update() {
-    var x = read();
-    var c = score(x);
-    var j;
-
-    for (j = 0; j < inputs.length; j++) {
-      var word = wordFor(j, x[j]);
-      if (wordEls[j] && wordEls[j].textContent !== word) wordEls[j].textContent = word;
-      if (inputs[j].getAttribute("aria-valuetext") !== word) {
-        inputs[j].setAttribute("aria-valuetext", word);
-      }
-    }
-
-    var win = 0;
-    for (j = 1; j < N; j++) if (c[j] > c[win]) win = j;
-
-    for (j = 0; j < N; j++) tgt.c[j] = c[j];
-    tgt.open = 0; tgt.mouth = 0; tgt.brow = 0;
-    for (j = 0; j < N; j++) {
-      tgt.open += c[j] * STATES[j].open;
-      tgt.mouth += c[j] * STATES[j].mouth;
-      tgt.brow += c[j] * STATES[j].brow;
-    }
-    tgt.gaze = -(1 - x[0]) * 8.5;
-    tgt.aura = (x[1] + x[3]) / 2;
-
-    if (win !== top) {
-      top = win;
-      for (j = 0; j < N; j++) if (bars[j]) bars[j].classList.toggle("is-top", j === win);
-      if (stateEl) {
-        stateEl.textContent = LABEL[win];
-        if (!reduced && !first) {
-          stateEl.classList.remove("kd-pop");
-          void stateEl.offsetWidth;
-          stateEl.classList.add("kd-pop");
-        }
-      }
-    }
-
-    var d = driver(x, c);
-    if (driverEl && d && d !== lastDriver) {
-      lastDriver = d;
-      driverEl.textContent = d;
-    }
-
-    if (sayTimer) clearTimeout(sayTimer);
-    sayTimer = setTimeout(function () {
-      sayTimer = 0;
-      live.textContent = LABEL[top] + ", " + Math.round(tgt.c[top] * 100) + " percent";
-    }, 600);
-
-    first = false;
-    settle();
-  }
-
-  for (i = 0; i < inputs.length; i++) {
-    inputs[i].addEventListener("input", update, { passive: true });
-    inputs[i].addEventListener("change", update, { passive: true });
-  }
-
-  var presets = panel.querySelectorAll("[data-kd-set]");
-  Array.prototype.forEach.call(presets, function (btn) {
-    btn.addEventListener("click", function () {
-      var parts = (btn.getAttribute("data-kd-set") || "").split(",");
-      for (var j = 0; j < inputs.length && j < parts.length; j++) {
-        var v = parseFloat(parts[j]);
-        if (isNaN(v)) continue;
-        inputs[j].value = String(Math.max(0, Math.min(100, v)));
-      }
-      update();
-      /* on one column the answer sits above the chips, so a tap near the
-         bottom of the panel can change something that is off screen.
-         block nearest does nothing at all when it is already in view. */
-      if (touch) {
-        var readtop = panel.querySelector(".kd-readtop");
-        if (readtop && readtop.scrollIntoView) {
-          try {
-            readtop.scrollIntoView({ block: "nearest", behavior: reduced ? "auto" : "smooth" });
-          } catch (err) { readtop.scrollIntoView(); }
-        }
-      }
-    });
-  });
-
-  /* the sliders keep their markup values, so the first paint is the same
-     picture a page without any script would have shown, and nothing
-     animates out of a wrong resting position on load */
-  var x0 = read();
-  var c0 = score(x0);
-  cur.open = 0; cur.mouth = 0; cur.brow = 0;
-  for (i = 0; i < N; i++) {
-    cur.c[i] = c0[i];
-    cur.open += c0[i] * STATES[i].open;
-    cur.mouth += c0[i] * STATES[i].mouth;
-    cur.brow += c0[i] * STATES[i].brow;
-  }
-  cur.gaze = -(1 - x0[0]) * 8.5;
-  cur.aura = (x0[1] + x0[3]) / 2;
-  update();
-})();
 
 
 /* ============================================================
@@ -4736,4 +4418,955 @@
     run();
     if (++tries > 6) clearInterval(timer);
   }, 700);
+})();
+
+
+
+
+/* ============================================================
+   SELECTED WORK v3
+   The six projects stop being a passive scroll and become a
+   switcher: a persistent index, one live detail panel, an
+   animated swap, real tab semantics with arrow keys, and a
+   hash per project so any one of them can be linked to.
+   Every panel stays in the DOM the whole time, so nothing is
+   hidden from a crawler and nothing is rendered late.
+   Self contained. Every lookup is guarded.
+   ============================================================ */
+(function () {
+  "use strict";
+
+  var root = document.documentElement;
+  if (!root || root.hasAttribute("data-wkx-on")) return;
+
+  var list = document.getElementById("wkxTabs");
+  var stage = document.getElementById("wkxStage");
+  if (!list || !stage) return;
+
+  var tabs = Array.prototype.slice.call(list.querySelectorAll('[role="tab"]'));
+  if (tabs.length < 2) return;
+
+  var panels = [];
+  var i;
+  for (i = 0; i < tabs.length; i++) {
+    var pid = tabs[i].getAttribute("aria-controls");
+    var panel = pid ? document.getElementById(pid) : null;
+    /* the markup is not what this module expects: leave the plain
+       column of panels exactly as it renders without script */
+    if (!panel) return;
+    panels.push(panel);
+  }
+
+  var reduced = false, touch = false;
+  try { reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches; } catch (e) {}
+  try { touch = window.matchMedia("(hover: none), (pointer: coarse)").matches; } catch (e) {}
+
+  var thumb = document.getElementById("wkxThumb");
+  var label = document.getElementById("wkxIdx");
+  var NAV_OFFSET = 96;
+  var VERTICAL_AT = 1000;
+
+  var active = -1;
+  var heightRaf = 0;
+
+  function titleOf(n) {
+    var t = tabs[n] ? tabs[n].querySelector(".wkx-tab-t") : null;
+    return t ? (t.textContent || "").replace(/\s+/g, " ").trim() : "";
+  }
+
+  function numOf(n) {
+    var t = tabs[n] ? tabs[n].querySelector(".wkx-tab-n") : null;
+    return t ? (t.textContent || "").trim() : String(n + 1);
+  }
+
+  /* ---------- painting ---------- */
+
+  function paintThumb() {
+    if (!thumb || active < 0) return;
+    var t = tabs[active];
+    if (!t || !t.offsetWidth) return;
+    thumb.style.width = t.offsetWidth + "px";
+    thumb.style.height = t.offsetHeight + "px";
+    thumb.style.transform = "translate(" + t.offsetLeft + "px," + t.offsetTop + "px)";
+    thumb.classList.add("is-set");
+  }
+
+  function paintLabel() {
+    if (!label || active < 0) return;
+    var total = tabs.length < 10 ? "0" + tabs.length : String(tabs.length);
+    label.textContent = numOf(active) + " / " + total + " · " + titleOf(active).toUpperCase();
+  }
+
+  function paintHeight(from) {
+    if (active < 0) return;
+    var to = panels[active].offsetHeight;
+    if (!to) return;
+    if (reduced || from == null) {
+      stage.style.height = to + "px";
+      return;
+    }
+    stage.style.height = from + "px";
+    /* force a reflow so the browser has two heights to animate between */
+    void stage.offsetHeight;
+    stage.style.height = to + "px";
+  }
+
+  function syncHeight() {
+    heightRaf = 0;
+    if (active < 0) return;
+    var h = panels[active].offsetHeight;
+    if (h) stage.style.height = h + "px";
+  }
+
+  function queueHeight() {
+    if (heightRaf) return;
+    heightRaf = requestAnimationFrame(syncHeight);
+  }
+
+  function orient() {
+    var vertical = (window.innerWidth || root.clientWidth) >= VERTICAL_AT;
+    list.setAttribute("aria-orientation", vertical ? "vertical" : "horizontal");
+  }
+
+  /* on the chip row the picked project has to come into view on its own */
+  function revealTab() {
+    var t = tabs[active];
+    if (!t || !t.scrollIntoView) return;
+    if (list.scrollWidth - list.clientWidth < 4) return;
+    try {
+      t.scrollIntoView({ block: "nearest", inline: "center", behavior: reduced ? "auto" : "smooth" });
+    } catch (e) {}
+  }
+
+  function focusTab(n) {
+    var t = tabs[n];
+    if (!t || !t.focus) return;
+    try { t.focus({ preventScroll: true }); } catch (e) { t.focus(); }
+  }
+
+  /* ---------- the hash ---------- */
+
+  function indexFromHash() {
+    var h = (window.location.hash || "").replace(/^#/, "");
+    if (!h) return -1;
+    for (var k = 0; k < panels.length; k++) {
+      if (panels[k].id === h) return k;
+    }
+    return -1;
+  }
+
+  var ownHash = false;
+
+  function writeHash(n, push) {
+    var h = "#" + panels[n].id;
+    if (window.location.hash === h) return;
+    ownHash = true;
+    try {
+      if (window.history && window.history.pushState) {
+        if (push) window.history.pushState(null, "", h);
+        else window.history.replaceState(null, "", h);
+      } else {
+        window.location.hash = h;
+      }
+    } catch (e) {
+      ownHash = false;
+    }
+  }
+
+  function scrollToSection() {
+    var sec = document.getElementById("work") || stage;
+    var top = sec.getBoundingClientRect().top +
+      (window.pageYOffset || document.documentElement.scrollTop || 0) - NAV_OFFSET;
+    if (top < 0) top = 0;
+    try { window.scrollTo({ top: top, behavior: reduced ? "auto" : "smooth" }); }
+    catch (e) { window.scrollTo(0, top); }
+  }
+
+  /* ---------- the switch ---------- */
+
+  function select(n, opt) {
+    opt = opt || {};
+    if (n < 0 || n >= tabs.length) return;
+    if (n === active) {
+      if (opt.scroll) scrollToSection();
+      return;
+    }
+
+    var from = active < 0 ? null : (stage.offsetHeight || null);
+    var dir = active < 0 ? 1 : (n > active ? 1 : -1);
+    active = n;
+
+    stage.style.setProperty("--wkx-dy", (dir > 0 ? 16 : -16) + "px");
+
+    for (var k = 0; k < tabs.length; k++) {
+      var on = k === n;
+      tabs[k].setAttribute("aria-selected", on ? "true" : "false");
+      tabs[k].tabIndex = on ? 0 : -1;
+      panels[k].classList.toggle("is-active", on);
+      panels[k].tabIndex = on ? 0 : -1;
+    }
+
+    paintThumb();
+    paintLabel();
+    paintHeight(from);
+    revealTab();
+
+    if (!opt.silent) writeHash(n, opt.push === true);
+    if (opt.scroll) scrollToSection();
+  }
+
+  /* ---------- wiring ---------- */
+
+  root.setAttribute("data-wkx-on", "");
+  orient();
+
+  list.addEventListener("click", function (e) {
+    var t = e.target;
+    while (t && t !== list && (!t.getAttribute || t.getAttribute("role") !== "tab")) t = t.parentNode;
+    if (!t || t === list) return;
+    var n = tabs.indexOf(t);
+    if (n < 0) return;
+    select(n, { push: true });
+    focusTab(n);
+  });
+
+  list.addEventListener("keydown", function (e) {
+    if (e.metaKey || e.ctrlKey || e.altKey || e.shiftKey) return;
+    var n = tabs.indexOf(document.activeElement);
+    if (n < 0) return;
+    var to = -1;
+    var k = e.key;
+    if (k === "ArrowDown" || k === "ArrowRight") to = (n + 1) % tabs.length;
+    else if (k === "ArrowUp" || k === "ArrowLeft") to = (n - 1 + tabs.length) % tabs.length;
+    else if (k === "Home") to = 0;
+    else if (k === "End") to = tabs.length - 1;
+    else return;
+    e.preventDefault();
+    select(to);
+    focusTab(to);
+  });
+
+  /* ---- a next control at the foot of every panel ---- */
+  var ARROW = '<svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true" focusable="false">' +
+    '<path d="M2 6h8M7 3l3 3-3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+  for (i = 0; i < panels.length; i++) {
+    (function (n) {
+      var col = panels[n].querySelector(".wkx-col");
+      if (!col) return;
+      var nx = (n + 1) % panels.length;
+      var name = titleOf(nx);
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "wkx-next";
+      btn.innerHTML = '<span class="wkx-next-l">NEXT</span><span class="wkx-next-t"></span>' + ARROW;
+      var slot = btn.querySelector(".wkx-next-t");
+      if (slot) slot.textContent = name;
+      btn.setAttribute("aria-label", "Show " + (name || "the next project"));
+      btn.addEventListener("click", function (e) {
+        e.preventDefault();
+        select(nx, { push: true });
+        focusTab(nx);
+      });
+      col.appendChild(btn);
+    })(i);
+  }
+
+  /* ---- the coverage pill: counts the press wall, then filters it ----
+     data-wkx-topic names a filter chip that already exists in the press
+     section. The count is read off the wall, so it can never drift. */
+  function chipFor(key) {
+    var chips = document.querySelectorAll(".press-filters .pf-chip");
+    for (var a = 0; a < chips.length; a++) {
+      if (chips[a].getAttribute("data-pf") === key) return chips[a];
+    }
+    return null;
+  }
+
+  function coverageCount(key) {
+    var cells = document.querySelectorAll(".press-cell[data-pf]");
+    var n = 0;
+    for (var a = 0; a < cells.length; a++) {
+      var v = " " + (cells[a].getAttribute("data-pf") || "") + " ";
+      if (v.indexOf(" " + key + " ") > -1) n++;
+    }
+    return n;
+  }
+
+  for (i = 0; i < panels.length; i++) {
+    (function (n) {
+      var topic = panels[n].getAttribute("data-wkx-topic");
+      var bar = panels[n].querySelector(".wkx-bar");
+      if (!topic || !bar) return;
+      var chip = chipFor(topic);
+      if (!chip) return;
+      var count = coverageCount(topic);
+      if (!count) return;
+
+      var pill = document.createElement("button");
+      pill.type = "button";
+      pill.className = "wkx-cov";
+      var dot = document.createElement("i");
+      dot.setAttribute("aria-hidden", "true");
+      pill.appendChild(dot);
+      pill.appendChild(document.createTextNode(count + " in the press"));
+      pill.setAttribute("aria-label",
+        "Filter the press section to the " + count + " " +
+        (count === 1 ? "piece" : "pieces") + " of coverage about " + titleOf(n));
+      pill.addEventListener("click", function (e) {
+        e.preventDefault();
+        try { chip.click(); } catch (err) {}
+        try {
+          document.dispatchEvent(new CustomEvent("press:filter", { bubbles: true, detail: { topic: topic } }));
+        } catch (err) {}
+        var press = document.getElementById("press");
+        if (press && press.scrollIntoView) {
+          press.scrollIntoView({ behavior: (reduced || touch) ? "auto" : "smooth", block: "start" });
+        }
+      });
+      bar.insertBefore(pill, bar.firstChild);
+    })(i);
+  }
+
+  /* ---- open whatever the hash asks for ---- */
+  var start = indexFromHash();
+  select(start > -1 ? start : 0, { silent: true });
+  if (start > -1) {
+    requestAnimationFrame(function () {
+      requestAnimationFrame(scrollToSection);
+    });
+  }
+
+  window.addEventListener("hashchange", function () {
+    if (ownHash) { ownHash = false; return; }
+    var n = indexFromHash();
+    if (n > -1) select(n, { silent: true, scroll: true });
+  });
+
+  window.addEventListener("popstate", function () {
+    var n = indexFromHash();
+    if (n > -1) select(n, { silent: true });
+  });
+
+  /* ---- keep the stage the height of whatever is showing ---- */
+  var RO = window.ResizeObserver;
+  if (typeof RO === "function") {
+    var ro = new RO(function () { queueHeight(); });
+    for (i = 0; i < panels.length; i++) ro.observe(panels[i]);
+  }
+
+  var imgs = stage.querySelectorAll("img");
+  for (i = 0; i < imgs.length; i++) {
+    if (imgs[i].complete) continue;
+    imgs[i].addEventListener("load", queueHeight);
+    imgs[i].addEventListener("error", queueHeight);
+  }
+
+  var reflowTimer = 0;
+  window.addEventListener("resize", function () {
+    if (reflowTimer) clearTimeout(reflowTimer);
+    reflowTimer = setTimeout(function () {
+      reflowTimer = 0;
+      orient();
+      paintThumb();
+      syncHeight();
+    }, 120);
+  }, { passive: true });
+
+  window.addEventListener("load", function () {
+    orient();
+    paintThumb();
+    syncHeight();
+  });
+
+  /* ---- the command palette jumps to a panel by flashing it. If the
+     panel it wants is not the one on screen, bring it forward first. ---- */
+  if (typeof window.MutationObserver === "function") {
+    var mo = new MutationObserver(function (recs) {
+      for (var m = 0; m < recs.length; m++) {
+        var el = recs[m].target;
+        if (!el || !el.classList || !el.classList.contains("cp-flash")) continue;
+        var n = panels.indexOf(el);
+        if (n > -1 && n !== active) select(n, { silent: true });
+      }
+    });
+    for (i = 0; i < panels.length; i++) {
+      mo.observe(panels[i], { attributes: true, attributeFilter: ["class"] });
+    }
+  }
+})();
+
+
+
+
+/* ============================================================
+   THE HONORS BOARD
+   The scope lens on the honors board. Four radios, one board.
+   Filtering is a FLIP: the survivors are measured before and
+   after the reflow and slid back from where they were, the
+   leavers step out of the flow at their old place and fade,
+   the arrivals rise in. Nothing here is required for the board
+   to work. Without JS the lens never appears and all twelve
+   honors are on the page, which is the state the markup ships
+   in, so every early return below is a safe one.
+
+   Handshakes with the rest of the page:
+   - a cell still holding a [data-fly] entry is settled first,
+     so the entry engine and the FLIP never drive the same
+     transform. Every path in that engine guards on [data-fly].
+   - the command palette can jump to an honor that the current
+     filter has hidden. The board watches for its flash ring
+     and drops back to All so the honor is actually on screen.
+   ============================================================ */
+(function () {
+  "use strict";
+
+  var root = document.documentElement;
+  if (!root || root.hasAttribute("data-honorboard")) return;
+
+  var board = document.querySelector(".hb");
+  var grid = document.getElementById("hbGrid");
+  var tally = document.getElementById("hbTally");
+  var lens = board ? board.querySelector(".hb-lens") : null;
+  if (!board || !grid || !lens) return;
+
+  var chips = Array.prototype.slice.call(lens.querySelectorAll(".hb-chip"));
+  var cells = Array.prototype.slice.call(grid.querySelectorAll(".hb-cell"));
+  if (chips.length < 2 || !cells.length) return;
+
+  root.setAttribute("data-honorboard", "");
+
+  var reduced = false;
+  try { reduced = matchMedia("(prefers-reduced-motion: reduce)").matches; } catch (e1) {}
+  var canAnim = false;
+  try {
+    canAnim = !reduced && typeof Element !== "undefined" && !!Element.prototype &&
+      typeof Element.prototype.animate === "function";
+  } catch (e2) { canAnim = false; }
+
+  var DUR = 420;
+  var EASE = "cubic-bezier(0.22, 1, 0.36, 1)";
+  var NAME = { INTL: "INTERNATIONAL", NATL: "NATIONAL", STATE: "STATE" };
+
+  function keyOf(chip) { return chip.getAttribute("data-hb") || "all"; }
+  function scopeOf(cell) { return cell.getAttribute("data-hb") || ""; }
+
+  /* ---------- counts come off the DOM, never off the markup ---------- */
+  var counts = { all: cells.length, INTL: 0, NATL: 0, STATE: 0 };
+  var i;
+  for (i = 0; i < cells.length; i++) {
+    var sc = scopeOf(cells[i]);
+    if (Object.prototype.hasOwnProperty.call(counts, sc)) counts[sc]++;
+  }
+  for (i = 0; i < chips.length; i++) {
+    var ck = keyOf(chips[i]);
+    var nEl = chips[i].querySelector(".hb-n");
+    if (!Object.prototype.hasOwnProperty.call(counts, ck)) continue;
+    if (nEl) nEl.textContent = String(counts[ck]);
+    if (ck !== "all" && counts[ck] === 0) chips[i].hidden = true;
+  }
+
+  function say(key, shown) {
+    if (!tally) return;
+    if (key === "all") {
+      tally.textContent =
+        counts.all + " HONORS · " + counts.INTL + " INTL · " +
+        counts.NATL + " NATL · " + counts.STATE + " STATE";
+    } else {
+      tally.textContent =
+        shown + " " + (NAME[key] || key) + " · " + counts.all + " IN TOTAL";
+    }
+  }
+
+  /* ---------- hand a cell back from the entry engine ---------- */
+  function settleEntry() {
+    for (var k = 0; k < cells.length; k++) {
+      var el = cells[k];
+      if (!el.hasAttribute("data-fly")) continue;
+      el.classList.remove("fly-in");
+      el.removeAttribute("data-fly");
+      var s = el.style;
+      s.willChange = "";
+      s.transitionDelay = "";
+      s.removeProperty("--fx");
+      s.removeProperty("--fy");
+      s.removeProperty("--fs");
+      s.removeProperty("--fb");
+    }
+  }
+
+  /* ---------- the filter ---------- */
+  var gen = 0;
+
+  function reset(cell) {
+    var s = cell.style;
+    s.position = ""; s.left = ""; s.top = "";
+    s.width = ""; s.height = "";
+    s.opacity = ""; s.zIndex = ""; s.pointerEvents = "";
+    s.transform = "";
+  }
+
+  function stop(cell) {
+    if (!cell.hbAnim) return;
+    try { cell.hbAnim.cancel(); } catch (err) {}
+    cell.hbAnim = null;
+  }
+
+  function play(cell, frames, opts, g, after) {
+    stop(cell);
+    var a = null;
+    try { a = cell.animate(frames, opts); } catch (err) { a = null; }
+    if (!a) { if (after) after(); return; }
+    cell.hbAnim = a;
+    a.onfinish = function () {
+      if (cell.hbAnim === a) cell.hbAnim = null;
+      if (g !== gen) return;
+      if (after) { after(); return; }
+      cell.style.transform = "";
+      cell.style.opacity = "";
+    };
+    a.oncancel = function () { if (cell.hbAnim === a) cell.hbAnim = null; };
+  }
+
+  function mark(key) {
+    for (var k = 0; k < chips.length; k++) {
+      var on = keyOf(chips[k]) === key;
+      chips[k].setAttribute("aria-checked", on ? "true" : "false");
+      chips[k].setAttribute("tabindex", on ? "0" : "-1");
+    }
+  }
+
+  function land(g) {
+    if (g !== gen) return;
+    for (var k = 0; k < cells.length; k++) {
+      var on = cells[k].getAttribute("data-on") === "1";
+      stop(cells[k]);
+      reset(cells[k]);
+      cells[k].hidden = !on;
+    }
+  }
+
+  function apply(key, animate) {
+    gen++;
+    var g = gen;
+    var k, cell;
+
+    /* settle every cell to its logical state so the reads are clean */
+    for (k = 0; k < cells.length; k++) {
+      cell = cells[k];
+      stop(cell);
+      reset(cell);
+      cell.hidden = cell.getAttribute("data-on") === "0";
+    }
+
+    var gr = grid.getBoundingClientRect();
+    var before = [];
+    for (k = 0; k < cells.length; k++) {
+      cell = cells[k];
+      if (cell.hidden) { before.push(null); continue; }
+      var r = cell.getBoundingClientRect();
+      before.push({ x: r.left - gr.left, y: r.top - gr.top, w: r.width, h: r.height });
+    }
+
+    var shown = 0, outs = [], ins = [], stay = [];
+    for (k = 0; k < cells.length; k++) {
+      cell = cells[k];
+      var on = key === "all" || scopeOf(cell) === key;
+      if (on) shown++;
+      cell.setAttribute("data-on", on ? "1" : "0");
+      if (before[k] && !on) outs.push({ cell: cell, r: before[k] });
+      else if (!before[k] && on) ins.push(cell);
+      else if (before[k] && on) stay.push({ cell: cell, r: before[k] });
+    }
+
+    mark(key);
+    say(key, shown);
+
+    if (!animate || !canAnim) { land(g); return; }
+
+    /* the leavers step out of the flow at their old spot so the survivors
+       can slide underneath them. opacity 0 is the resting value, so a
+       dropped animation leaves them invisible, not stranded. */
+    for (k = 0; k < outs.length; k++) {
+      var os = outs[k].cell.style;
+      os.position = "absolute";
+      os.left = outs[k].r.x + "px";
+      os.top = outs[k].r.y + "px";
+      os.width = outs[k].r.w + "px";
+      os.height = outs[k].r.h + "px";
+      os.opacity = "0";
+      os.zIndex = "0";
+      os.pointerEvents = "none";
+    }
+    /* the arrivals ride the animation's backwards fill instead of an inline
+       opacity, so a dropped animation leaves them visible */
+    for (k = 0; k < ins.length; k++) ins[k].hidden = false;
+
+    /* one read after all the writes */
+    var gr2 = grid.getBoundingClientRect();
+    for (k = 0; k < stay.length; k++) {
+      var nr = stay[k].cell.getBoundingClientRect();
+      stay[k].dx = stay[k].r.x - (nr.left - gr2.left);
+      stay[k].dy = stay[k].r.y - (nr.top - gr2.top);
+    }
+
+    for (k = 0; k < stay.length; k++) {
+      if (Math.abs(stay[k].dx) < 0.5 && Math.abs(stay[k].dy) < 0.5) continue;
+      play(stay[k].cell, [
+        { transform: "translate(" + stay[k].dx.toFixed(1) + "px," + stay[k].dy.toFixed(1) + "px)" },
+        { transform: "translate(0px,0px)" }
+      ], { duration: DUR, easing: EASE }, g, null);
+    }
+
+    for (k = 0; k < ins.length; k++) {
+      play(ins[k], [
+        { opacity: 0, transform: "translateY(10px) scale(0.985)" },
+        { opacity: 1, transform: "none" }
+      ], { duration: DUR, delay: Math.min(k * 26, 150), easing: EASE, fill: "backwards" }, g, null);
+    }
+
+    for (k = 0; k < outs.length; k++) {
+      (function (leaver) {
+        play(leaver.cell, [
+          { opacity: 1, transform: "scale(1)" },
+          { opacity: 0, transform: "scale(0.975)" }
+        ], { duration: Math.round(DUR * 0.55), easing: EASE }, g, function () {
+          if (g !== gen) return;
+          leaver.cell.hidden = true;
+          reset(leaver.cell);
+        });
+      })(outs[k]);
+    }
+
+    /* if the animation engine never reports back, still land the layout */
+    setTimeout(function () { land(g); }, DUR + 320);
+  }
+
+  function select(key, animate) {
+    if (!Object.prototype.hasOwnProperty.call(counts, key)) key = "all";
+    if (animate) settleEntry();
+    apply(key, animate);
+  }
+
+  /* ---------- pointer ---------- */
+  lens.addEventListener("click", function (e) {
+    var t = e.target;
+    while (t && t !== lens && (!t.classList || !t.classList.contains("hb-chip"))) t = t.parentNode;
+    if (!t || t === lens) return;
+    select(keyOf(t), true);
+  });
+
+  /* ---------- keyboard: a radio group moves with the arrows ---------- */
+  lens.addEventListener("keydown", function (e) {
+    if (e.altKey || e.ctrlKey || e.metaKey) return;
+    var key = e.key;
+    if (key !== "ArrowLeft" && key !== "ArrowRight" &&
+        key !== "ArrowUp" && key !== "ArrowDown" &&
+        key !== "Home" && key !== "End") return;
+
+    var live = [];
+    var at = -1;
+    for (var k = 0; k < chips.length; k++) {
+      if (chips[k].hidden) continue;
+      if (chips[k] === document.activeElement) at = live.length;
+      live.push(chips[k]);
+    }
+    if (at < 0 || live.length < 2) return;
+
+    var next = at;
+    if (key === "ArrowLeft" || key === "ArrowUp") next = (at - 1 + live.length) % live.length;
+    else if (key === "ArrowRight" || key === "ArrowDown") next = (at + 1) % live.length;
+    else if (key === "Home") next = 0;
+    else next = live.length - 1;
+
+    e.preventDefault();
+    select(keyOf(live[next]), true);
+    try { live[next].focus(); } catch (err) {}
+  });
+
+  /* ---------- the command palette can aim at a hidden honor ----------
+     It scrolls to the board and rings the row it was asked for. If the
+     current filter has that row hidden there is nothing to see, so drop
+     back to All and put the focus where the palette wanted it. */
+  if (typeof MutationObserver === "function") {
+    var mo = null;
+    try {
+      mo = new MutationObserver(function (recs) {
+        for (var k = 0; k < recs.length; k++) {
+          var t = recs[k].target;
+          if (!t || !t.classList) continue;
+          if (!t.classList.contains("cp-flash")) continue;
+          if (t.getAttribute("data-on") !== "0") continue;
+          select("all", true);
+          (function (row) {
+            setTimeout(function () {
+              try {
+                if (!row.hasAttribute("tabindex")) row.setAttribute("tabindex", "-1");
+                row.focus({ preventScroll: true });
+              } catch (err) {}
+            }, 80);
+          })(t);
+          return;
+        }
+      });
+      for (i = 0; i < cells.length; i++) {
+        mo.observe(cells[i], { attributes: true, attributeFilter: ["class"] });
+      }
+    } catch (e3) { mo = null; }
+  }
+
+  /* ---------- arm ---------- */
+  for (i = 0; i < cells.length; i++) {
+    cells[i].setAttribute("data-on", "1");
+    cells[i].hidden = false;
+  }
+  board.classList.add("hb-live");
+  select("all", false);
+
+})();
+
+
+
+/* ============================================================
+   TECHNICAL SEO: keep the H1 honest
+   The markup ships "Shashank Madala" as the H1 text, so a crawler
+   or a visitor with JS off reads the real name. The moment the
+   typewriter puts its first character on screen, the name steps
+   back into the accessibility tree and the animation takes the
+   stage. If the typewriter never runs, the name simply stays.
+   ============================================================ */
+(function () {
+  "use strict";
+
+  var h1 = document.querySelector(".hero-title");
+  if (!h1) return;
+  var staticName = h1.querySelector(".h1-name");
+  var typed = document.getElementById("typeTitle");
+  if (!staticName || !typed) return;
+
+  var obs = null;
+  var poll = 0;
+
+  function done() {
+    if (obs) { obs.disconnect(); obs = null; }
+    if (poll) { clearInterval(poll); poll = 0; }
+  }
+
+  function check() {
+    if (!(typed.textContent || "").length) return;
+    h1.classList.add("is-typed");
+    done();
+  }
+
+  check();
+
+  if (h1.classList.contains("is-typed")) return;
+
+  if (window.MutationObserver) {
+    obs = new MutationObserver(check);
+    obs.observe(typed, { childList: true, characterData: true, subtree: true });
+  }
+  poll = setInterval(check, 120);
+})();
+
+
+
+
+/* ---------- the FAQ disclosure ----------
+   The questions are native <details>, so they open, close, print
+   and take the keyboard with the script switched off. This adds
+   the height transition, guards against a second click landing
+   mid animation, and opens whichever question a deep link points
+   at. Reduced motion hands the whole thing back to the browser. */
+(function () {
+  "use strict";
+
+  var root = document.documentElement;
+  if (!root || root.hasAttribute("data-faq")) return;
+
+  var list = document.getElementById("faqList");
+  if (!list) return;
+
+  var items = list.querySelectorAll("details.faq-item");
+  if (!items.length) return;
+
+  root.setAttribute("data-faq", "");
+
+  var reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var DUR = 420;
+
+  /* animate the wrapper from one measured height to another, then hand
+     the element back to the stylesheet. The timer is the safety net for
+     a transitionend that never arrives, on a hidden tab for instance. */
+  function slide(el, from, to, done) {
+    var settled = false;
+    var timer = null;
+
+    function finish() {
+      if (settled) return;
+      settled = true;
+      el.removeEventListener("transitionend", onEnd);
+      if (timer) clearTimeout(timer);
+      if (typeof done === "function") done();
+      el.style.height = "";
+      el.style.overflow = "";
+    }
+
+    function onEnd(e) {
+      if (e && e.target !== el) return;
+      finish();
+    }
+
+    el.style.overflow = "hidden";
+    el.style.height = from + "px";
+    /* read the box back so the start value is committed before the change */
+    void el.offsetHeight;
+    el.addEventListener("transitionend", onEnd);
+    timer = setTimeout(finish, DUR + 200);
+    el.style.height = to + "px";
+  }
+
+  function toggle(d) {
+    var wrap = d.querySelector(".faq-a-wrap");
+    if (!wrap) { d.open = !d.open; return; }
+
+    d.setAttribute("data-anim", "");
+    var release = function () { d.removeAttribute("data-anim"); };
+
+    if (d.open) {
+      var h = wrap.scrollHeight;
+      slide(wrap, h, 0, function () { d.open = false; release(); });
+    } else {
+      d.open = true;
+      slide(wrap, 0, wrap.scrollHeight, release);
+    }
+  }
+
+  Array.prototype.forEach.call(items, function (d) {
+    var sum = d.querySelector("summary");
+    if (!sum) return;
+    sum.addEventListener("click", function (e) {
+      if (reduced) return;                       /* native behaviour */
+      e.preventDefault();
+      if (d.hasAttribute("data-anim")) return;   /* one animation at a time */
+      toggle(d);
+    });
+  });
+
+  /* a link to #faq-kora should arrive with that question already open */
+  function openFromHash() {
+    var id = (window.location.hash || "").replace(/^#/, "");
+    if (!id) return;
+    var d;
+    try { d = document.getElementById(id); } catch (err) { return; }
+    if (!d || d.tagName !== "DETAILS" || !list.contains(d)) return;
+    if (!d.open) d.open = true;
+  }
+
+  openFromHash();
+  window.addEventListener("hashchange", openFromHash);
+})();
+
+
+
+
+/* ============================================================
+   PERFORMANCE PASS
+   Two jobs, both off the critical path.
+
+   1. THE FILMSTRIP. The lightbox builds its nine thumbnails from the
+      full size files, so opening the gallery pulled about 2.8 MB for a
+      row of 58 by 42 pixel buttons. The strip is built and appended in
+      one go on the first open, so a childList observer on <body> sees
+      the dialog land and can point those nine <img> at the 260px files
+      before the layout that would fetch them. Everything is guarded: if
+      the observer never fires, or the src does not match a known frame,
+      the original path stays and the gallery behaves exactly as it did.
+
+   2. IDLE DECODE. Once the page is quiet, the two photographs nearest
+      the fold get decoded off the main thread, so the first scroll past
+      them does not pay a decode inside a frame. requestIdleCallback
+      only, never a timer, so this can never compete with anything.
+   ============================================================ */
+
+(function () {
+  "use strict";
+
+  var root = document.documentElement;
+  if (!root || root.hasAttribute("data-perf")) return;
+  root.setAttribute("data-perf", "");
+
+  /* ---------- 1. filmstrip thumbnails ---------- */
+
+  /* the nine frames the gallery knows about, and nothing else */
+  var FRAMES = {
+    "IMG_8314-2": 1, "IMG_8315": 1, "IMG_8316": 1,
+    "IMG_8317": 1, "IMG_8319": 1, "IMG_8320-2": 1,
+    "IMG_8321-2": 1, "IMG_8324-2": 1, "IMG_8325-2": 1
+  };
+  var FRAME_RE = /assets\/photos\/lumin\/([A-Za-z0-9_-]+)\.jpg$/;
+
+  function shrinkStrip(scope) {
+    if (!scope || typeof scope.querySelectorAll !== "function") return 0;
+    var imgs = scope.querySelectorAll(".lb-strip .lb-thumb img");
+    var n = 0, i, im, src, m;
+    for (i = 0; i < imgs.length; i++) {
+      im = imgs[i];
+      src = im.getAttribute("src");
+      if (!src) continue;
+      m = FRAME_RE.exec(src);
+      if (!m || !FRAMES[m[1]]) continue;
+      /* currentSrc is only populated once an engine has committed to a
+         request. Empty means nothing is in flight yet and the swap is free.
+         An engine that already started the full size fetch is left alone,
+         so this can never turn one request into two. */
+      if (im.currentSrc || im.complete) continue;
+      im.setAttribute("src", "assets/photos/lumin/thumb/" + m[1] + ".jpg");
+      n++;
+    }
+    return n;
+  }
+
+  var MO = window.MutationObserver;
+  if (typeof MO === "function" && document.body) {
+    var mo = new MO(function (recs) {
+      var i, j, added, node;
+      for (i = 0; i < recs.length; i++) {
+        added = recs[i].addedNodes;
+        if (!added) continue;
+        for (j = 0; j < added.length; j++) {
+          node = added[j];
+          if (!node || node.nodeType !== 1) continue;
+          if (node.classList && node.classList.contains("lb")) {
+            if (shrinkStrip(node)) {
+              try { mo.disconnect(); } catch (e) {}
+            }
+            return;
+          }
+        }
+      }
+    });
+    try { mo.observe(document.body, { childList: true }); } catch (e) {}
+  }
+
+  /* ---------- 2. idle decode of the two photographs nearest the fold ---------- */
+
+  if (typeof window.requestIdleCallback !== "function") return;
+
+  var slow = false;
+  try {
+    var conn = navigator.connection;
+    if (conn && (conn.saveData === true || /(^|-)2g$/.test(conn.effectiveType || ""))) slow = true;
+  } catch (e) {}
+  if (slow) return;
+
+  window.requestIdleCallback(function () {
+    var sel = [".photo.pic-band img", ".photo.pic-margin img"];
+    for (var i = 0; i < sel.length; i++) {
+      var img = document.querySelector(sel[i]);
+      if (!img || typeof img.decode !== "function") continue;
+      if (!img.currentSrc && !img.src) continue;
+      try { img.decode().catch(function () {}); } catch (e) {}
+    }
+  }, { timeout: 4000 });
 })();

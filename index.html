@@ -3,20 +3,52 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Shashank Madala</title>
-<meta name="description" content="Shashank Madala is a student at Robbinsville High School, Class of 2027. Founder of Lumin AI, co-creator of Kora, research intern at the Yale Child Study Center, and Team USA at the 2026 International Economics Olympiad." />
-<link rel="canonical" href="https://shashankmadala.com/" />
-<meta property="og:type" content="profile" />
-<meta property="og:title" content="Shashank Madala" />
-<meta property="og:description" content="Student, builder, researcher. Founder of Lumin AI, co-creator of Kora, Yale Child Study Center research intern, Team USA at the 2026 International Economics Olympiad." />
-<meta property="og:url" content="https://shashankmadala.com/" />
-<meta property="og:image" content="https://shashankmadala.com/assets/og.png" />
-<meta name="twitter:card" content="summary_large_image" />
+<title>Shashank Madala | Lumin AI, Kora, Yale Child Study Center</title>
+<meta name="description" content="Shashank Madala, Robbinsville NJ. Founder of Lumin AI, co-creator of the Kora autism app, Yale Child Study Center research intern, Team USA at IEO 2026." />
+
+<!-- www is the host that answers 200, the apex 308 redirects to it, so every
+     absolute signal points at www: canonical, og, sitemap, robots, JSON-LD -->
+<link rel="canonical" href="https://www.shashankmadala.com/" />
+
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+<meta name="googlebot" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+<meta name="author" content="Shashank Madala" />
+<link rel="author" href="https://www.shashankmadala.com/" />
+<link rel="me" href="https://www.linkedin.com/in/shashank-madala/" />
+<link rel="me" href="https://github.com/shashankmadala" />
+<meta name="color-scheme" content="dark light" />
 <meta name="theme-color" content="#07090e" />
+
+<!-- open graph -->
+<meta property="og:type" content="profile" />
+<meta property="og:site_name" content="Shashank Madala" />
+<meta property="og:locale" content="en_US" />
+<meta property="og:title" content="Shashank Madala | Lumin AI, Kora, Yale Child Study Center" />
+<meta property="og:description" content="Robbinsville, New Jersey. I build AI that helps people understand each other: Kora, Lumin AI, and autism research at the Yale Child Study Center." />
+<meta property="og:url" content="https://www.shashankmadala.com/" />
+<meta property="og:image" content="https://www.shashankmadala.com/assets/og.png" />
+<meta property="og:image:secure_url" content="https://www.shashankmadala.com/assets/og.png" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="Shashank Madala, student, builder and researcher, Robbinsville NJ" />
+<meta property="profile:first_name" content="Shashank" />
+<meta property="profile:last_name" content="Madala" />
+<meta property="profile:username" content="shashankmadala" />
+
+<!-- twitter / x -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Shashank Madala | Lumin AI, Kora, Yale Child Study Center" />
+<meta name="twitter:description" content="Robbinsville, New Jersey. I build AI that helps people understand each other: Kora, Lumin AI, and autism research at the Yale Child Study Center." />
+<meta name="twitter:image" content="https://www.shashankmadala.com/assets/og.png" />
+<meta name="twitter:image:alt" content="Shashank Madala, student, builder and researcher, Robbinsville NJ" />
+
+<!-- icons, manifest -->
+<link rel="icon" href="/favicon.ico" sizes="32x32" />
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png" sizes="180x180" />
+<link rel="manifest" href="site.webmanifest" />
+<meta name="apple-mobile-web-app-title" content="Shashank" />
 <link rel="stylesheet" href="styles.css" />
 <script>
 /* theme before first paint: the stored choice, then the OS, then dark */
@@ -30,22 +62,303 @@ if(v==="light"){var m=document.querySelector('meta[name="theme-color"]');if(m)m.
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "Person",
-  "name": "Shashank Madala",
-  "url": "https://shashankmadala.com/",
-  "jobTitle": "Student",
-  "affiliation": [
-    { "@type": "HighSchool", "name": "Robbinsville High School" },
-    { "@type": "Organization", "name": "Lumin AI" },
-    { "@type": "Organization", "name": "Yale Child Study Center" }
-  ],
-  "knowsAbout": ["Artificial Intelligence", "Machine Learning", "Economics", "Entrepreneurship", "Robotics"],
-  "homeLocation": { "@type": "Place", "name": "Robbinsville, New Jersey" },
-  "sameAs": [
-    "https://www.linkedin.com/in/shashank-madala/",
-    "https://medicine.yale.edu/profile/ssm223/",
-    "https://www.frc2590.org/members/shashank-madala/",
-    "https://canvasrebel.com/meet-shashank-madala/"
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": "https://www.shashankmadala.com/#website",
+      "url": "https://www.shashankmadala.com/",
+      "name": "Shashank Madala",
+      "alternateName": "shashankmadala.com",
+      "description": "The personal site of Shashank Madala: Lumin AI, Kora, and autism research at the Yale Child Study Center.",
+      "inLanguage": "en-US",
+      "publisher": { "@id": "https://www.shashankmadala.com/#person" },
+      "copyrightHolder": { "@id": "https://www.shashankmadala.com/#person" }
+    },
+    {
+      "@type": "ProfilePage",
+      "@id": "https://www.shashankmadala.com/#webpage",
+      "url": "https://www.shashankmadala.com/",
+      "name": "Shashank Madala | Lumin AI, Kora, Yale Child Study Center",
+      "description": "Shashank Madala, Robbinsville NJ. Founder of Lumin AI, co-creator of the Kora autism app, Yale Child Study Center research intern, Team USA at IEO 2026.",
+      "isPartOf": { "@id": "https://www.shashankmadala.com/#website" },
+      "about": { "@id": "https://www.shashankmadala.com/#person" },
+      "mainEntity": { "@id": "https://www.shashankmadala.com/#person" },
+      "primaryImageOfPage": { "@id": "https://www.shashankmadala.com/#primaryimage" },
+      "breadcrumb": { "@id": "https://www.shashankmadala.com/#breadcrumb" },
+      "inLanguage": "en-US",
+      "dateModified": "2026-08-07"
+    },
+    {
+      "@type": "ImageObject",
+      "@id": "https://www.shashankmadala.com/#primaryimage",
+      "url": "https://www.shashankmadala.com/assets/og.png",
+      "contentUrl": "https://www.shashankmadala.com/assets/og.png",
+      "width": 1200,
+      "height": 630,
+      "caption": "Shashank Madala, student, builder and researcher from Robbinsville, New Jersey"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://www.shashankmadala.com/#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Shashank Madala",
+          "item": "https://www.shashankmadala.com/"
+        }
+      ]
+    },
+    {
+      "@type": "Person",
+      "@id": "https://www.shashankmadala.com/#person",
+      "name": "Shashank Madala",
+      "givenName": "Shashank",
+      "familyName": "Madala",
+      "url": "https://www.shashankmadala.com/",
+      "mainEntityOfPage": { "@id": "https://www.shashankmadala.com/#webpage" },
+      "image": { "@id": "https://www.shashankmadala.com/#primaryimage" },
+      "email": "mailto:shashankmadala09@gmail.com",
+      "description": "Shashank Madala is a high school student from Robbinsville, New Jersey, class of 2027. He co-created Kora, an AI app that helps caregivers of autistic children read emotional cues, founded Lumin AI, a 501(c)(3) nonprofit that has taught AI to more than 15,000 students for free, and is a research intern at the Yale Child Study Center modeling autism-related social communication. He represented the United States at the 2026 International Economics Olympiad in Shenzhen, and is president of the Robbinsville FBLA chapter and a two-year member of the New Jersey FBLA State Technology Committee.",
+      "disambiguatingDescription": "Student founder of Lumin AI and co-creator of the Kora autism support app, based in Robbinsville, New Jersey.",
+      "jobTitle": [
+        "Founder and Co-CEO, Lumin AI",
+        "Co-creator, Kora",
+        "Research Intern, Yale Child Study Center"
+      ],
+      "nationality": { "@type": "Country", "name": "United States" },
+      "homeLocation": {
+        "@type": "Place",
+        "name": "Robbinsville, New Jersey",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Robbinsville",
+          "addressRegion": "NJ",
+          "addressCountry": "US"
+        }
+      },
+      "alumniOf": {
+        "@type": "HighSchool",
+        "name": "Robbinsville High School",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Robbinsville",
+          "addressRegion": "NJ",
+          "addressCountry": "US"
+        }
+      },
+      "affiliation": [
+        {
+          "@type": "Role",
+          "roleName": "Research Intern, Cha Lab",
+          "startDate": "2025",
+          "description": "Modeling autism-related social communication from parent and child interaction video, audio and pose data.",
+          "affiliation": { "@id": "https://www.shashankmadala.com/#yale" }
+        },
+        {
+          "@type": "Role",
+          "roleName": "Founder and Co-CEO",
+          "affiliation": { "@id": "https://luminlearning.ai/#organization" }
+        },
+        { "@type": "Organization", "name": "FRC Team 2590, Nemesis", "url": "https://www.frc2590.org/" },
+        { "@type": "HighSchool", "name": "Robbinsville High School" }
+      ],
+      "worksFor": { "@id": "https://luminlearning.ai/#organization" },
+      "memberOf": [
+        {
+          "@type": "OrganizationRole",
+          "roleName": "Chapter President",
+          "description": "President of the Robbinsville High School FBLA chapter, and a two-year member of the New Jersey FBLA State Technology Committee.",
+          "memberOf": { "@type": "Organization", "name": "FBLA, Robbinsville High School chapter" }
+        },
+        {
+          "@type": "OrganizationRole",
+          "roleName": "Team USA member, 2026 International Economics Olympiad",
+          "memberOf": { "@type": "Organization", "name": "Team USA, International Economics Olympiad" }
+        }
+      ],
+      "knowsAbout": [
+        "Artificial intelligence",
+        "Machine learning",
+        "Multimodal machine learning",
+        "Computer vision",
+        "Autism research",
+        "Affective computing",
+        "AI education",
+        "Nonprofit leadership",
+        "Economics",
+        "Entrepreneurship",
+        "Competitive programming",
+        "FIRST Robotics"
+      ],
+      "knowsLanguage": [
+        { "@type": "Language", "name": "English" },
+        { "@type": "Language", "name": "Telugu" }
+      ],
+      "award": [
+        "Winner, 2025 Congressional App Challenge, New Jersey's 10th District",
+        "Team USA, 2026 International Economics Olympiad, 6th of 52 countries in the business case competition",
+        "USA Mathematical Olympiad qualifier",
+        "USACO Gold Division",
+        "Curie Division winner, 2024 FIRST World Championship",
+        "Presidential Volunteer Service Award, Gold (2x)",
+        "Blue Ocean Competition, Top 250 of 23,000+ (2x)",
+        "AMC 12B Honor Roll, top 5%",
+        "National Merit Commended Scholar",
+        "National Economics Challenge, 2nd in New Jersey",
+        "Purple Comet! Math Meet, 1st in New Jersey",
+        "EconBowl, 4th of 263 teams"
+      ],
+      "sameAs": [
+        "https://www.linkedin.com/in/shashank-madala/",
+        "https://github.com/shashankmadala",
+        "https://www.instagram.com/shashankmadala/",
+        "https://medicine.yale.edu/profile/ssm223/",
+        "https://www.frc2590.org/members/shashank-madala/",
+        "https://canvasrebel.com/meet-shashank-madala/",
+        "https://luminlearning.ai/founders"
+      ],
+      "subjectOf": [
+        {
+          "@type": "NewsArticle",
+          "headline": "Robbinsville High School students' team placed 6th of 52 countries in International Economics Olympiad",
+          "url": "https://trentonjournal.com/robbinsville-high-school-students-team-placed-6th-of-52-countries-in-international-economics-olympiad/",
+          "datePublished": "2026-08",
+          "publisher": { "@type": "Organization", "name": "Trenton Journal" }
+        },
+        {
+          "@type": "NewsArticle",
+          "headline": "Shashank Madala Of NJ Places 6th In The 2026 International Economics Olympiad",
+          "url": "http://www.lokvani.com/lokvani/article.php?article_id=22827",
+          "datePublished": "2026-08",
+          "publisher": { "@type": "Organization", "name": "Lokvani" }
+        },
+        {
+          "@type": "NewsArticle",
+          "headline": "Teen Represents Team USA at International Economics Olympiad in China",
+          "url": "https://theunn.com/teen-represents-team-usa-at-international-economics-olympiad-in-china/",
+          "datePublished": "2026-08",
+          "publisher": { "@type": "Organization", "name": "TheUNN" }
+        },
+        {
+          "@type": "NewsArticle",
+          "headline": "Teen Competes For Team USA At International Economics Olympiad In China",
+          "url": "https://indiawest.com/teen-competes-for-team-usa-at-international-economics-olympiad-in-china/",
+          "datePublished": "2026-07",
+          "publisher": { "@type": "Organization", "name": "India-West" }
+        },
+        {
+          "@type": "NewsArticle",
+          "headline": "Three Indian-origin students in Team USA's impressive International Economics Olympiad debut",
+          "url": "https://www.globalindian.com/youth/three-indian-origin-students-team-usa-international-economics-olympiad/",
+          "datePublished": "2026-07",
+          "publisher": { "@type": "Organization", "name": "The Global Indian" }
+        },
+        {
+          "@type": "NewsArticle",
+          "headline": "Two New Jersey Students Among Five To Represent USA at 2026 International Economics Olympiad in China",
+          "url": "https://www.newjerseystage.com/articles2/2026/07/23/two-new-jersey-students-among-five-to-represent-usa-at-2026-international-economics-olympiad-in-china/",
+          "datePublished": "2026-07-23",
+          "publisher": { "@type": "Organization", "name": "New Jersey Stage" }
+        },
+        {
+          "@type": "NewsArticle",
+          "headline": "McIver Announces \"Kora\" App as Winner of NJ-10 Congressional App Challenge",
+          "url": "https://mciver.house.gov/media/press-releases/mciver-announces-kora-app-as-winner-of-nj-10-congressional-app-challenge",
+          "datePublished": "2026-01",
+          "publisher": { "@type": "GovernmentOrganization", "name": "Office of U.S. Representative LaMonica McIver" }
+        },
+        {
+          "@type": "WebPage",
+          "name": "Congressional App Challenge winners, New Jersey's 10th District",
+          "url": "https://www.congressionalappchallenge.us/25-nj10/",
+          "datePublished": "2026-01",
+          "publisher": { "@type": "Organization", "name": "Congressional App Challenge" }
+        },
+        {
+          "@type": "Article",
+          "headline": "Meet Shashank Madala",
+          "url": "https://canvasrebel.com/meet-shashank-madala/",
+          "datePublished": "2025-01",
+          "publisher": { "@type": "Organization", "name": "CanvasRebel Magazine" }
+        },
+        {
+          "@type": "NewsArticle",
+          "headline": "Inspired by Family, Robbinsville Teens Build App to Support Autistic Youth, Caregivers",
+          "url": "https://www.tapinto.net/towns/hamilton-slash-robbinsville/sections/giving-back/articles/inspired-by-family-robbinsville-teens-build-app-to-support-autistic-youth-caregivers",
+          "datePublished": "2024-11",
+          "publisher": { "@type": "Organization", "name": "TAPinto Hamilton/Robbinsville" }
+        }
+      ]
+    },
+    {
+      "@type": "ResearchOrganization",
+      "@id": "https://www.shashankmadala.com/#yale",
+      "name": "Yale Child Study Center",
+      "alternateName": "Cha Lab, Yale Child Study Center",
+      "url": "https://medicine.yale.edu/childstudy/",
+      "parentOrganization": { "@type": "CollegeOrUniversity", "name": "Yale School of Medicine", "url": "https://medicine.yale.edu/" }
+    },
+    {
+      "@type": ["Organization", "NGO"],
+      "@id": "https://luminlearning.ai/#organization",
+      "name": "Lumin AI",
+      "url": "https://luminlearning.ai/",
+      "description": "A 501(c)(3) nonprofit teaching artificial intelligence for free through a 20-module curriculum, completion certificates and scholarships. 15,000+ students, 5,200+ certificates and 50+ chapters across 16+ countries.",
+      "nonprofitStatus": "Nonprofit501c3",
+      "founder": { "@id": "https://www.shashankmadala.com/#person" },
+      "sameAs": [
+        "https://luminlearning.ai/founders",
+        "https://www.linkedin.com/company/lumin-ai-321"
+      ]
+    },
+    {
+      "@type": "SoftwareApplication",
+      "@id": "https://www.shashankmadala.com/#kora",
+      "name": "Kora",
+      "url": "https://www.shashankmadala.com/#work",
+      "applicationCategory": "HealthApplication",
+      "operatingSystem": "iOS, Android",
+      "description": "An AI app that helps caregivers of autistic children read emotional cues, built by a four-student team. 700+ users across 25 therapy centers in 12 countries, using CNN-based emotion modeling.",
+      "author": { "@id": "https://www.shashankmadala.com/#person" },
+      "creator": { "@id": "https://www.shashankmadala.com/#person" },
+      "award": "Winner, 2025 Congressional App Challenge, New Jersey's 10th District",
+      "audience": { "@type": "Audience", "audienceType": "Caregivers of autistic children, therapy centers" },
+      "sameAs": [
+        "https://mciver.house.gov/media/press-releases/mciver-announces-kora-app-as-winner-of-nj-10-congressional-app-challenge",
+        "https://www.congressionalappchallenge.us/25-nj10/"
+      ]
+    },
+    {
+      "@type": "CreativeWork",
+      "@id": "https://www.shashankmadala.com/#research",
+      "name": "Modeling autism-related social communication at the Yale Child Study Center",
+      "url": "https://www.shashankmadala.com/#work",
+      "description": "Multimodal machine learning on 120+ hours of video, audio and pose data from 40 families: child versus adult detection, synchrony scoring, and fusion models reaching AUC 0.80 for anxiety risk in autism. First-author work in preparation for MIT URTC 2026.",
+      "author": { "@id": "https://www.shashankmadala.com/#person" },
+      "sourceOrganization": { "@id": "https://www.shashankmadala.com/#yale" },
+      "about": ["Autism", "Multimodal machine learning", "Social communication"]
+    },
+    {
+      "@type": "CreativeWork",
+      "@id": "https://www.shashankmadala.com/#safestrides",
+      "name": "SafeStrides",
+      "url": "https://www.shashankmadala.com/#work",
+      "description": "A low-cost pedestrian detection system that retrofits older cars, running a TensorFlow Lite model on a Raspberry Pi and Coral TPU at 95% real-time detection accuracy, piloted across 200 student vehicles with the Robbinsville Police Department.",
+      "author": { "@id": "https://www.shashankmadala.com/#person" }
+    },
+    {
+      "@type": "ItemList",
+      "@id": "https://www.shashankmadala.com/#projects",
+      "name": "Selected work by Shashank Madala",
+      "numberOfItems": 4,
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Kora", "url": "https://www.shashankmadala.com/#work", "item": { "@id": "https://www.shashankmadala.com/#kora" } },
+        { "@type": "ListItem", "position": 2, "name": "Lumin AI", "url": "https://luminlearning.ai/", "item": { "@id": "https://luminlearning.ai/#organization" } },
+        { "@type": "ListItem", "position": 3, "name": "Yale Child Study Center research", "url": "https://www.shashankmadala.com/#work", "item": { "@id": "https://www.shashankmadala.com/#research" } },
+        { "@type": "ListItem", "position": 4, "name": "SafeStrides", "url": "https://www.shashankmadala.com/#work", "item": { "@id": "https://www.shashankmadala.com/#safestrides" } }
+      ]
+    }
   ]
 }
 </script>
@@ -95,17 +408,16 @@ if(v==="light"){var m=document.querySelector('meta[name="theme-color"]');if(m)m.
 <main id="top">
 
   <!-- ============ HERO ============ -->
-  <section class="hero">
+  <section class="hero" aria-label="Introduction: Shashank Madala, Robbinsville, New Jersey">
     <div class="hero-glow" aria-hidden="true"></div>
     <canvas id="tileCanvas" aria-hidden="true"></canvas>
     <div class="hero-cursor" id="heroCursor" aria-hidden="true"></div>
 
     <div class="wrap hero-inner">
       <p class="eyebrow-pill mono hero-eyebrow"><span class="pulse"></span>ROBBINSVILLE, NEW JERSEY&ensp;&middot;&ensp;CLASS OF 2027</p>
-      <h1 class="hero-title" aria-label="Hi, I'm Shashank.">
-        <span id="typeTitle" aria-hidden="true"></span><span class="caret" id="titleCaret" aria-hidden="true"></span>
-      </h1>
+      <h1 class="hero-title"><span class="h1-name">Shashank Madala</span><span id="typeTitle" aria-hidden="true"></span><span class="caret" id="titleCaret" aria-hidden="true"></span></h1>
       <p class="hero-role mono" aria-hidden="true"><span id="typeRole"></span><span class="caret caret-sm" id="roleCaret"></span></p>
+      <noscript><p class="ns-hero">Shashank Madala &middot; student, builder, researcher &middot; Robbinsville, New Jersey</p></noscript>
       <p class="hero-sub" id="heroSub">I build AI systems that help people understand each other. An autism support app used in therapy centers across 12 countries, parent and child interaction research at Yale, and a nonprofit that has taught machine learning to 15,000+ students.</p>
       <div class="hero-actions" id="heroActions">
         <a class="btn btn-primary" href="#work" data-magnet><span>See the work</span><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
@@ -147,7 +459,7 @@ if(v==="light"){var m=document.querySelector('meta[name="theme-color"]');if(m)m.
   </div>
 
   <!-- ============ STATEMENT ============ -->
-  <section class="statement" id="statement">
+  <section class="statement" id="statement" aria-label="The thread through the work">
     <div class="statement-sticky">
       <div class="wrap">
         <p class="eyebrow reveal">THE THREAD</p>
@@ -156,12 +468,51 @@ if(v==="light"){var m=document.querySelector('meta[name="theme-color"]');if(m)m.
     </div>
   </section>
 
+  <!-- ============ ABOUT ============ -->
+  <section class="about" id="about" aria-labelledby="aboutTitle">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <p class="eyebrow">ABOUT</p>
+        <h2 class="sec-title" id="aboutTitle">The long version.</h2>
+      </div>
+
+      <div class="ab-grid">
+        <div class="ab-prose reveal">
+          <p class="ab-lede">I'm Shashank Madala, a student at <strong>Robbinsville High School</strong> in Robbinsville, New Jersey, class of 2027. Almost everything I work on ends up in the same place: machine learning, pointed at the parts of human behavior that are hard to measure.</p>
+          <p><strong>Kora</strong> came out of volunteering with families of autistic kids. It is an AI app that reads emotional cues and gives caregivers something they can act on, built with a four-student team and inspired by my cousin. It supports 700+ users across 25 therapy centers in 12 countries, and it won the 2025 <strong>Congressional App Challenge</strong> for New Jersey's 10th district, announced by the office of U.S. Representative LaMonica McIver.</p>
+          <p><strong>Lumin AI</strong> is the 501(c)(3) nonprofit I founded and now run as co-CEO. It makes AI education free: a 20-module curriculum, completion certificates, and chapters run by students. 15,000+ students taught, 5,200+ certificates issued, 50+ chapter locations across 16+ countries, and a 125+ intern team behind it.</p>
+          <p>At the <strong>Yale Child Study Center</strong> I am a research intern in the Cha Lab, modeling autism-related social communication from real parent and child interaction video, audio and pose data. First-author work is in preparation for MIT URTC 2026.</p>
+          <p>The rest, briefly. I represented the USA at the <strong>2026 International Economics Olympiad</strong> in Shenzhen, where Team USA placed 6th of 52 countries in the business case competition. I am president of the <strong>Robbinsville FBLA</strong> chapter and spent two years on the New Jersey FBLA State Technology Committee. I write software for <strong>FRC Team 2590 Nemesis</strong>, Curie Division winners at the 2024 FIRST World Championship. Along the way: USAMO qualifier, USACO Gold Division, and the Presidential Volunteer Service Award at the Gold level twice.</p>
+          <p class="ab-cov">Coverage has run in Trenton Journal, India-West, New Jersey Stage, The Global Indian, TheUNN, Lokvani, TAPinto and CanvasRebel, plus the Yale School of Medicine profile and the announcement from Rep. McIver's office. <a href="#press">Every piece is linked below</a>.</p>
+        </div>
+
+        <aside class="ab-card spot reveal" aria-label="Profile at a glance">
+          <p class="ab-card-h mono">AT A GLANCE</p>
+          <dl class="ab-facts">
+            <div class="ab-fact"><dt class="mono">NAME</dt><dd><b>Shashank Madala</b></dd></div>
+            <div class="ab-fact"><dt class="mono">BASED IN</dt><dd>Robbinsville, New Jersey</dd></div>
+            <div class="ab-fact"><dt class="mono">SCHOOL</dt><dd>Robbinsville High School, class of 2027</dd></div>
+            <div class="ab-fact"><dt class="mono">BUILDING</dt><dd>Kora, an autism support app. Lumin AI, a nonprofit teaching AI for free.</dd></div>
+            <div class="ab-fact"><dt class="mono">RESEARCH</dt><dd>Yale Child Study Center, Cha Lab</dd></div>
+            <div class="ab-fact"><dt class="mono">KNOWN FOR</dt><dd>Winning the 2025 Congressional App Challenge for NJ-10, and representing Team USA at the 2026 International Economics Olympiad.</dd></div>
+          </dl>
+          <div class="ab-links">
+            <a class="ab-link" href="https://www.linkedin.com/in/shashank-madala/" target="_blank" rel="me noopener noreferrer">LINKEDIN</a>
+            <a class="ab-link" href="https://github.com/shashankmadala" target="_blank" rel="me noopener noreferrer">GITHUB</a>
+            <a class="ab-link" href="https://luminlearning.ai/" target="_blank" rel="noopener noreferrer">LUMINLEARNING.AI</a>
+            <a class="ab-link" href="mailto:shashankmadala09@gmail.com">EMAIL</a>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+
   <!-- ============ NOW ============ -->
-  <section class="now" id="now">
+  <section class="now" id="now" aria-labelledby="nowTitle">
     <div class="wrap">
       <div class="sec-head reveal">
         <p class="eyebrow">NOW</p>
-        <h2 class="sec-title">Right now.</h2>
+        <h2 class="sec-title" id="nowTitle">Right now.</h2>
       </div>
       <div class="now-grid">
         <a class="now-item spot reveal" href="https://medicine.yale.edu/profile/ssm223/" target="_blank" rel="noopener">
@@ -181,14 +532,14 @@ if(v==="light"){var m=document.querySelector('meta[name="theme-color"]');if(m)m.
         </a>
       </div>
       <figure class="photo pic pic-band reveal d3">
-        <img src="assets/photos/team-usa.jpg" alt="The five members of Team USA holding the American flag under the International Economics Olympiad backdrop in Shenzhen, 2026" loading="lazy" width="1400" height="350" />
+        <img src="assets/photos/team-usa.jpg" alt="Shashank Madala with Team USA, holding the American flag under the 2026 International Economics Olympiad backdrop in Shenzhen, China" loading="lazy" width="1400" height="350" decoding="async" sizes="(max-width: 1120px) calc(100vw - 84px), 1036px" srcset="assets/photos/team-usa-540w.jpg 540w, assets/photos/team-usa-1040w.jpg 1040w, assets/photos/team-usa.jpg 1400w" />
         <figcaption class="mono"><b>TEAM USA</b><span>IEO 2026 &middot; SHENZHEN, CHINA</span></figcaption>
       </figure>
     </div>
   </section>
 
   <!-- ============ STATS ============ -->
-  <section class="stats">
+  <section class="stats" aria-label="Reach in numbers">
     <div class="wrap stats-grid">
       <div class="stat reveal"><span class="num"><span data-count="15000">0</span><em>+</em></span><p>students reached through Lumin AI</p></div>
       <div class="stat reveal d1"><span class="num"><span data-count="700">0</span><em>+</em></span><p>Kora users across 25 therapy centers</p></div>
@@ -198,44 +549,101 @@ if(v==="light"){var m=document.querySelector('meta[name="theme-color"]');if(m)m.
   </section>
 
   <!-- ============ WORK ============ -->
-  <section class="work" id="work">
+  <section class="work" id="work" aria-labelledby="workTitle">
     <div class="wrap">
       <div class="sec-head reveal">
         <p class="eyebrow">WORK</p>
-        <h2 class="sec-title">Selected work.</h2>
+        <h2 class="sec-title" id="workTitle">Selected work.</h2>
       </div>
     </div>
 
-    <div class="wrap stack" id="stack">
+    <div class="wrap stack wkx" id="stack">
 
-      <article class="stack-card">
-        <div class="stack-in spot">
-          <div class="stack-meta">
-            <span class="stack-num mono">01</span>
-            <span class="mono chip chip-blue">CO-CREATOR</span>
+      <div class="wkx-head">
+        <p class="wkx-idx mono" id="wkxIdx" aria-hidden="true">01 / 06 &middot; KORA</p>
+        <p class="wkx-tip mono" aria-hidden="true">PICK A PROJECT &middot; ARROW KEYS MOVE</p>
+      </div>
+
+      <div class="wkx-grid">
+
+        <div class="wkx-rail">
+          <div class="wkx-list" id="wkxTabs" role="tablist" aria-label="Selected work" aria-orientation="vertical">
+            <span class="wkx-thumb" id="wkxThumb" aria-hidden="true"></span>
+
+            <button class="wkx-tab" type="button" role="tab" id="wkxt-kora" aria-controls="work-kora" aria-selected="true" tabindex="0">
+              <span class="wkx-tab-n mono">01</span>
+              <span class="wkx-tab-t">Kora</span>
+              <span class="wkx-tab-r mono">CO-CREATOR</span>
+              <svg class="wkx-tab-go" width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true" focusable="false"><path d="M4 2.5L7.5 6L4 9.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+
+            <button class="wkx-tab" type="button" role="tab" id="wkxt-lumin" aria-controls="work-lumin-ai" aria-selected="false" tabindex="-1">
+              <span class="wkx-tab-n mono">02</span>
+              <span class="wkx-tab-t">Lumin AI</span>
+              <span class="wkx-tab-r mono">FOUNDER</span>
+              <svg class="wkx-tab-go" width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true" focusable="false"><path d="M4 2.5L7.5 6L4 9.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+
+            <button class="wkx-tab" type="button" role="tab" id="wkxt-yale" aria-controls="work-yale" aria-selected="false" tabindex="-1">
+              <span class="wkx-tab-n mono">03</span>
+              <span class="wkx-tab-t">Yale Child Study Center</span>
+              <span class="wkx-tab-r mono">RESEARCH INTERN</span>
+              <svg class="wkx-tab-go" width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true" focusable="false"><path d="M4 2.5L7.5 6L4 9.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+
+            <button class="wkx-tab" type="button" role="tab" id="wkxt-safestrides" aria-controls="work-safestrides" aria-selected="false" tabindex="-1">
+              <span class="wkx-tab-n mono">04</span>
+              <span class="wkx-tab-t">SafeStrides</span>
+              <span class="wkx-tab-r mono">CO-FOUNDER</span>
+              <svg class="wkx-tab-go" width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true" focusable="false"><path d="M4 2.5L7.5 6L4 9.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+
+            <button class="wkx-tab" type="button" role="tab" id="wkxt-frc" aria-controls="work-frc-2590" aria-selected="false" tabindex="-1">
+              <span class="wkx-tab-n mono">05</span>
+              <span class="wkx-tab-t">FRC Team 2590, Nemesis</span>
+              <span class="wkx-tab-r mono">SOFTWARE LEAD</span>
+              <svg class="wkx-tab-go" width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true" focusable="false"><path d="M4 2.5L7.5 6L4 9.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+
+            <button class="wkx-tab" type="button" role="tab" id="wkxt-fbla" aria-controls="work-fbla" aria-selected="false" tabindex="-1">
+              <span class="wkx-tab-n mono">06</span>
+              <span class="wkx-tab-t">FBLA</span>
+              <span class="wkx-tab-r mono">CHAPTER PRESIDENT</span>
+              <svg class="wkx-tab-go" width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true" focusable="false"><path d="M4 2.5L7.5 6L4 9.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+
           </div>
-          <div class="stack-main">
-            <h3 class="stack-title">Kora</h3>
-            <p class="stack-desc">An AI app that helps caregivers of autistic children read emotional cues, built with a four-student team and inspired by my cousin. It started from a pattern we kept seeing while volunteering with families: caregivers misreading emotional signals. It now supports 700+ users across 25 therapy centers in 12 countries.</p>
-            <ul class="tags">
-              <li>Winner, 2025 Congressional App Challenge, NJ-10</li>
-              <li>Headed to the U.S. Capitol winner showcase, 2026</li>
-              <li>Y Combinator Startup School 2026</li>
-              <li>CNN-based emotion modeling</li>
-              <li>Seed funding from a UPenn innovation group</li>
-            </ul>
-            <div class="wk-bar" data-wk-topic="kora">
-              <a class="link" href="https://mciver.house.gov/media/press-releases/mciver-announces-kora-app-as-winner-of-nj-10-congressional-app-challenge" target="_blank" rel="noopener">Announcement from Rep. McIver's office<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 9L9 3M4.5 3H9v4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
-            </div>
-            <div class="wk-drawer" id="wk-kora">
-              <div class="wk-drawer-in">
-                <div class="wk-rule" aria-hidden="true"></div>
+        </div>
+
+        <div class="wkx-stage" id="wkxStage">
+
+          <article class="stack-card wkx-panel" id="work-kora" role="tabpanel" aria-labelledby="wkxt-kora" data-wkx-topic="kora">
+            <i class="wkx-null" aria-hidden="true"></i>
+            <div class="wkx-in spot">
+              <div class="wkx-col">
+                <div class="wkx-top">
+                  <span class="stack-num mono">01</span>
+                  <span class="mono chip chip-blue">CO-CREATOR</span>
+                </div>
+                <h3 class="stack-title">Kora</h3>
+                <p class="stack-desc">An AI app that helps caregivers of autistic children read emotional cues, built with a four-student team and inspired by my cousin. It started from a pattern we kept seeing while volunteering with families: caregivers misreading emotional signals. It now supports 700+ users across 25 therapy centers in 12 countries.</p>
+                <ul class="tags">
+                  <li>Winner, 2025 Congressional App Challenge, NJ-10</li>
+                  <li>Headed to the U.S. Capitol winner showcase, 2026</li>
+                  <li>Y Combinator Startup School 2026</li>
+                  <li>CNN-based emotion modeling</li>
+                  <li>Seed funding from a UPenn innovation group</li>
+                </ul>
+                <div class="wkx-rule" aria-hidden="true"></div>
                 <dl class="wk-facts">
                   <div class="wk-fact"><dt class="mono">MODEL</dt><dd>CNN-based emotion modeling</dd></div>
                   <div class="wk-fact"><dt class="mono">REACH</dt><dd>700+ users, 25 therapy centers, 12 countries</dd></div>
                   <div class="wk-fact"><dt class="mono">RECOGNITION</dt><dd>Winner for NJ-10 in the 2025 Congressional App Challenge, showcasing at the U.S. Capitol in 2026</dd></div>
                   <div class="wk-fact"><dt class="mono">BACKING</dt><dd>Seed funding from a UPenn innovation group, and a spot at Y Combinator Startup School 2026</dd></div>
                 </dl>
+                <div class="wkx-bar">
+                  <a class="link" href="https://mciver.house.gov/media/press-releases/mciver-announces-kora-app-as-winner-of-nj-10-congressional-app-challenge" target="_blank" rel="noopener">Announcement from Rep. McIver's office<svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M3 9L9 3M4.5 3H9v4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+                </div>
                 <div class="wk-links">
                   <a class="wk-pill" href="https://mciver.house.gov/media/press-releases/mciver-announces-kora-app-as-winner-of-nj-10-congressional-app-challenge" target="_blank" rel="noopener noreferrer">REP. MCIVER ANNOUNCEMENT<svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true" focusable="false"><path d="M3 9L9 3M4.5 3H9v4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
                   <a class="wk-pill" href="https://www.congressionalappchallenge.us/25-nj10/" target="_blank" rel="noopener noreferrer">APP CHALLENGE, NJ-10<svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true" focusable="false"><path d="M3 9L9 3M4.5 3H9v4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
@@ -243,105 +651,95 @@ if(v==="light"){var m=document.querySelector('meta[name="theme-color"]');if(m)m.
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-      </article>
+          </article>
 
-      <article class="stack-card">
-        <div class="stack-in spot has-pic">
-          <div class="stack-meta">
-            <span class="stack-num mono">02</span>
-            <span class="mono chip chip-blue">FOUNDER</span>
-            <figure class="photo pic pic-margin gal-trigger" id="luminGallery">
-              <img src="assets/photos/lumin-class.jpg" alt="Shashank teaching a Lumin AI class, students with their hands up under a screen reading how many of you have heard of AI" loading="lazy" width="1179" height="871" />
-              <span class="gal-badge mono" aria-hidden="true">9 PHOTOS</span>
-              <figcaption class="mono"><b>LUMIN AI</b><span>FIRST QUESTION OF CLASS</span></figcaption>
-            </figure>
-          </div>
-          <div class="stack-main">
-            <h3 class="stack-title">Lumin AI</h3>
-            <p class="stack-desc">A 501(c)(3) nonprofit making AI education free and global: a 20-module curriculum, completion certificates, and scholarships for students in small towns. 15,000+ students, 5,200+ certificates issued, 50+ chapter locations across 16+ countries, and a 125+ intern team. These days most of my time goes into chapter standards, training, and handoff so it keeps running long after I graduate.</p>
-            <ul class="tags">
-              <li>50+ chapters, 16+ countries</li>
-              <li>LuminHacks: a 450+ participant hackathon</li>
-              <li>Working with NJ legislators on a proposed AI Youth Advisory Council bill</li>
-            </ul>
-            <div class="wk-bar">
-              <a class="link" href="https://luminlearning.ai/" target="_blank" rel="noopener">luminlearning.ai<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 9L9 3M4.5 3H9v4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
-            </div>
-            <div class="wk-drawer" id="wk-lumin">
-              <div class="wk-drawer-in">
-                <div class="wk-rule" aria-hidden="true"></div>
+          <article class="stack-card wkx-panel" id="work-lumin-ai" role="tabpanel" aria-labelledby="wkxt-lumin">
+            <i class="wkx-null" aria-hidden="true"></i>
+            <div class="wkx-in spot has-shot">
+              <div class="wkx-col">
+                <div class="wkx-top">
+                  <span class="stack-num mono">02</span>
+                  <span class="mono chip chip-blue">FOUNDER</span>
+                </div>
+                <h3 class="stack-title">Lumin AI</h3>
+                <p class="stack-desc">A 501(c)(3) nonprofit making AI education free and global: a 20-module curriculum, completion certificates, and scholarships for students in small towns. 15,000+ students, 5,200+ certificates issued, 50+ chapter locations across 16+ countries, and a 125+ intern team. These days most of my time goes into chapter standards, training, and handoff so it keeps running long after I graduate.</p>
+                <ul class="tags">
+                  <li>50+ chapters, 16+ countries</li>
+                  <li>LuminHacks: a 450+ participant hackathon</li>
+                  <li>Working with NJ legislators on a proposed AI Youth Advisory Council bill</li>
+                </ul>
+                <div class="wkx-rule" aria-hidden="true"></div>
                 <dl class="wk-facts">
                   <div class="wk-fact"><dt class="mono">SCALE</dt><dd>15,000+ students taught, 5,200+ certificates issued</dd></div>
                   <div class="wk-fact"><dt class="mono">FOOTPRINT</dt><dd>50+ chapters, 16+ countries, a 125+ intern team</dd></div>
                   <div class="wk-fact"><dt class="mono">HACKATHON</dt><dd>LuminHacks, a 450+ participant event</dd></div>
                   <div class="wk-fact"><dt class="mono">POLICY</dt><dd>Working with NJ legislators on a proposed AI Youth Advisory Council bill</dd></div>
                 </dl>
+                <div class="wkx-bar">
+                  <a class="link" href="https://luminlearning.ai/" target="_blank" rel="noopener">luminlearning.ai<svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M3 9L9 3M4.5 3H9v4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+                </div>
                 <div class="wk-links">
                   <a class="wk-pill" href="https://luminlearning.ai/" target="_blank" rel="noopener noreferrer">LUMINLEARNING.AI<svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true" focusable="false"><path d="M3 9L9 3M4.5 3H9v4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
                   <a class="wk-pill" href="https://luminlearning.ai/founders" target="_blank" rel="noopener noreferrer">FOUNDERS<svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true" focusable="false"><path d="M3 9L9 3M4.5 3H9v4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
                   <a class="wk-pill" href="https://www.linkedin.com/company/lumin-ai-321" target="_blank" rel="noopener noreferrer">LINKEDIN<svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true" focusable="false"><path d="M3 9L9 3M4.5 3H9v4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
                 </div>
               </div>
+              <figure class="photo pic gal-trigger wkx-shot" id="luminGallery">
+                <img src="assets/photos/lumin-class.jpg" alt="Shashank Madala teaching a free Lumin AI class, students with their hands up under a screen reading how many of you have heard of AI" loading="lazy" width="1179" height="871" decoding="async" sizes="(max-width: 960px) 300px, 230px" srcset="assets/photos/lumin-class-300w.jpg 300w, assets/photos/lumin-class-620w.jpg 620w, assets/photos/lumin-class.jpg 1179w" />
+                <span class="gal-badge mono" aria-hidden="true">9 PHOTOS</span>
+                <figcaption class="mono"><b>LUMIN AI</b><span>FIRST QUESTION OF CLASS</span></figcaption>
+              </figure>
             </div>
-          </div>
-        </div>
-      </article>
+          </article>
 
-      <article class="stack-card">
-        <div class="stack-in spot">
-          <div class="stack-meta">
-            <span class="stack-num mono">03</span>
-            <span class="mono chip chip-blue">RESEARCH INTERN</span>
-          </div>
-          <div class="stack-main">
-            <h3 class="stack-title">Yale Child Study Center</h3>
-            <p class="stack-desc">In the Cha Lab, I build AI that models autism-related social communication differences from real parent and child interactions. The work spans 120+ hours of video, audio, and pose data from 40 families: a child-vs-adult detection module, synchrony scoring, and fusion models reaching AUC 0.80 for predicting anxiety risk in autism. It is the research version of the same question behind Kora: can a machine help you understand what someone is feeling? First-author work in prep for MIT URTC 2026.</p>
-            <ul class="tags">
-              <li>Multimodal ML: vision, audio, pose</li>
-              <li>Fusion models reaching AUC 0.80</li>
-              <li>Two manuscripts in progress</li>
-            </ul>
-            <div class="wk-bar" data-wk-topic="yale">
-              <a class="link" href="https://medicine.yale.edu/profile/ssm223/" target="_blank" rel="noopener">Yale School of Medicine profile<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 9L9 3M4.5 3H9v4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
-            </div>
-            <div class="wk-drawer" id="wk-yale">
-              <div class="wk-drawer-in">
-                <div class="wk-rule" aria-hidden="true"></div>
+          <article class="stack-card wkx-panel" id="work-yale" role="tabpanel" aria-labelledby="wkxt-yale" data-wkx-topic="research">
+            <i class="wkx-null" aria-hidden="true"></i>
+            <div class="wkx-in spot">
+              <div class="wkx-col">
+                <div class="wkx-top">
+                  <span class="stack-num mono">03</span>
+                  <span class="mono chip chip-blue">RESEARCH INTERN</span>
+                </div>
+                <h3 class="stack-title">Yale Child Study Center</h3>
+                <p class="stack-desc">In the Cha Lab, I build AI that models autism-related social communication differences from real parent and child interactions. The work spans 120+ hours of video, audio, and pose data from 40 families: a child-vs-adult detection module, synchrony scoring, and fusion models reaching AUC 0.80 for predicting anxiety risk in autism. It is the research version of the same question behind Kora: can a machine help you understand what someone is feeling? First-author work in prep for MIT URTC 2026.</p>
+                <ul class="tags">
+                  <li>Multimodal ML: vision, audio, pose</li>
+                  <li>Fusion models reaching AUC 0.80</li>
+                  <li>Two manuscripts in progress</li>
+                </ul>
+                <div class="wkx-rule" aria-hidden="true"></div>
                 <dl class="wk-facts">
                   <div class="wk-fact"><dt class="mono">LAB</dt><dd>Cha Lab, Yale Child Study Center</dd></div>
                   <div class="wk-fact"><dt class="mono">DATA</dt><dd>120+ hours of video, audio and pose from 40 families</dd></div>
                   <div class="wk-fact"><dt class="mono">MODULES</dt><dd>Child vs adult detection, synchrony scoring, multimodal fusion</dd></div>
                   <div class="wk-fact"><dt class="mono">OUTPUT</dt><dd>AUC 0.80 on anxiety risk, two manuscripts in progress, first-author work in prep for MIT URTC 2026</dd></div>
                 </dl>
+                <div class="wkx-bar">
+                  <a class="link" href="https://medicine.yale.edu/profile/ssm223/" target="_blank" rel="noopener">Yale School of Medicine profile<svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M3 9L9 3M4.5 3H9v4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+                </div>
                 <div class="wk-links">
                   <a class="wk-pill" href="https://medicine.yale.edu/profile/ssm223/" target="_blank" rel="noopener noreferrer">YALE PROFILE<svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true" focusable="false"><path d="M3 9L9 3M4.5 3H9v4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-      </article>
+          </article>
 
-      <article class="stack-card">
-        <div class="stack-in spot">
-          <div class="stack-meta">
-            <span class="stack-num mono">04</span>
-            <span class="mono chip chip-blue">CO-FOUNDER</span>
-          </div>
-          <div class="stack-main">
-            <h3 class="stack-title">SafeStrides</h3>
-            <p class="stack-desc">A low-cost pedestrian detection system that retrofits older cars: a Raspberry Pi and Coral TPU running a TensorFlow Lite model at 95% real-time detection accuracy. Piloted across 200 student vehicles in partnership with school administration and the Robbinsville Police Department, then iterated through two national competition cycles.</p>
-            <ul class="tags">
-              <li>Blue Ocean: Top 250 of 23,000+ (2026)</li>
-              <li>Blue Ocean: Top 350 of 12,784 (2025)</li>
-              <li>Diamond Challenge: 2nd in New Jersey</li>
-            </ul>
-            <div class="wk-bar"></div>
-            <div class="wk-drawer" id="wk-safestrides">
-              <div class="wk-drawer-in">
-                <div class="wk-rule" aria-hidden="true"></div>
+          <article class="stack-card wkx-panel" id="work-safestrides" role="tabpanel" aria-labelledby="wkxt-safestrides">
+            <i class="wkx-null" aria-hidden="true"></i>
+            <div class="wkx-in spot">
+              <div class="wkx-col">
+                <div class="wkx-top">
+                  <span class="stack-num mono">04</span>
+                  <span class="mono chip chip-blue">CO-FOUNDER</span>
+                </div>
+                <h3 class="stack-title">SafeStrides</h3>
+                <p class="stack-desc">A low-cost pedestrian detection system that retrofits older cars: a Raspberry Pi and Coral TPU running a TensorFlow Lite model at 95% real-time detection accuracy. Piloted across 200 student vehicles in partnership with school administration and the Robbinsville Police Department, then iterated through two national competition cycles.</p>
+                <ul class="tags">
+                  <li>Blue Ocean: Top 250 of 23,000+ (2026)</li>
+                  <li>Blue Ocean: Top 350 of 12,784 (2025)</li>
+                  <li>Diamond Challenge: 2nd in New Jersey</li>
+                </ul>
+                <div class="wkx-rule" aria-hidden="true"></div>
                 <dl class="wk-facts">
                   <div class="wk-fact"><dt class="mono">STACK</dt><dd>Raspberry Pi, Coral TPU, TensorFlow Lite</dd></div>
                   <div class="wk-fact"><dt class="mono">ACCURACY</dt><dd>95% real-time detection</dd></div>
@@ -350,63 +748,56 @@ if(v==="light"){var m=document.querySelector('meta[name="theme-color"]');if(m)m.
                 </dl>
               </div>
             </div>
-          </div>
-        </div>
-      </article>
+          </article>
 
-      <article class="stack-card">
-        <div class="stack-in spot">
-          <div class="stack-meta">
-            <span class="stack-num mono">05</span>
-            <span class="mono chip chip-blue">SOFTWARE LEAD</span>
-          </div>
-          <div class="stack-main">
-            <h3 class="stack-title">FRC Team 2590, Nemesis</h3>
-            <p class="stack-desc">Third year writing software for one of FIRST's most competitive robotics teams: I built the team's first PnP pose estimation using fiducial IDs, its first object detection pipeline, and autonomous routines in Java and WPILib, while mentoring newer programmers. In 2024 we won the Curie Division at the FIRST World Championship and reached the Einstein semifinals.</p>
-            <ul class="tags">
-              <li>2024 World Championship, Curie Division winners</li>
-              <li>Mentored 90+ students in Haiti, Panama, and Kenya</li>
-              <li>Raised $12,500 to seed 13 FIRST LEGO League teams</li>
-            </ul>
-            <div class="wk-bar" data-wk-topic="frc">
-              <a class="link" href="https://www.frc2590.org/members/shashank-madala/" target="_blank" rel="noopener">Team profile<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 9L9 3M4.5 3H9v4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
-            </div>
-            <div class="wk-drawer" id="wk-frc">
-              <div class="wk-drawer-in">
-                <div class="wk-rule" aria-hidden="true"></div>
+          <article class="stack-card wkx-panel" id="work-frc-2590" role="tabpanel" aria-labelledby="wkxt-frc" data-wkx-topic="robotics">
+            <i class="wkx-null" aria-hidden="true"></i>
+            <div class="wkx-in spot">
+              <div class="wkx-col">
+                <div class="wkx-top">
+                  <span class="stack-num mono">05</span>
+                  <span class="mono chip chip-blue">SOFTWARE LEAD</span>
+                </div>
+                <h3 class="stack-title">FRC Team 2590, Nemesis</h3>
+                <p class="stack-desc">Third year writing software for one of FIRST's most competitive robotics teams: I built the team's first PnP pose estimation using fiducial IDs, its first object detection pipeline, and autonomous routines in Java and WPILib, while mentoring newer programmers. In 2024 we won the Curie Division at the FIRST World Championship and reached the Einstein semifinals.</p>
+                <ul class="tags">
+                  <li>2024 World Championship, Curie Division winners</li>
+                  <li>Mentored 90+ students in Haiti, Panama, and Kenya</li>
+                  <li>Raised $12,500 to seed 13 FIRST LEGO League teams</li>
+                </ul>
+                <div class="wkx-rule" aria-hidden="true"></div>
                 <dl class="wk-facts">
                   <div class="wk-fact"><dt class="mono">ROLE</dt><dd>Software lead, third year on the team</dd></div>
                   <div class="wk-fact"><dt class="mono">BUILT</dt><dd>First PnP pose estimation from fiducial IDs, first object detection pipeline, autonomous routines in Java and WPILib</dd></div>
                   <div class="wk-fact"><dt class="mono">2024</dt><dd>Curie Division winners, Einstein semifinalists</dd></div>
                   <div class="wk-fact"><dt class="mono">OUTREACH</dt><dd>90+ students mentored in Haiti, Panama and Kenya, $12,500 raised to seed 13 FIRST LEGO League teams</dd></div>
                 </dl>
+                <div class="wkx-bar">
+                  <a class="link" href="https://www.frc2590.org/members/shashank-madala/" target="_blank" rel="noopener">Team profile<svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M3 9L9 3M4.5 3H9v4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+                </div>
                 <div class="wk-links">
                   <a class="wk-pill" href="https://www.frc2590.org/members/shashank-madala/" target="_blank" rel="noopener noreferrer">FRC 2590 PROFILE<svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true" focusable="false"><path d="M3 9L9 3M4.5 3H9v4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-      </article>
+          </article>
 
-      <article class="stack-card">
-        <div class="stack-in spot">
-          <div class="stack-meta">
-            <span class="stack-num mono">06</span>
-            <span class="mono chip chip-blue">CHAPTER PRESIDENT</span>
-          </div>
-          <div class="stack-main">
-            <h3 class="stack-title">FBLA</h3>
-            <p class="stack-desc">President of Robbinsville FBLA and a two-year member of the NJ FBLA State Technology Committee, where I helped build the State Leadership Conference app and website used by 8,000+ members. Grew our chapter from 45 to 175+ members, took state qualifiers from 2 to 23, and started a middle school chapter with 70+ students.</p>
-            <ul class="tags">
-              <li>Built the SLC app used by 8,000+ members</li>
-              <li>1st, Computer Problem Solving, Central Region</li>
-              <li>1st, Data Science &amp; AI, Central Region</li>
-            </ul>
-            <div class="wk-bar"></div>
-            <div class="wk-drawer" id="wk-fbla">
-              <div class="wk-drawer-in">
-                <div class="wk-rule" aria-hidden="true"></div>
+          <article class="stack-card wkx-panel" id="work-fbla" role="tabpanel" aria-labelledby="wkxt-fbla">
+            <i class="wkx-null" aria-hidden="true"></i>
+            <div class="wkx-in spot">
+              <div class="wkx-col">
+                <div class="wkx-top">
+                  <span class="stack-num mono">06</span>
+                  <span class="mono chip chip-blue">CHAPTER PRESIDENT</span>
+                </div>
+                <h3 class="stack-title">FBLA</h3>
+                <p class="stack-desc">President of Robbinsville FBLA and a two-year member of the NJ FBLA State Technology Committee, where I helped build the State Leadership Conference app and website used by 8,000+ members. Grew our chapter from 45 to 175+ members, took state qualifiers from 2 to 23, and started a middle school chapter with 70+ students.</p>
+                <ul class="tags">
+                  <li>Built the SLC app used by 8,000+ members</li>
+                  <li>1st, Computer Problem Solving, Central Region</li>
+                  <li>1st, Data Science &amp; AI, Central Region</li>
+                </ul>
+                <div class="wkx-rule" aria-hidden="true"></div>
                 <dl class="wk-facts">
                   <div class="wk-fact"><dt class="mono">ROLE</dt><dd>Chapter president, and two years on the NJ FBLA State Technology Committee</dd></div>
                   <div class="wk-fact"><dt class="mono">BUILT</dt><dd>The State Leadership Conference app and website, used by 8,000+ members</dd></div>
@@ -415,10 +806,10 @@ if(v==="light"){var m=document.querySelector('meta[name="theme-color"]');if(m)m.
                 </dl>
               </div>
             </div>
-          </div>
-        </div>
-      </article>
+          </article>
 
+        </div>
+      </div>
     </div>
   </section>
 
@@ -436,7 +827,7 @@ if(v==="light"){var m=document.querySelector('meta[name="theme-color"]');if(m)m.
 
       <figure class="band-shot">
         <button class="band-hit" type="button" aria-label="Open photo 1 of 9: the first question of class">
-          <img src="assets/photos/lumin/IMG_8320-2.jpg" alt="A classroom of students with their hands raised, the screen behind them asking how many of you have heard of AI" loading="lazy" decoding="async" width="1500" height="1108" />
+          <img src="assets/photos/lumin/IMG_8320-2.jpg" alt="A classroom of students with their hands raised, the screen behind them asking how many of you have heard of AI" srcset="assets/photos/lumin/IMG_8320-2-400w.jpg 400w, assets/photos/lumin/IMG_8320-2-800w.jpg 800w, assets/photos/lumin/IMG_8320-2-1200w.jpg 1200w, assets/photos/lumin/IMG_8320-2.jpg 1500w" sizes="(max-width: 720px) 361px, (max-width: 1023px) 48vw, (max-width: 1287px) 31vw, 383px" loading="lazy" decoding="async" width="1500" height="1108" />
           <span class="band-zoom" aria-hidden="true">OPEN</span>
         </button>
         <figcaption class="band-cap mono"><b>01</b><span>THE FIRST QUESTION</span></figcaption>
@@ -444,7 +835,7 @@ if(v==="light"){var m=document.querySelector('meta[name="theme-color"]');if(m)m.
 
       <figure class="band-shot">
         <button class="band-hit" type="button" aria-label="Open photo 2 of 9: explaining what AI already is">
-          <img src="assets/photos/lumin/IMG_8321-2.jpg" alt="Shashank mid lecture beside a slide explaining AI through Swiggy, YouTube Shorts and Netflix" loading="lazy" decoding="async" width="1500" height="1103" />
+          <img src="assets/photos/lumin/IMG_8321-2.jpg" alt="Shashank Madala mid lecture at a Lumin AI chapter session, beside a slide explaining AI through Swiggy, YouTube Shorts and Netflix" loading="lazy" decoding="async" width="1500" height="1103" sizes="(max-width: 720px) 362px, (max-width: 1023px) 48vw, (max-width: 1287px) 31vw, 383px" srcset="assets/photos/lumin/IMG_8321-2-400w.jpg 400w, assets/photos/lumin/IMG_8321-2-800w.jpg 800w, assets/photos/lumin/IMG_8321-2-1200w.jpg 1200w, assets/photos/lumin/IMG_8321-2.jpg 1500w" />
           <span class="band-zoom" aria-hidden="true">OPEN</span>
         </button>
         <figcaption class="band-cap mono"><b>02</b><span>SWIGGY, SHORTS, NETFLIX</span></figcaption>
@@ -452,7 +843,7 @@ if(v==="light"){var m=document.querySelector('meta[name="theme-color"]');if(m)m.
 
       <figure class="band-shot">
         <button class="band-hit" type="button" aria-label="Open photo 3 of 9: defining artificial intelligence">
-          <img src="assets/photos/lumin/IMG_8314-2.jpg" alt="Shashank presenting the definition of artificial intelligence on a stage decorated with balloons" loading="lazy" decoding="async" width="1500" height="1103" />
+          <img src="assets/photos/lumin/IMG_8314-2.jpg" alt="Shashank presenting the definition of artificial intelligence on a stage decorated with balloons" srcset="assets/photos/lumin/IMG_8314-2-400w.jpg 400w, assets/photos/lumin/IMG_8314-2-800w.jpg 800w, assets/photos/lumin/IMG_8314-2-1200w.jpg 1200w, assets/photos/lumin/IMG_8314-2.jpg 1500w" sizes="(max-width: 720px) 362px, (max-width: 1023px) 48vw, (max-width: 1287px) 31vw, 383px" loading="lazy" decoding="async" width="1500" height="1103" />
           <span class="band-zoom" aria-hidden="true">OPEN</span>
         </button>
         <figcaption class="band-cap mono"><b>03</b><span>DEFINING IT</span></figcaption>
@@ -460,7 +851,7 @@ if(v==="light"){var m=document.querySelector('meta[name="theme-color"]');if(m)m.
 
       <figure class="band-shot">
         <button class="band-hit" type="button" aria-label="Open photo 4 of 9: how AI is used in jobs">
-          <img src="assets/photos/lumin/IMG_8317.jpg" alt="Shashank holding a microphone beside a slide reading how is AI used in jobs, and future" loading="lazy" decoding="async" width="1138" height="1500" />
+          <img src="assets/photos/lumin/IMG_8317.jpg" alt="Shashank holding a microphone beside a slide reading how is AI used in jobs, and future" srcset="assets/photos/lumin/IMG_8317-400w.jpg 400w, assets/photos/lumin/IMG_8317-800w.jpg 800w, assets/photos/lumin/IMG_8317.jpg 1138w" sizes="(max-width: 720px) 202px, (max-width: 1023px) 48vw, (max-width: 1287px) 31vw, 383px" loading="lazy" decoding="async" width="1138" height="1500" />
           <span class="band-zoom" aria-hidden="true">OPEN</span>
         </button>
         <figcaption class="band-cap mono"><b>04</b><span>AI AND JOBS</span></figcaption>
@@ -468,7 +859,7 @@ if(v==="light"){var m=document.querySelector('meta[name="theme-color"]');if(m)m.
 
       <figure class="band-shot">
         <button class="band-hit" type="button" aria-label="Open photo 5 of 9: a full classroom">
-          <img src="assets/photos/lumin/IMG_8319.jpg" alt="A full classroom of students in white uniforms watching the screen at the front of the room" loading="lazy" decoding="async" width="1150" height="1500" />
+          <img src="assets/photos/lumin/IMG_8319.jpg" alt="A full classroom of students in white uniforms watching the screen at the front of the room" srcset="assets/photos/lumin/IMG_8319-400w.jpg 400w, assets/photos/lumin/IMG_8319-800w.jpg 800w, assets/photos/lumin/IMG_8319.jpg 1150w" sizes="(max-width: 720px) 204px, (max-width: 1023px) 48vw, (max-width: 1287px) 31vw, 383px" loading="lazy" decoding="async" width="1150" height="1500" />
           <span class="band-zoom" aria-hidden="true">OPEN</span>
         </button>
         <figcaption class="band-cap mono"><b>05</b><span>FULL ROOM</span></figcaption>
@@ -476,7 +867,7 @@ if(v==="light"){var m=document.querySelector('meta[name="theme-color"]');if(m)m.
 
       <figure class="band-shot">
         <button class="band-hit" type="button" aria-label="Open photo 6 of 9: the auditorium">
-          <img src="assets/photos/lumin/IMG_8315.jpg" alt="Wide view of the auditorium, rows of seated students facing the stage with Shashank presenting" loading="lazy" decoding="async" width="1500" height="839" />
+          <img src="assets/photos/lumin/IMG_8315.jpg" alt="Wide view of the auditorium, rows of seated students facing the stage with Shashank presenting" srcset="assets/photos/lumin/IMG_8315-400w.jpg 400w, assets/photos/lumin/IMG_8315-800w.jpg 800w, assets/photos/lumin/IMG_8315-1200w.jpg 1200w, assets/photos/lumin/IMG_8315.jpg 1500w" sizes="(max-width: 720px) 476px, (max-width: 1023px) 48vw, (max-width: 1287px) 31vw, 383px" loading="lazy" decoding="async" width="1500" height="839" />
           <span class="band-zoom" aria-hidden="true">OPEN</span>
         </button>
         <figcaption class="band-cap mono"><b>06</b><span>THE AUDITORIUM</span></figcaption>
@@ -484,7 +875,7 @@ if(v==="light"){var m=document.querySelector('meta[name="theme-color"]');if(m)m.
 
       <figure class="band-shot">
         <button class="band-hit" type="button" aria-label="Open photo 7 of 9: students listening">
-          <img src="assets/photos/lumin/IMG_8324-2.jpg" alt="Students seated near the front of the room, listening during the session" loading="lazy" decoding="async" width="1500" height="1104" />
+          <img src="assets/photos/lumin/IMG_8324-2.jpg" alt="Students seated near the front of the room, listening during the session" srcset="assets/photos/lumin/IMG_8324-2-400w.jpg 400w, assets/photos/lumin/IMG_8324-2-800w.jpg 800w, assets/photos/lumin/IMG_8324-2-1200w.jpg 1200w, assets/photos/lumin/IMG_8324-2.jpg 1500w" sizes="(max-width: 720px) 362px, (max-width: 1023px) 48vw, (max-width: 1287px) 31vw, 383px" loading="lazy" decoding="async" width="1500" height="1104" />
           <span class="band-zoom" aria-hidden="true">OPEN</span>
         </button>
         <figcaption class="band-cap mono"><b>07</b><span>FRONT ROW</span></figcaption>
@@ -492,7 +883,7 @@ if(v==="light"){var m=document.querySelector('meta[name="theme-color"]');if(m)m.
 
       <figure class="band-shot">
         <button class="band-hit" type="button" aria-label="Open photo 8 of 9: a chapter class">
-          <img src="assets/photos/lumin/IMG_8316.jpg" alt="Group photo of a class in blue uniforms with Shashank standing in the aisle" loading="lazy" decoding="async" width="1500" height="988" />
+          <img src="assets/photos/lumin/IMG_8316.jpg" alt="Group photo of a class in blue uniforms with Shashank standing in the aisle" srcset="assets/photos/lumin/IMG_8316-400w.jpg 400w, assets/photos/lumin/IMG_8316-800w.jpg 800w, assets/photos/lumin/IMG_8316-1200w.jpg 1200w, assets/photos/lumin/IMG_8316.jpg 1500w" sizes="(max-width: 720px) 404px, (max-width: 1023px) 48vw, (max-width: 1287px) 31vw, 383px" loading="lazy" decoding="async" width="1500" height="988" />
           <span class="band-zoom" aria-hidden="true">OPEN</span>
         </button>
         <figcaption class="band-cap mono"><b>08</b><span>CHAPTER CLASS</span></figcaption>
@@ -500,7 +891,7 @@ if(v==="light"){var m=document.querySelector('meta[name="theme-color"]');if(m)m.
 
       <figure class="band-shot">
         <button class="band-hit" type="button" aria-label="Open photo 9 of 9: the class photo at the end of the day">
-          <img src="assets/photos/lumin/IMG_8325-2.jpg" alt="Full class group photo with Shashank seated in the middle of the front row" loading="lazy" decoding="async" width="1500" height="685" />
+          <img src="assets/photos/lumin/IMG_8325-2.jpg" alt="Full class group photo with Shashank seated in the middle of the front row" srcset="assets/photos/lumin/IMG_8325-2-400w.jpg 400w, assets/photos/lumin/IMG_8325-2-800w.jpg 800w, assets/photos/lumin/IMG_8325-2-1200w.jpg 1200w, assets/photos/lumin/IMG_8325-2.jpg 1500w" sizes="(max-width: 720px) 583px, (max-width: 1023px) 48vw, (max-width: 1287px) 31vw, 383px" loading="lazy" decoding="async" width="1500" height="685" />
           <span class="band-zoom" aria-hidden="true">OPEN</span>
         </button>
         <figcaption class="band-cap mono"><b>09</b><span>END OF THE DAY</span></figcaption>
@@ -527,169 +918,137 @@ if(v==="light"){var m=document.querySelector('meta[name="theme-color"]');if(m)m.
   </div>
 
   <!-- ============ HONORS ============ -->
-  <section class="honors" id="honors">
+  <section class="honors" id="honors" aria-labelledby="honorsTitle">
     <div class="wrap">
       <div class="sec-head reveal">
         <p class="eyebrow">HONORS</p>
-        <h2 class="sec-title">Honors.</h2>
+        <h2 class="sec-title" id="honorsTitle">Honors.</h2>
       </div>
-      <div class="receipt spot reveal" id="receipt">
-        <div class="receipt-head mono">
-          <span>HONORS &middot; LEDGER</span>
-          <span>NO. SM-2027</span>
+
+      <!-- id="receipt" is kept so the command palette still lands its
+           honors jumps on the board itself, not the section heading. -->
+      <div class="hb" id="receipt">
+        <div class="hb-bar reveal">
+          <div class="hb-lens" role="radiogroup" aria-label="Filter honors by scope">
+            <button type="button" class="hb-chip" data-hb="all" role="radio" aria-checked="true">All<i class="hb-n mono">12</i></button>
+            <button type="button" class="hb-chip" data-hb="INTL" role="radio" aria-checked="false">International<i class="hb-n mono">3</i></button>
+            <button type="button" class="hb-chip" data-hb="NATL" role="radio" aria-checked="false">National<i class="hb-n mono">7</i></button>
+            <button type="button" class="hb-chip" data-hb="STATE" role="radio" aria-checked="false">State<i class="hb-n mono">2</i></button>
+          </div>
+          <p class="hb-tally mono" id="hbTally" aria-live="polite">12 HONORS &middot; 3 INTL &middot; 7 NATL &middot; 2 STATE</p>
         </div>
-        <div class="receipt-rule"></div>
-        <ul class="receipt-list mono">
-          <li class="r-row r-link"><a class="r-src" href="https://www.newjerseystage.com/articles2/2026/07/23/two-new-jersey-students-among-five-to-represent-usa-at-2026-international-economics-olympiad-in-china/" target="_blank" rel="noopener" aria-label="Team USA, International Economics Olympiad. Read the New Jersey Stage story."></a><span>Team USA, International Economics Olympiad</span><b>INTL</b></li>
-          <li class="r-row"><span>USA Mathematical Olympiad qualifier</span><b>NATL</b></li>
-          <li class="r-row"><span>USACO Gold Division</span><b>NATL</b></li>
-          <li class="r-row r-link"><a class="r-src" href="https://www.congressionalappchallenge.us/25-nj10/" target="_blank" rel="noopener" aria-label="Congressional App Challenge winner, NJ-10. Read the official winner page."></a><span>Congressional App Challenge winner, NJ-10</span><b>NATL</b></li>
-          <li class="r-row"><span>Y Combinator Startup School, selected</span><b>NATL</b></li>
-          <li class="r-row"><span>Blue Ocean, Top 250 of 23,000+ (2x)</span><b>INTL</b></li>
-          <li class="r-row"><span>EconBowl, 4th of 263 teams</span><b>INTL</b></li>
-          <li class="r-row"><span>AMC 12B Honor Roll, top 5%</span><b>NATL</b></li>
-          <li class="r-row"><span>Presidential Volunteer Service Award, Gold (2x)</span><b>NATL</b></li>
-          <li class="r-row"><span>National Merit Commended Scholar</span><b>NATL</b></li>
-          <li class="r-row"><span>National Economics Challenge, 2nd in NJ</span><b>STATE</b></li>
-          <li class="r-row"><span>Purple Comet! Math Meet, 1st in NJ</span><b>STATE</b></li>
+
+        <ul class="hb-grid receipt-list" id="hbGrid">
+
+          <li class="hb-cell hb-lead r-row reveal" data-hb="INTL">
+            <div class="hb-card spot">
+              <p class="hb-top mono"><b>INTL</b><i class="hb-org">International Economics Olympiad &middot; 2026</i></p>
+              <p class="hb-name"><span>Team USA, International Economics Olympiad</span></p>
+              <p class="hb-note">One of five students on the United States team in Shenzhen. Team USA placed <i class="hb-hi">6th of 52 countries</i> in the business case competition.</p>
+              <p class="hb-proof">
+                <a class="hb-link" href="https://trentonjournal.com/robbinsville-high-school-students-team-placed-6th-of-52-countries-in-international-economics-olympiad/" target="_blank" rel="noopener noreferrer">TRENTON JOURNAL<svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true" focusable="false"><path d="M3 9L9 3M4.5 3H9v4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+                <a class="hb-link" href="https://www.newjerseystage.com/articles2/2026/07/23/two-new-jersey-students-among-five-to-represent-usa-at-2026-international-economics-olympiad-in-china/" target="_blank" rel="noopener noreferrer">NEW JERSEY STAGE<svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true" focusable="false"><path d="M3 9L9 3M4.5 3H9v4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+              </p>
+            </div>
+          </li>
+
+          <li class="hb-cell hb-lead r-row reveal" data-hb="NATL">
+            <div class="hb-card spot">
+              <p class="hb-top mono"><b>NATL</b><i class="hb-org">U.S. House of Representatives &middot; 2025</i></p>
+              <p class="hb-name"><span>Congressional App Challenge winner, NJ-10</span></p>
+              <p class="hb-note">Kora won New Jersey's 10th District, announced by the office of Rep. LaMonica McIver.</p>
+              <p class="hb-proof">
+                <a class="hb-link" href="https://www.congressionalappchallenge.us/25-nj10/" target="_blank" rel="noopener noreferrer">WINNER PAGE<svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true" focusable="false"><path d="M3 9L9 3M4.5 3H9v4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+                <a class="hb-link" href="https://mciver.house.gov/media/press-releases/mciver-announces-kora-app-as-winner-of-nj-10-congressional-app-challenge" target="_blank" rel="noopener noreferrer">REP. MCIVER'S OFFICE<svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true" focusable="false"><path d="M3 9L9 3M4.5 3H9v4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+              </p>
+            </div>
+          </li>
+
+          <li class="hb-cell hb-lead r-row reveal" data-hb="NATL">
+            <div class="hb-card spot">
+              <p class="hb-top mono"><b>NATL</b><i class="hb-org">Mathematical Association of America</i></p>
+              <p class="hb-name"><span>USA Mathematical Olympiad qualifier</span></p>
+              <p class="hb-note">The invitational round at the top of the American mathematics competition sequence, reached through the AMC and the AIME.</p>
+            </div>
+          </li>
+
+          <li class="hb-cell r-row reveal" data-hb="NATL">
+            <div class="hb-card spot">
+              <p class="hb-top mono"><b>NATL</b></p>
+              <p class="hb-name"><span>USACO <i class="hb-hi">Gold Division</i></span></p>
+            </div>
+          </li>
+
+          <li class="hb-cell r-row reveal" data-hb="INTL">
+            <div class="hb-card spot">
+              <p class="hb-top mono"><b>INTL</b></p>
+              <p class="hb-name"><span>Blue Ocean, <i class="hb-hi">Top 250 of 23,000+</i> (2x)</span></p>
+            </div>
+          </li>
+
+          <li class="hb-cell r-row reveal" data-hb="INTL">
+            <div class="hb-card spot">
+              <p class="hb-top mono"><b>INTL</b></p>
+              <p class="hb-name"><span>EconBowl, <i class="hb-hi">4th of 263 teams</i></span></p>
+            </div>
+          </li>
+
+          <li class="hb-cell r-row reveal" data-hb="NATL">
+            <div class="hb-card spot">
+              <p class="hb-top mono"><b>NATL</b></p>
+              <p class="hb-name"><span>Presidential Volunteer Service Award, <i class="hb-hi">Gold</i> (2x)</span></p>
+            </div>
+          </li>
+
+          <li class="hb-cell r-row reveal" data-hb="NATL">
+            <div class="hb-card spot">
+              <p class="hb-top mono"><b>NATL</b></p>
+              <p class="hb-name"><span>AMC 12B Honor Roll, <i class="hb-hi">top 5%</i></span></p>
+            </div>
+          </li>
+
+          <li class="hb-cell r-row reveal" data-hb="NATL">
+            <div class="hb-card spot">
+              <p class="hb-top mono"><b>NATL</b></p>
+              <p class="hb-name"><span>Y Combinator Startup School, <i class="hb-hi">selected</i></span></p>
+            </div>
+          </li>
+
+          <li class="hb-cell r-row reveal" data-hb="NATL">
+            <div class="hb-card spot">
+              <p class="hb-top mono"><b>NATL</b></p>
+              <p class="hb-name"><span>National Merit Commended Scholar</span></p>
+            </div>
+          </li>
+
+          <li class="hb-cell r-row reveal" data-hb="STATE">
+            <div class="hb-card spot">
+              <p class="hb-top mono"><b>STATE</b></p>
+              <p class="hb-name"><span>National Economics Challenge, <i class="hb-hi">2nd in NJ</i></span></p>
+            </div>
+          </li>
+
+          <li class="hb-cell r-row reveal" data-hb="STATE">
+            <div class="hb-card spot">
+              <p class="hb-top mono"><b>STATE</b></p>
+              <p class="hb-name"><span>Purple Comet! Math Meet, <i class="hb-hi">1st in NJ</i></span></p>
+            </div>
+          </li>
+
         </ul>
-        <div class="receipt-rule"></div>
-        <div class="receipt-total mono r-row">
-          <span>SCOPE</span>
-          <b>3 INTL &middot; 7 NATL &middot; 2 STATE</b>
-        </div>
-        <div class="receipt-bar" aria-hidden="true"></div>
-        <p class="receipt-foot mono">VERIFIED &middot; ROBBINSVILLE, NJ &middot; EST. 2009</p>
+
+        <p class="hb-foot mono reveal">ROBBINSVILLE, NJ &middot; CLASS OF 2027</p>
       </div>
     </div>
   </section>
 
-  <!-- ============ KORA, THE IDEA ============ -->
-  <section class="kd" id="koraDemo" aria-labelledby="kdTitle">
-    <div class="wrap">
-      <div class="sec-head reveal">
-        <p class="eyebrow">KORA, THE IDEA</p>
-        <h2 class="sec-title" id="kdTitle">Reading a moment.</h2>
-        <p class="kd-note">Kora looks at several cues at once and gives a caregiver somewhere to start. Move the sliders and the read moves with them.</p>
-      </div>
-
-      <p class="kd-disc reveal"><b class="mono">NOT THE REAL MODEL</b><span>A simplified illustration of the idea. The real Kora model is a CNN trained on facial expression data. Nothing here runs it, the drawing is not a person, and every number below is arithmetic on the four sliders.</span></p>
-
-      <div class="kd-panel spot reveal d1" id="kdPanel">
-        <div class="kd-grid">
-
-          <div class="kd-controls">
-            <p class="kd-lab mono">CUES</p>
-
-            <div class="kd-cue">
-              <div class="kd-cue-top">
-                <label for="kdEye">Eye contact</label>
-                <b class="mono" data-kd-word="eye">steady</b>
-              </div>
-              <input class="kd-range" type="range" id="kdEye" min="0" max="100" step="1" value="62" data-kd-cue="eye" aria-valuetext="steady" />
-              <p class="kd-ends mono"><span>looks away</span><span>holds your eyes</span></p>
-            </div>
-
-            <div class="kd-cue">
-              <div class="kd-cue-top">
-                <label for="kdVoice">Voice</label>
-                <b class="mono" data-kd-word="voice">soft</b>
-              </div>
-              <input class="kd-range" type="range" id="kdVoice" min="0" max="100" step="1" value="38" data-kd-cue="voice" aria-valuetext="soft" />
-              <p class="kd-ends mono"><span>quiet</span><span>loud</span></p>
-            </div>
-
-            <div class="kd-cue">
-              <div class="kd-cue-top">
-                <label for="kdPosture">Posture</label>
-                <b class="mono" data-kd-word="posture">settled</b>
-              </div>
-              <input class="kd-range" type="range" id="kdPosture" min="0" max="100" step="1" value="70" data-kd-cue="posture" aria-valuetext="settled" />
-              <p class="kd-ends mono"><span>turned away</span><span>facing you</span></p>
-            </div>
-
-            <div class="kd-cue">
-              <div class="kd-cue-top">
-                <label for="kdMove">Movement</label>
-                <b class="mono" data-kd-word="movement">slow</b>
-              </div>
-              <input class="kd-range" type="range" id="kdMove" min="0" max="100" step="1" value="28" data-kd-cue="movement" aria-valuetext="slow" />
-              <p class="kd-ends mono"><span>still</span><span>fast</span></p>
-            </div>
-
-            <div class="kd-try">
-              <p class="kd-lab mono">TRY</p>
-              <div class="kd-chips">
-                <button class="kd-preset" type="button" data-kd-set="70,30,76,22">Quiet play</button>
-                <button class="kd-preset" type="button" data-kd-set="84,74,88,64">Favorite song</button>
-                <button class="kd-preset" type="button" data-kd-set="24,50,30,74">New person</button>
-                <button class="kd-preset" type="button" data-kd-set="14,88,18,90">Loud room</button>
-                <button class="kd-preset" type="button" data-kd-set="12,12,20,8">End of the day</button>
-              </div>
-            </div>
-          </div>
-
-          <div class="kd-read">
-            <div class="kd-readtop">
-              <svg class="kd-face" viewBox="0 0 200 200" aria-hidden="true" focusable="false">
-                <circle class="kd-aura" id="kdAura" cx="100" cy="100" r="79.9" />
-                <circle class="kd-head" cx="100" cy="100" r="62" />
-                <path class="kd-brow" id="kdBrowL" d="M64 76H86" />
-                <path class="kd-brow" id="kdBrowR" d="M114 76H136" />
-                <path class="kd-eye" id="kdEyeL" d="M65 96Q78 76.4 91 96Q78 108.4 65 96Z" />
-                <path class="kd-eye" id="kdEyeR" d="M109 96Q122 76.4 135 96Q122 108.4 109 96Z" />
-                <circle class="kd-pup" id="kdPupL" cx="74.8" cy="96" r="3.4" />
-                <circle class="kd-pup" id="kdPupR" cx="118.8" cy="96" r="3.4" />
-                <path class="kd-mouth" id="kdMouth" d="M76 136Q100 143.2 124 136" />
-              </svg>
-              <div class="kd-verdict">
-                <p class="kd-lab mono">MOST LIKELY</p>
-                <p class="kd-state" id="kdState">Calm</p>
-                <p class="kd-driver mono" id="kdDriver">TIPPED BY MOVEMENT AND EYE CONTACT</p>
-              </div>
-            </div>
-
-            <div class="kd-bars">
-              <p class="kd-lab mono">HOW IT SPLITS<i>from the four sliders, not from a model</i></p>
-              <div class="kd-bar is-top" data-kd-state="calm">
-                <span class="kd-b-name">Calm</span>
-                <span class="kd-b-track"><i class="kd-b-fill" style="transform:scaleX(0.62)"></i></span>
-                <b class="kd-b-val mono">62%</b>
-              </div>
-              <div class="kd-bar" data-kd-state="engaged">
-                <span class="kd-b-name">Engaged</span>
-                <span class="kd-b-track"><i class="kd-b-fill" style="transform:scaleX(0.17)"></i></span>
-                <b class="kd-b-val mono">17%</b>
-              </div>
-              <div class="kd-bar" data-kd-state="anxious">
-                <span class="kd-b-name">Anxious</span>
-                <span class="kd-b-track"><i class="kd-b-fill" style="transform:scaleX(0.10)"></i></span>
-                <b class="kd-b-val mono">10%</b>
-              </div>
-              <div class="kd-bar" data-kd-state="withdrawn">
-                <span class="kd-b-name">Withdrawn</span>
-                <span class="kd-b-track"><i class="kd-b-fill" style="transform:scaleX(0.10)"></i></span>
-                <b class="kd-b-val mono">10%</b>
-              </div>
-              <div class="kd-bar" data-kd-state="overwhelmed">
-                <span class="kd-b-name">Overwhelmed</span>
-                <span class="kd-b-track"><i class="kd-b-fill" style="transform:scaleX(0.02)"></i></span>
-                <b class="kd-b-val mono">2%</b>
-              </div>
-            </div>
-          </div>
-
-        </div>
-      </div>
-    </div>
-  </section>
 
   <!-- ============ PRESS ============ -->
-  <section class="press" id="press">
+  <section class="press" id="press" aria-labelledby="pressTitle">
     <div class="wrap">
       <div class="sec-head reveal">
         <p class="eyebrow">PRESS</p>
-        <h2 class="sec-title">In the news.</h2>
+        <h2 class="sec-title" id="pressTitle">In the news.</h2>
         <p class="press-count mono" id="pressCount" aria-live="polite">12 pieces of coverage</p>
       </div>
       <div class="press-tools reveal">
@@ -820,11 +1179,11 @@ if(v==="light"){var m=document.querySelector('meta[name="theme-color"]');if(m)m.
   </section>
 
   <!-- ============ TIMELINE ============ -->
-  <section class="timeline" id="timeline">
+  <section class="timeline" id="timeline" aria-labelledby="timelineTitle">
     <div class="wrap">
       <div class="sec-head reveal">
         <p class="eyebrow">TIMELINE</p>
-        <h2 class="sec-title">The path so far.</h2>
+        <h2 class="sec-title" id="timelineTitle">The path so far.</h2>
         <p class="tl-note">Dated where this page has a date.</p>
       </div>
 
@@ -909,34 +1268,178 @@ if(v==="light"){var m=document.querySelector('meta[name="theme-color"]');if(m)m.
   </section>
 
   <!-- ============ BEYOND ============ -->
-  <section class="beyond" id="beyond">
+  <section class="beyond" id="beyond" aria-labelledby="beyondTitle">
     <div class="wrap">
       <div class="sec-head reveal">
         <p class="eyebrow">ALSO</p>
-        <h2 class="sec-title">Everything else.</h2>
+        <h2 class="sec-title" id="beyondTitle">Everything else.</h2>
       </div>
       <div class="beyond-grid">
         <div class="beyond-card spot reveal"><span class="mono chip">TEACHING</span><p>I teach Telugu to 50+ kids every weekend, and built the class a Python progress tracker.</p></div>
-        <div class="beyond-card spot reveal d1"><span class="mono chip">LEADERSHIP</span><p>Incoming student government VP, representing 1,000+ students.</p></div>
-        <div class="beyond-card spot reveal d2"><span class="mono chip">SPORT</span><p>Varsity tennis. Team captain junior year.</p></div>
+        <div class="beyond-card spot reveal d1"><span class="mono chip">VOLUNTEERING</span><p>I volunteer with autistic kids and their families. That is where Kora started.</p></div>
+        <div class="beyond-card spot reveal d2"><span class="mono chip">SPORT</span><p>Varsity tennis, all four years.</p></div>
         <div class="beyond-card spot reveal d3"><span class="mono chip">SCHOLAR</span><p>Yale Young Global Scholars '25, Innovations in Science &amp; Technology track.</p></div>
       </div>
     </div>
   </section>
 
+  <!-- ============ FAQ ============ -->
+  <section class="faq" id="faq" aria-labelledby="faqTitle">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <p class="eyebrow">QUESTIONS</p>
+        <h2 class="sec-title" id="faqTitle">Asked often.</h2>
+        <p class="faq-note">Written in the third person, because that is the way these arrive.</p>
+      </div>
+
+      <div class="faq-list reveal" id="faqList">
+
+        <details class="faq-item" id="faq-who">
+          <summary class="faq-q"><h3>Who is Shashank Madala?</h3><span class="faq-ico" aria-hidden="true"></span></summary>
+          <div class="faq-a-wrap"><div class="faq-a">
+            <p>Shashank Madala is a student at Robbinsville High School in Robbinsville, New Jersey, class of 2027. He co-created Kora, an AI app that helps caregivers of autistic children read emotional cues, founded the AI education nonprofit Lumin AI, and works as a research intern at the Yale Child Study Center. In 2026 he represented the United States at the International Economics Olympiad in Shenzhen.</p>
+          </div></div>
+        </details>
+
+        <details class="faq-item" id="faq-where">
+          <summary class="faq-q"><h3>Where is Shashank Madala from?</h3><span class="faq-ico" aria-hidden="true"></span></summary>
+          <div class="faq-a-wrap"><div class="faq-a">
+            <p>Robbinsville, New Jersey. He attends Robbinsville High School and graduates with the class of 2027. Much of the work is local too: the SafeStrides pedestrian detection pilot ran with the school and the Robbinsville Police Department, and he is president of the Robbinsville FBLA chapter.</p>
+          </div></div>
+        </details>
+
+        <details class="faq-item" id="faq-kora">
+          <summary class="faq-q"><h3>What is Kora?</h3><span class="faq-ico" aria-hidden="true"></span></summary>
+          <div class="faq-a-wrap"><div class="faq-a">
+            <p>Kora is an AI app that helps caregivers of autistic children read emotional cues, built by Shashank Madala with a four-student team and based on CNN emotion modeling. It supports more than 700 users across 25 therapy centers in 12 countries. Kora won the 2025 Congressional App Challenge for New Jersey's 10th congressional district, announced by the office of U.S. Representative LaMonica McIver, and is showcasing at the U.S. Capitol in 2026.</p>
+          </div></div>
+        </details>
+
+        <details class="faq-item" id="faq-lumin">
+          <summary class="faq-q"><h3>What is Lumin AI?</h3><span class="faq-ico" aria-hidden="true"></span></summary>
+          <div class="faq-a-wrap"><div class="faq-a">
+            <p>Lumin AI is a 501(c)(3) nonprofit that teaches artificial intelligence for free, founded by Shashank Madala, who runs it as co-CEO. It has taught 15,000+ students, issued 5,200+ course certificates, and operates 50+ chapter locations across 16+ countries with a 125+ intern team. It also runs LuminHacks, a hackathon with 450+ participants, and works with New Jersey legislators on a proposed AI Youth Advisory Council bill.</p>
+          </div></div>
+        </details>
+
+        <details class="faq-item" id="faq-research">
+          <summary class="faq-q"><h3>What research does Shashank Madala do?</h3><span class="faq-ico" aria-hidden="true"></span></summary>
+          <div class="faq-a-wrap"><div class="faq-a">
+            <p>He is a research intern at the Yale Child Study Center, in the Cha Lab, where he builds machine learning models of autism-related social communication. The work draws on 120+ hours of video, audio and pose data from 40 families, and includes a child versus adult detection module, synchrony scoring, and multimodal fusion models reaching AUC 0.80 for anxiety risk. First-author work is in preparation for MIT URTC 2026.</p>
+          </div></div>
+        </details>
+
+        <details class="faq-item" id="faq-fbla">
+          <summary class="faq-q"><h3>What is Shashank Madala's role in FBLA?</h3><span class="faq-ico" aria-hidden="true"></span></summary>
+          <div class="faq-a-wrap"><div class="faq-a">
+            <p>He is president of the Robbinsville FBLA chapter and served two years on the New Jersey FBLA State Technology Committee, where he helped build the State Leadership Conference app and website used by 8,000+ members. He is not the New Jersey FBLA state president, a title some third-party listings have attached to him by mistake.</p>
+          </div></div>
+        </details>
+
+        <details class="faq-item" id="faq-awards">
+          <summary class="faq-q"><h3>What has Shashank Madala won?</h3><span class="faq-ico" aria-hidden="true"></span></summary>
+          <div class="faq-a-wrap"><div class="faq-a">
+            <p>Winner of the 2025 Congressional App Challenge for NJ-10 with Kora. Team USA at the 2026 International Economics Olympiad, 6th of 52 countries in the business case competition. USA Mathematical Olympiad qualifier and USACO Gold Division. Curie Division winner at the 2024 FIRST World Championship with FRC Team 2590 Nemesis. Presidential Volunteer Service Award at the Gold level twice, National Merit Commended Scholar, and AMC 12B Honor Roll.</p>
+          </div></div>
+        </details>
+
+        <details class="faq-item" id="faq-contact">
+          <summary class="faq-q"><h3>How do you contact Shashank Madala?</h3><span class="faq-ico" aria-hidden="true"></span></summary>
+          <div class="faq-a-wrap"><div class="faq-a">
+            <p>By email at <a href="mailto:shashankmadala09@gmail.com">shashankmadala09@gmail.com</a>, or through LinkedIn at <a href="https://www.linkedin.com/in/shashank-madala/" target="_blank" rel="noopener noreferrer">linkedin.com/in/shashank-madala</a>. He is happy to talk about research, startups, and AI education.</p>
+          </div></div>
+        </details>
+
+      </div>
+    </div>
+  </section>
+
+  <script type="application/ld+json" id="faq-jsonld">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Who is Shashank Madala?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Shashank Madala is a student at Robbinsville High School in Robbinsville, New Jersey, class of 2027. He co-created Kora, an AI app that helps caregivers of autistic children read emotional cues, founded the AI education nonprofit Lumin AI, and works as a research intern at the Yale Child Study Center. In 2026 he represented the United States at the International Economics Olympiad in Shenzhen."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Where is Shashank Madala from?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Robbinsville, New Jersey. He attends Robbinsville High School and graduates with the class of 2027. Much of the work is local too: the SafeStrides pedestrian detection pilot ran with the school and the Robbinsville Police Department, and he is president of the Robbinsville FBLA chapter."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What is Kora?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Kora is an AI app that helps caregivers of autistic children read emotional cues, built by Shashank Madala with a four-student team and based on CNN emotion modeling. It supports more than 700 users across 25 therapy centers in 12 countries. Kora won the 2025 Congressional App Challenge for New Jersey's 10th congressional district, announced by the office of U.S. Representative LaMonica McIver, and is showcasing at the U.S. Capitol in 2026."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What is Lumin AI?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Lumin AI is a 501(c)(3) nonprofit that teaches artificial intelligence for free, founded by Shashank Madala, who runs it as co-CEO. It has taught 15,000+ students, issued 5,200+ course certificates, and operates 50+ chapter locations across 16+ countries with a 125+ intern team. It also runs LuminHacks, a hackathon with 450+ participants, and works with New Jersey legislators on a proposed AI Youth Advisory Council bill."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What research does Shashank Madala do?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "He is a research intern at the Yale Child Study Center, in the Cha Lab, where he builds machine learning models of autism-related social communication. The work draws on 120+ hours of video, audio and pose data from 40 families, and includes a child versus adult detection module, synchrony scoring, and multimodal fusion models reaching AUC 0.80 for anxiety risk. First-author work is in preparation for MIT URTC 2026."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What is Shashank Madala's role in FBLA?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "He is president of the Robbinsville FBLA chapter and served two years on the New Jersey FBLA State Technology Committee, where he helped build the State Leadership Conference app and website used by 8,000+ members. He is not the New Jersey FBLA state president, a title some third-party listings have attached to him by mistake."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What has Shashank Madala won?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Winner of the 2025 Congressional App Challenge for NJ-10 with Kora. Team USA at the 2026 International Economics Olympiad, 6th of 52 countries in the business case competition. USA Mathematical Olympiad qualifier and USACO Gold Division. Curie Division winner at the 2024 FIRST World Championship with FRC Team 2590 Nemesis. Presidential Volunteer Service Award at the Gold level twice, National Merit Commended Scholar, and AMC 12B Honor Roll."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How do you contact Shashank Madala?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "By email at shashankmadala09@gmail.com, or through LinkedIn at linkedin.com/in/shashank-madala. He is happy to talk about research, startups, and AI education."
+        }
+      }
+    ]
+  }
+  </script>
+
   <!-- ============ CONTACT ============ -->
-  <section class="contact" id="contact">
+  <section class="contact" id="contact" aria-labelledby="contactTitle">
     <div class="contact-glow" aria-hidden="true"></div>
     <div class="wrap">
       <p class="eyebrow reveal">CONTACT</p>
-      <h2 class="contact-big reveal"><em>Let's</em> talk.</h2>
+      <h2 class="contact-big reveal" id="contactTitle"><em>Let's</em> talk.</h2>
       <p class="contact-sub reveal d1">Always down to talk research, startups, or anything in between.</p>
       <div class="hero-actions reveal d2">
         <a class="btn btn-primary" href="mailto:shashankmadala09@gmail.com" data-magnet><span>shashankmadala09@gmail.com</span></a>
-        <a class="btn btn-ghost" href="https://www.linkedin.com/in/shashank-madala/" target="_blank" rel="noopener" data-magnet><span>LinkedIn</span><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 9L9 3M4.5 3H9v4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <a class="btn btn-ghost" href="https://www.linkedin.com/in/shashank-madala/" target="_blank" rel="me noopener" data-magnet><span>Shashank Madala on LinkedIn</span><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 9L9 3M4.5 3H9v4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
       </div>
       <figure class="photo pic pic-sign reveal d3">
-        <img src="assets/photos/shenzhen.jpg" alt="Shashank standing in front of the IEO 2026 Shenzhen closing screen, which reads Thank You" loading="lazy" width="1050" height="1400" />
+        <img src="assets/photos/shenzhen.jpg" alt="Shashank Madala in front of the closing screen at the 2026 International Economics Olympiad in Shenzhen, which reads Thank You" loading="lazy" width="1050" height="1400" decoding="async" sizes="(max-width: 700px) 232px, 272px" srcset="assets/photos/shenzhen-300w.jpg 300w, assets/photos/shenzhen-600w.jpg 600w, assets/photos/shenzhen-900w.jpg 900w, assets/photos/shenzhen-full.jpg 1050w" />
         <figcaption class="mono"><b>CLOSING DAY</b><span>IEO 2026 &middot; SHENZHEN</span></figcaption>
       </figure>
     </div>
@@ -945,6 +1448,23 @@ if(v==="light"){var m=document.querySelector('meta[name="theme-color"]');if(m)m.
 </main>
 
 <footer class="foot">
+  <div class="wrap">
+    <nav class="foot-nav mono" aria-label="Sections of this page">
+      <a href="#work">Selected work</a>
+      <a href="#classroom">Lumin AI classroom</a>
+      <a href="#honors">Honors</a>
+      <a href="#press">Press coverage</a>
+      <a href="#timeline">Timeline</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <nav class="foot-nav foot-me mono" aria-label="Shashank Madala elsewhere">
+      <a href="https://www.linkedin.com/in/shashank-madala/" target="_blank" rel="me noopener">LinkedIn</a>
+      <a href="https://github.com/shashankmadala" target="_blank" rel="me noopener">GitHub</a>
+      <a href="https://luminlearning.ai/" target="_blank" rel="noopener">Lumin AI</a>
+      <a href="https://medicine.yale.edu/profile/ssm223/" target="_blank" rel="noopener">Yale profile</a>
+      <a href="mailto:shashankmadala09@gmail.com">Email Shashank</a>
+    </nav>
+  </div>
   <div class="wrap foot-row mono">
     <span>&copy; 2026 SHASHANK MADALA</span>
     <span>BUILT BY ME, NO TEMPLATES</span>
@@ -954,12 +1474,37 @@ if(v==="light"){var m=document.querySelector('meta[name="theme-color"]');if(m)m.
 
 <noscript>
 <style>
-  .loader { display: none; }
-  .reveal, .r-row, .hero-sub, #heroActions { opacity: 1 !important; transform: none !important; }
+  /* Nothing on this page needs the script in order to be read. The
+     entry animations resolve to their finished state, the sticky
+     statement collapses to a normal paragraph, and the controls that
+     only do something once main.js has run get out of the way. */
+  .loader, .progress { display: none; }
+  .reveal, .r-row, .hero-sub, #heroActions,
+  .ab-prose, .ab-card, .faq-list {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+  }
   .statement-text .w { color: var(--ink); }
   .stack-card { position: static; }
+  .statement { height: auto; }
+  .statement-sticky { position: static; height: auto; padding: 80px 0; }
+  .term-wrap, .cp-open, .th-btn, .gal-badge,
+  .band-zoom, .band-hint, .band-btns, .ct-open { display: none; }
+  .band-hit { pointer-events: none; cursor: default; }
+  .hero-title .caret, .hero-role .caret { display: none; }
+  .faq-a-wrap { height: auto !important; }
+
+  /* the role line under the name is typed in by the script, so state
+     it plainly here instead */
+  .ns-hero {
+    margin: 10px 0 22px;
+    font-family: var(--mono);
+    font-size: 13px; letter-spacing: 0.06em;
+    color: var(--blue);
+  }
 </style>
 </noscript>
-<script src="main.js"></script>
+<script src="main.js" defer></script>
 </body>
 </html>
