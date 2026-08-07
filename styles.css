@@ -996,3 +996,109 @@ img { max-width: 100%; display: block; }
   .photo.pic figcaption { font-size: 9.5px; letter-spacing: 0.14em; }
   .photo.pic-sign { width: 260px; margin-top: 56px; }
 }
+
+
+/* ============ gallery trigger + lightbox ============ */
+.gal-trigger { cursor: zoom-in; position: relative; }
+.gal-badge {
+  position: absolute; top: 18px; right: 18px;
+  font-size: 9.5px; letter-spacing: 0.18em;
+  color: var(--ink);
+  background: rgba(10, 13, 18, 0.72);
+  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+  border: 1px solid var(--line-2);
+  border-radius: 999px;
+  padding: 5px 10px;
+  opacity: 0; transform: translateY(-4px);
+  transition: opacity 0.35s var(--ease), transform 0.35s var(--ease);
+  pointer-events: none;
+}
+.gal-trigger:hover .gal-badge,
+.gal-trigger:focus-visible .gal-badge { opacity: 1; transform: none; }
+@media (hover: none) { .gal-badge { opacity: 1; transform: none; } }
+
+.lb {
+  position: fixed; inset: 0; z-index: 500;
+  display: flex; flex-direction: column;
+  background: rgba(6, 8, 13, 0.94);
+  -webkit-backdrop-filter: blur(18px); backdrop-filter: blur(18px);
+  opacity: 0; visibility: hidden;
+  transition: opacity 0.35s var(--ease), visibility 0.35s;
+}
+.lb.open { opacity: 1; visibility: visible; }
+.lb-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 16px; padding: 20px 24px;
+  flex: none;
+}
+.lb-title { font-size: 10.5px; letter-spacing: 0.2em; color: var(--sky); }
+.lb-count { font-size: 10.5px; letter-spacing: 0.2em; color: var(--faint); }
+.lb-close {
+  background: none; border: 1px solid var(--line-2); color: var(--ink);
+  width: 36px; height: 36px; border-radius: 50%;
+  font-size: 17px; line-height: 1; cursor: pointer;
+  transition: border-color 0.25s, background 0.25s;
+}
+.lb-close:hover { border-color: var(--blue); background: rgba(92, 157, 255, 0.1); }
+.lb-stage {
+  flex: 1; min-height: 0;
+  display: flex; align-items: center; justify-content: center;
+  padding: 0 24px; position: relative;
+}
+.lb-img {
+  max-width: 100%; max-height: 100%;
+  width: auto; height: auto;
+  object-fit: contain;
+  border-radius: 10px;
+  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.6);
+  opacity: 0; transition: opacity 0.3s var(--ease);
+}
+.lb-img.ready { opacity: 1; }
+.lb-nav {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  width: 46px; height: 46px; border-radius: 50%;
+  background: rgba(14, 18, 25, 0.8); border: 1px solid var(--line-2);
+  color: var(--ink); font-size: 20px; line-height: 1; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: border-color 0.25s, background 0.25s, transform 0.25s var(--ease);
+}
+.lb-nav:hover { border-color: var(--blue); background: rgba(92, 157, 255, 0.14); }
+.lb-prev { left: 18px; }
+.lb-next { right: 18px; }
+.lb-prev:hover { transform: translateY(-50%) translateX(-3px); }
+.lb-next:hover { transform: translateY(-50%) translateX(3px); }
+.lb-cap {
+  flex: none; text-align: center;
+  padding: 16px 24px 10px;
+  font-size: 14px; color: var(--body);
+}
+.lb-strip {
+  flex: none;
+  display: flex; gap: 8px; overflow-x: auto;
+  padding: 8px 24px 22px;
+  justify-content: center;
+  scrollbar-width: none;
+}
+.lb-strip::-webkit-scrollbar { display: none; }
+.lb-thumb {
+  flex: none; width: 74px; height: 52px;
+  border-radius: 7px; overflow: hidden;
+  border: 1px solid transparent;
+  opacity: 0.4; cursor: pointer;
+  background: none; padding: 0;
+  transition: opacity 0.25s, border-color 0.25s;
+}
+.lb-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.lb-thumb:hover { opacity: 0.8; }
+.lb-thumb.on { opacity: 1; border-color: var(--blue); }
+body.lb-lock { overflow: hidden; }
+@media (max-width: 640px) {
+  .lb-nav { width: 40px; height: 40px; }
+  .lb-prev { left: 8px; } .lb-next { right: 8px; }
+  .lb-stage { padding: 0 8px; }
+  .lb-cap { font-size: 13px; }
+  .lb-thumb { width: 58px; height: 42px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lb, .lb-img, .gal-badge { transition-duration: 0.01ms !important; }
+}

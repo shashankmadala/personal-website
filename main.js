@@ -1213,3 +1213,167 @@
   }, 400);
 
 })();
+
+
+/* ---------- Lumin photo gallery lightbox ---------- */
+(function () {
+  "use strict";
+
+  var trigger = document.getElementById("luminGallery");
+  if (!trigger) return;
+
+  var reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  var SHOTS = [
+    { f: "IMG_8320-2", c: "The first question of every class: how many of you have heard of AI?" },
+    { f: "IMG_8321-2", c: "Explaining what AI is using Swiggy, YouTube Shorts and Netflix." },
+    { f: "IMG_8314-2", c: "Working through the definition of artificial intelligence." },
+    { f: "IMG_8317", c: "How is AI used in jobs, and what happens next." },
+    { f: "IMG_8319", c: "A full classroom session in progress." },
+    { f: "IMG_8315", c: "Teaching an auditorium of students." },
+    { f: "IMG_8324-2", c: "Students during the session." },
+    { f: "IMG_8316", c: "Group photo with a chapter class." },
+    { f: "IMG_8325-2", c: "Class photo at the end of the day." }
+  ];
+  var SRC = function (n) { return "assets/photos/lumin/" + n + ".jpg"; };
+
+  var idx = 0, built = false, lb, imgEl, capEl, countEl, strip, lastFocus;
+
+  function build() {
+    lb = document.createElement("div");
+    lb.className = "lb";
+    lb.setAttribute("role", "dialog");
+    lb.setAttribute("aria-modal", "true");
+    lb.setAttribute("aria-label", "Lumin AI teaching photos");
+
+    var bar = document.createElement("div");
+    bar.className = "lb-bar";
+    bar.innerHTML =
+      '<span class="lb-title mono">LUMIN AI &middot; TEACHING</span>' +
+      '<span class="lb-count mono"></span>';
+    var closeBtn = document.createElement("button");
+    closeBtn.className = "lb-close";
+    closeBtn.setAttribute("aria-label", "Close gallery");
+    closeBtn.innerHTML = "&times;";
+    closeBtn.addEventListener("click", close);
+    bar.appendChild(closeBtn);
+    countEl = bar.querySelector(".lb-count");
+
+    var stage = document.createElement("div");
+    stage.className = "lb-stage";
+    imgEl = document.createElement("img");
+    imgEl.className = "lb-img";
+    imgEl.alt = "";
+    stage.appendChild(imgEl);
+
+    var prev = document.createElement("button");
+    prev.className = "lb-nav lb-prev";
+    prev.setAttribute("aria-label", "Previous photo");
+    prev.innerHTML = "&#8249;";
+    prev.addEventListener("click", function () { go(idx - 1); });
+    var next = document.createElement("button");
+    next.className = "lb-nav lb-next";
+    next.setAttribute("aria-label", "Next photo");
+    next.innerHTML = "&#8250;";
+    next.addEventListener("click", function () { go(idx + 1); });
+    stage.appendChild(prev);
+    stage.appendChild(next);
+
+    capEl = document.createElement("p");
+    capEl.className = "lb-cap";
+
+    strip = document.createElement("div");
+    strip.className = "lb-strip";
+    SHOTS.forEach(function (s, i) {
+      var t = document.createElement("button");
+      t.className = "lb-thumb";
+      t.setAttribute("aria-label", "Photo " + (i + 1));
+      var ti = document.createElement("img");
+      ti.src = SRC(s.f);
+      ti.alt = "";
+      ti.loading = "lazy";
+      t.appendChild(ti);
+      t.addEventListener("click", function () { go(i); });
+      strip.appendChild(t);
+    });
+
+    lb.appendChild(bar);
+    lb.appendChild(stage);
+    lb.appendChild(capEl);
+    lb.appendChild(strip);
+
+    lb.addEventListener("click", function (e) {
+      if (e.target === lb || e.target === stage) close();
+    });
+
+    /* swipe */
+    var sx = 0, sy = 0;
+    stage.addEventListener("touchstart", function (e) {
+      sx = e.touches[0].clientX; sy = e.touches[0].clientY;
+    }, { passive: true });
+    stage.addEventListener("touchend", function (e) {
+      var dx = e.changedTouches[0].clientX - sx;
+      var dy = e.changedTouches[0].clientY - sy;
+      if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy)) go(idx + (dx < 0 ? 1 : -1));
+    }, { passive: true });
+
+    document.body.appendChild(lb);
+    built = true;
+  }
+
+  function go(n) {
+    idx = (n + SHOTS.length) % SHOTS.length;
+    var s = SHOTS[idx];
+    imgEl.classList.remove("ready");
+    var pre = new Image();
+    pre.onload = function () {
+      imgEl.src = pre.src;
+      imgEl.alt = s.c;
+      imgEl.classList.add("ready");
+    };
+    pre.src = SRC(s.f);
+    if (pre.complete) pre.onload();
+    capEl.textContent = s.c;
+    countEl.textContent = (idx + 1) + " / " + SHOTS.length;
+    Array.prototype.forEach.call(strip.children, function (t, i) {
+      t.classList.toggle("on", i === idx);
+    });
+    var active = strip.children[idx];
+    if (active && active.scrollIntoView) {
+      active.scrollIntoView({ block: "nearest", inline: "center", behavior: reduced ? "auto" : "smooth" });
+    }
+  }
+
+  function open(start) {
+    if (!built) build();
+    lastFocus = document.activeElement;
+    go(start || 0);
+    lb.classList.add("open");
+    document.body.classList.add("lb-lock");
+    var c = lb.querySelector(".lb-close");
+    if (c) c.focus();
+    document.addEventListener("keydown", onKey);
+  }
+
+  function close() {
+    if (!lb) return;
+    lb.classList.remove("open");
+    document.body.classList.remove("lb-lock");
+    document.removeEventListener("keydown", onKey);
+    if (lastFocus && lastFocus.focus) lastFocus.focus();
+  }
+
+  function onKey(e) {
+    if (e.key === "Escape") close();
+    else if (e.key === "ArrowRight") go(idx + 1);
+    else if (e.key === "ArrowLeft") go(idx - 1);
+  }
+
+  trigger.addEventListener("click", function () { open(0); });
+  trigger.setAttribute("tabindex", "0");
+  trigger.setAttribute("role", "button");
+  trigger.setAttribute("aria-label", "Open Lumin AI teaching photo gallery, 9 photos");
+  trigger.addEventListener("keydown", function (e) {
+    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); open(0); }
+  });
+})();
