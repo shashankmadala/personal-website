@@ -2274,3 +2274,1419 @@ body.cp-lock .nav { padding-right: var(--cp-sbw, 0px); }
 /* the NOW cards became column flex containers when they became links, so a
    chip that is now a plate would stretch the full card width */
 .now-item .chip { align-self: flex-start; }
+
+
+/* ===== module 5 ===== */
+
+/* ============================================================
+   THE SHORTCUTS SHEET
+   This page is more keyboard driven than it lets on: a command
+   palette, a typeable terminal, a lightbox on arrow keys. "?"
+   opens the sheet that says so, and a one time pill points at
+   the "?" the first time someone lands here.
+   ============================================================ */
+
+.ks {
+  position: fixed; inset: 0; z-index: 640;
+  display: flex; align-items: center; justify-content: center;
+  padding: clamp(16px, 5vh, 64px) 16px;
+  opacity: 0; visibility: hidden;
+  /* visibility flips on the same tick it opens so the close button is
+     focusable right away, and is held back only on the way out */
+  transition: opacity 0.26s var(--ease), visibility 0s linear 0.26s;
+}
+.ks.open {
+  opacity: 1; visibility: visible;
+  transition: opacity 0.26s var(--ease), visibility 0s linear 0s;
+}
+/* the scrim, the plates and the keycaps are mixed out of the page tokens, so
+   the sheet follows the page if its palette ever changes. the flat rgba lines
+   are the fallback for anything without color-mix */
+.ks-scrim {
+  position: absolute; inset: 0;
+  background: rgba(6, 8, 13, 0.72);
+  background: color-mix(in srgb, var(--bg) 74%, transparent);
+  -webkit-backdrop-filter: blur(14px) saturate(0.85);
+  backdrop-filter: blur(14px) saturate(0.85);
+}
+.ks-panel {
+  position: relative;
+  width: 100%; max-width: 660px; max-height: 100%; min-height: 0;
+  display: flex; flex-direction: column;
+  background: linear-gradient(180deg, var(--panel-2), var(--panel));
+  border: 1px solid var(--line-2);
+  border-radius: 16px;
+  box-shadow: 0 40px 100px rgba(3, 5, 10, 0.7), 0 0 0 1px rgba(92, 157, 255, 0.05);
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(-10px) scale(0.986);
+  transition: opacity 0.3s var(--ease), transform 0.3s var(--ease);
+}
+.ks.open .ks-panel { opacity: 1; transform: none; }
+
+/* ---- head ---- */
+.ks-head {
+  flex: none;
+  display: flex; align-items: center; gap: 14px;
+  padding: 17px 16px 15px 20px;
+  border-bottom: 1px solid var(--line);
+}
+.ks-titles { min-width: 0; }
+.ks-title {
+  font-family: var(--display); font-weight: 600;
+  font-size: 17px; line-height: 1.2; letter-spacing: -0.01em;
+  color: var(--ink);
+}
+.ks-sub {
+  margin-top: 5px;
+  font-size: 9.5px; letter-spacing: 0.2em; line-height: 1.4;
+  color: var(--faint);
+}
+.ks-x {
+  margin-left: auto; flex: none; cursor: pointer;
+  background: none; color: var(--faint);
+  border: 1px solid var(--line-2); border-radius: 7px;
+  padding: 4px 8px;
+  font-family: var(--mono);
+  font-size: 9.5px; letter-spacing: 0.16em; line-height: 1.4;
+  transition: color 0.25s, border-color 0.25s;
+}
+.ks-x:hover { color: var(--ink); border-color: var(--blue); }
+.ks-x:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+
+/* ---- body: two columns of groups on a laptop, one on a phone ---- */
+.ks-body {
+  flex: 1; min-height: 0;
+  overflow-y: auto; overscroll-behavior: contain;
+  padding: 2px 20px 20px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 34px;
+  align-content: start;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(226, 232, 244, 0.18) transparent;
+}
+.ks-body::-webkit-scrollbar { width: 8px; }
+.ks-body::-webkit-scrollbar-thumb { background: rgba(226, 232, 244, 0.14); border-radius: 4px; }
+.ks-body::-webkit-scrollbar-track { background: transparent; }
+
+.ks-group { min-width: 0; padding-top: 20px; }
+.ks-full { grid-column: 1 / -1; }
+.ks-gt {
+  font-size: 9.5px; letter-spacing: 0.22em; line-height: 1;
+  color: var(--blue);
+  padding-bottom: 11px;
+  border-bottom: 1px solid var(--line);
+}
+.ks-rows { margin-top: 3px; }
+.ks-row {
+  display: flex; align-items: center; gap: 12px;
+  padding: 7px 0; min-width: 0;
+}
+.ks-row dt {
+  flex: 1 1 auto; min-width: 0;
+  font-size: 13px; line-height: 1.45; color: var(--body);
+  text-wrap: pretty;
+}
+.ks-row dd { flex: none; display: flex; align-items: center; gap: 5px; }
+.ks-k {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 23px; height: 23px; padding: 0 7px;
+  font-family: var(--mono); font-size: 11px; line-height: 1;
+  color: var(--ink);
+  border: 1px solid var(--line-2); border-radius: 7px;
+  background: rgba(255, 255, 255, 0.035);
+  background: color-mix(in srgb, var(--ink) 5%, transparent);
+  box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.22);
+}
+.ks-sep {
+  font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.1em;
+  color: var(--faint);
+  padding: 0 1px;
+}
+
+/* ---- the terminal group ---- */
+.ks-note { margin-top: 13px; font-size: 12.5px; line-height: 1.55; color: var(--dim); text-wrap: pretty; }
+.ks-cmds {
+  list-style: none;
+  display: flex; flex-wrap: wrap; gap: 7px;
+  margin-top: 13px;
+}
+.ks-cmds li {
+  font-family: var(--mono);
+  font-size: 11px; letter-spacing: 0.03em; line-height: 1.4;
+  color: var(--body);
+  border: 1px solid var(--line-2); border-radius: 999px;
+  background: rgba(255, 255, 255, 0.022);
+  background: color-mix(in srgb, var(--ink) 4%, transparent);
+  padding: 5px 11px;
+}
+
+/* ---- foot ---- */
+.ks-foot {
+  flex: none;
+  padding: 11px 20px;
+  border-top: 1px solid var(--line);
+  background: rgba(9, 12, 18, 0.55);
+  background: color-mix(in srgb, var(--ink) 3.5%, transparent);
+  font-size: 9.5px; letter-spacing: 0.14em; line-height: 1.5;
+  color: var(--faint);
+}
+
+/* ---- page state while the sheet owns the screen ---- */
+body.ks-lock { overflow: hidden; padding-right: var(--ks-sbw, 0px); }
+body.ks-lock .nav { padding-right: var(--ks-sbw, 0px); }
+
+/* ---- the first visit pill ----
+   bottom right, over nothing (the script checks), gone in nine seconds or
+   on the first click, and it never comes back once it has been seen */
+.ks-hint {
+  position: fixed; right: 20px; bottom: 20px; z-index: 180;
+  display: flex; align-items: center; gap: 4px;
+  padding: 5px 6px 5px 12px;
+  border: 1px solid var(--line-2); border-radius: 999px;
+  background: rgba(14, 18, 25, 0.86);
+  background: color-mix(in srgb, var(--panel) 92%, transparent);
+  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+  box-shadow: 0 14px 34px rgba(4, 7, 14, 0.5);
+  opacity: 0; transform: translateY(10px);
+  pointer-events: none;
+  transition: opacity 0.5s var(--ease), transform 0.5s var(--ease);
+}
+.ks-hint.on { opacity: 1; transform: none; pointer-events: auto; }
+.ks-hint-go {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: none; border: 0; padding: 3px 2px;
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: 9.5px; letter-spacing: 0.18em; line-height: 1;
+  color: var(--dim);
+  -webkit-appearance: none; appearance: none;
+  transition: color 0.25s;
+}
+.ks-hint-go:hover { color: var(--ink); }
+.ks-hint-go i { font-style: normal; color: var(--faint); }
+.ks-hint .ks-k { min-width: 19px; height: 19px; padding: 0 5px; font-size: 9.5px; color: var(--blue-2); }
+.ks-hint-x {
+  flex: none;
+  width: 22px; height: 22px; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: none; border: 1px solid transparent;
+  color: var(--faint);
+  font-size: 14px; line-height: 1; cursor: pointer;
+  transition: color 0.25s, border-color 0.25s;
+}
+.ks-hint-x:hover { color: var(--ink); border-color: var(--line-2); }
+.ks-hint-go:focus-visible, .ks-hint-x:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+
+/* ---- responsive ---- */
+@media (max-width: 700px) {
+  .ks { padding: 14px 12px; }
+  .ks-body { grid-template-columns: 1fr; gap: 0; padding: 2px 16px 18px; }
+  .ks-head { padding: 15px 13px 13px 16px; }
+  .ks-title { font-size: 16px; }
+  .ks-row dt { font-size: 12.5px; }
+  .ks-foot { padding: 10px 16px; }
+}
+@media (max-width: 760px), (hover: none), (pointer: coarse) {
+  /* nothing here can type a question mark, so the pill has nothing to say */
+  .ks-hint { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ks-panel { transform: none; }
+  .ks-hint { transform: none; }
+}
+
+
+/* ===== module 4 ===== */
+
+/* ============================================================
+   THE TIMELINE
+   A spine that draws itself as you scroll, with nodes that
+   ignite as the head reaches them. Alternating on desktop,
+   stacked on a phone. The lit, fully drawn state is the CSS
+   default, so a page without JS (or with reduced motion asked
+   for) gets a plain static list. [data-tl] is set by the script
+   and is what dims everything back down for the scrub.
+   ============================================================ */
+
+#timeline { scroll-margin-top: 88px; }
+.timeline { padding-block: 0 var(--sec); }
+
+.tl-note {
+  margin-top: 18px;
+  max-width: 46ch;
+  font-size: 15.5px;
+  color: var(--body);
+  text-wrap: pretty;
+}
+
+.tl-wrap { position: relative; }
+
+/* the rail runs from the first dot to the last, and fades out at the
+   bottom so the line ends instead of stopping */
+.tl-rail {
+  position: absolute;
+  top: 9px; bottom: 4px; left: 50%;
+  width: 1px; margin-left: -0.5px;
+  background: var(--line-2);
+  pointer-events: none;
+}
+.tl-fill {
+  position: absolute;
+  left: 0; top: 0;
+  width: 100%; height: 100%;
+  background: linear-gradient(180deg, #6d7ff2, #5c9dff 42%, #4cc3ff 78%, #38e1e8);
+}
+/* the drawing head: a small bright cap at the leading edge */
+.tl-fill::after {
+  content: "";
+  position: absolute;
+  left: 50%; bottom: -3px;
+  width: 7px; height: 7px; margin-left: -3.5px;
+  border-radius: 50%;
+  background: var(--sky);
+  box-shadow: 0 0 12px 2px rgba(76, 195, 255, 0.5);
+  opacity: 0;
+  transition: opacity 0.35s var(--ease);
+}
+[data-tl] .tl-fill { height: 0; }
+[data-tl] .tl-rail.is-drawing .tl-fill::after { opacity: 1; }
+
+.tl-track { list-style: none; margin: 0; padding: 0; }
+
+.tl-item {
+  position: relative;
+  width: 50%;
+  padding-right: clamp(26px, 3.2vw, 46px);
+  text-align: right;
+}
+.tl-item + .tl-item { margin-top: clamp(30px, 3.6vw, 52px); }
+.tl-item:nth-child(even) {
+  margin-left: 50%;
+  padding-right: 0;
+  padding-left: clamp(26px, 3.2vw, 46px);
+  text-align: left;
+}
+
+/* box-sizing is border-box page-wide, so 11px is the outer size and
+   half of it is exactly the offset that centres the dot on the rail */
+.tl-dot {
+  position: absolute;
+  top: 4px; right: -5.5px;
+  width: 11px; height: 11px;
+  border-radius: 50%;
+  background: var(--blue);
+  border: 1px solid var(--blue-2);
+  box-shadow: 0 0 0 4px rgba(92, 157, 255, 0.12);
+  transition: background 0.45s var(--ease), border-color 0.45s var(--ease), box-shadow 0.45s var(--ease);
+}
+.tl-item:nth-child(even) .tl-dot { right: auto; left: -5.5px; }
+.tl-nodate .tl-dot { top: 7px; }
+
+.tl-dot::after {
+  content: "";
+  position: absolute; inset: -3px;
+  border-radius: 50%;
+  border: 1px solid var(--blue);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.tl-date {
+  font-size: 10.5px; letter-spacing: 0.2em;
+  color: var(--blue);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+  transition: color 0.45s var(--ease);
+}
+.tl-title {
+  margin-top: 7px;
+  font-family: var(--display); font-weight: 600;
+  font-size: clamp(1.12rem, 1.8vw, 1.36rem);
+  line-height: 1.22; letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+.tl-say {
+  margin-top: 9px;
+  max-width: 42ch;
+  margin-left: auto;
+  font-size: 14.5px;
+  color: var(--body);
+  text-wrap: pretty;
+}
+.tl-item:nth-child(even) .tl-say { margin-left: 0; margin-right: auto; }
+
+/* ---- the scrub state: everything waits for the head ---- */
+[data-tl] .tl-in {
+  opacity: 0.3;
+  transform: translateY(10px);
+  transition: opacity 0.7s var(--ease), transform 0.7s var(--ease);
+}
+[data-tl] .tl-item.on .tl-in { opacity: 1; transform: none; }
+[data-tl] .tl-date { color: var(--faint); }
+[data-tl] .tl-item.on .tl-date { color: var(--blue); }
+[data-tl] .tl-dot {
+  background: var(--panel-2);
+  border-color: var(--line-2);
+  box-shadow: none;
+}
+[data-tl] .tl-item.on .tl-dot {
+  background: var(--blue);
+  border-color: var(--blue-2);
+  box-shadow: 0 0 0 4px rgba(92, 157, 255, 0.12), 0 0 16px rgba(92, 157, 255, 0.4);
+}
+[data-tl] .tl-item.on .tl-dot::after { animation: tl-ping 0.85s var(--ease) 1; }
+@keyframes tl-ping {
+  from { transform: scale(0.5); opacity: 0.7; }
+  to { transform: scale(2.4); opacity: 0; }
+}
+
+/* ---- phone: one column, the rail moves to the left edge ---- */
+@media (max-width: 720px) {
+  .tl-rail { left: 5px; margin-left: 0; }
+  .tl-item,
+  .tl-item:nth-child(even) {
+    width: 100%;
+    margin-left: 0;
+    padding-left: 30px;
+    padding-right: 0;
+    text-align: left;
+  }
+  .tl-item + .tl-item { margin-top: 28px; }
+  .tl-dot,
+  .tl-item:nth-child(even) .tl-dot { left: 0; right: auto; }
+  .tl-say,
+  .tl-item:nth-child(even) .tl-say { max-width: none; margin-left: 0; margin-right: 0; }
+  .tl-note { font-size: 14.5px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tl-dot::after { display: none; }
+  .tl-fill { height: 100%; }
+}
+
+
+/* ============================================================
+   KORA, THE IDEA
+   A four slider illustration of what the app is looking at.
+   Panel, cue sliders, a line drawn figure that is deliberately
+   not a person, and five bars that move with the sliders.
+   Appended last, so equal specificity ties resolve here.
+   ============================================================ */
+
+#koraDemo { scroll-margin-top: 88px; }
+
+/* the section sits in the gap the honors and press paddings already
+   leave behind it, so it adds no vertical rhythm of its own */
+.kd { padding-block: 0; }
+
+.kd-note {
+  margin-top: 18px;
+  max-width: 52ch;
+  font-size: 15.5px;
+  color: var(--body);
+  text-wrap: pretty;
+}
+
+/* ---- the label that has to be read before anything is believed ---- */
+.kd-disc {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  flex-wrap: wrap;
+  max-width: 74ch;
+  margin-bottom: clamp(22px, 2.6vw, 32px);
+  padding: 14px 18px;
+  border: 1px solid var(--line-2);
+  border-left: 2px solid var(--blue);
+  border-radius: 12px;
+  background: rgba(92, 157, 255, 0.045);
+}
+.kd-disc b {
+  flex: none;
+  font-weight: 500;
+  font-size: 9.5px;
+  letter-spacing: 0.2em;
+  line-height: 1.9;
+  color: var(--blue-2);
+}
+.kd-disc span {
+  flex: 1 1 260px;
+  min-width: 0;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--dim);
+  text-wrap: pretty;
+}
+
+/* ---- the panel ---- */
+.kd-panel {
+  border: 1px solid var(--line-2);
+  border-radius: 20px;
+  padding: clamp(24px, 3.2vw, 40px);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.028), rgba(255, 255, 255, 0) 42%),
+    linear-gradient(180deg, var(--panel-2), var(--panel));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 18px 46px rgba(4, 7, 14, 0.42);
+}
+.kd-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(28px, 3.4vw, 44px);
+}
+.kd-controls, .kd-read { min-width: 0; }
+
+.kd-lab {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  font-size: 9.5px;
+  letter-spacing: 0.2em;
+  color: var(--dim);
+}
+.kd-lab i {
+  font-style: normal;
+  font-size: 9px;
+  letter-spacing: 0.06em;
+  color: var(--faint);
+}
+
+/* ---- one cue ---- */
+.kd-cue { margin-top: 22px; }
+.kd-cue-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+.kd-cue-top label {
+  font-size: 14.5px;
+  color: var(--ink);
+  cursor: pointer;
+}
+.kd-cue-top b {
+  flex: none;
+  font-weight: 500;
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--blue-2);
+}
+.kd-ends {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  margin-top: 2px;
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+.kd-ends span { min-width: 0; }
+
+/* ---- the slider itself, same object in every engine ---- */
+.kd-range {
+  display: block;
+  width: 100%;
+  margin: 10px 0 0;
+  height: 22px;
+  background: transparent;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.kd-range:focus { outline: none; }
+.kd-range::-webkit-slider-runnable-track {
+  height: 4px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(124, 142, 178, 0.28), rgba(92, 157, 255, 0.55));
+}
+.kd-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px; height: 18px;
+  margin-top: -7px;
+  border-radius: 50%;
+  border: 1px solid rgba(92, 157, 255, 0.7);
+  background: var(--ink);
+  box-shadow: 0 2px 10px rgba(4, 7, 14, 0.5);
+  transition: transform 0.22s var(--ease), box-shadow 0.25s;
+}
+.kd-range::-moz-range-track {
+  height: 4px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(124, 142, 178, 0.28), rgba(92, 157, 255, 0.55));
+}
+.kd-range::-moz-range-thumb {
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  border: 1px solid rgba(92, 157, 255, 0.7);
+  background: var(--ink);
+  box-shadow: 0 2px 10px rgba(4, 7, 14, 0.5);
+  transition: transform 0.22s var(--ease), box-shadow 0.25s;
+}
+.kd-range:hover::-webkit-slider-thumb { transform: scale(1.12); }
+.kd-range:hover::-moz-range-thumb { transform: scale(1.12); }
+.kd-range:active::-webkit-slider-thumb { transform: scale(1.2); }
+.kd-range:active::-moz-range-thumb { transform: scale(1.2); }
+.kd-range:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 5px rgba(92, 157, 255, 0.22); }
+.kd-range:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 5px rgba(92, 157, 255, 0.22); }
+
+/* ---- presets ---- */
+.kd-try { margin-top: 30px; padding-top: 22px; border-top: 1px solid var(--line); }
+.kd-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.kd-preset {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.1em;
+  line-height: 1.2;
+  color: var(--dim);
+  background: rgba(255, 255, 255, 0.022);
+  border: 1px solid var(--line-2);
+  border-radius: 999px;
+  padding: 8px 13px;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+  transition: color 0.25s, border-color 0.25s, background 0.25s;
+}
+.kd-preset:hover { color: var(--ink); border-color: rgba(92, 157, 255, 0.45); background: rgba(92, 157, 255, 0.09); }
+
+/* ---- the readout ---- */
+/* the drawing and the verdict sit side by side while the longest state
+   name still fits beside it, and the verdict drops to its own line the
+   moment it does not. no word ever has to break */
+.kd-readtop {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px clamp(14px, 2vw, 24px);
+}
+.kd-verdict { flex: 1 1 210px; }
+.kd-face {
+  flex: none;
+  width: clamp(96px, 22vw, 152px);
+  height: auto;
+  overflow: visible;
+}
+.kd-aura { fill: none; stroke: var(--blue); stroke-width: 1; opacity: 0.2; }
+.kd-head { fill: rgba(92, 157, 255, 0.035); stroke: var(--line-2); stroke-width: 1.4; }
+.kd-brow, .kd-mouth { fill: none; stroke: var(--blue-2); stroke-width: 3; stroke-linecap: round; }
+.kd-brow { stroke-width: 2.4; opacity: 0.75; }
+.kd-eye { fill: none; stroke: var(--blue-2); stroke-width: 2.4; stroke-linejoin: round; }
+.kd-pup { fill: var(--blue-2); }
+
+.kd-verdict { min-width: 0; }
+.kd-state {
+  margin-top: 8px;
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: clamp(1.5rem, 2.6vw, 2.4rem);
+  line-height: 1.05;
+  letter-spacing: -0.025em;
+  overflow-wrap: anywhere;
+  background: var(--grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.kd-state.kd-pop { animation: kd-pop 0.44s var(--ease); }
+@keyframes kd-pop {
+  from { opacity: 0; transform: translateY(7px); }
+  to { opacity: 1; transform: none; }
+}
+.kd-driver {
+  margin-top: 10px;
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  line-height: 1.7;
+  color: var(--faint);
+}
+
+/* ---- the bars ---- */
+.kd-bars { margin-top: clamp(24px, 3vw, 34px); }
+.kd-bar {
+  display: grid;
+  grid-template-columns: 104px minmax(0, 1fr) 40px;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0;
+}
+.kd-bar:first-of-type { margin-top: 6px; }
+.kd-b-name {
+  font-size: 13px;
+  color: var(--dim);
+  overflow-wrap: anywhere;
+  transition: color 0.3s;
+}
+.kd-bar.is-top .kd-b-name { color: var(--ink); }
+.kd-b-track {
+  position: relative;
+  height: 6px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: rgba(124, 142, 178, 0.22);
+}
+.kd-b-fill {
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  transform-origin: 0 50%;
+  background: linear-gradient(90deg, rgba(109, 127, 242, 0.5), rgba(76, 195, 255, 0.5));
+  transition: background 0.4s var(--ease);
+}
+.kd-bar.is-top .kd-b-fill { background: var(--grad); }
+.kd-b-val {
+  font-size: 10.5px;
+  letter-spacing: 0.04em;
+  text-align: right;
+  color: var(--faint);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+  transition: color 0.3s;
+}
+.kd-bar.is-top .kd-b-val { color: var(--blue-2); }
+
+/* screen reader announcement, debounced by the script */
+.kd-sr {
+  position: absolute;
+  width: 1px; height: 1px;
+  margin: -1px; padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---- two columns once there is room for them ---- */
+@media (min-width: 881px) {
+  .kd-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .kd-read {
+    border-left: 1px solid var(--line);
+    padding-left: clamp(28px, 3.4vw, 44px);
+  }
+}
+
+/* on one column the order changes rather than the content: the answer
+   on top, the sliders under it, the split last. display: contents lifts
+   the two halves of the readout into the same grid so they can be
+   ordered around the controls. */
+@media (max-width: 880px) {
+  .kd-read { display: contents; }
+  .kd-readtop { order: -2; }
+  .kd-controls {
+    order: -1;
+    border-top: 1px solid var(--line);
+    padding-top: clamp(20px, 3.4vw, 28px);
+  }
+  .kd-bars { order: 0; margin-top: 0; }
+  .kd-grid { gap: clamp(24px, 4vw, 34px); }
+}
+
+@media (max-width: 640px) {
+  .kd-note { font-size: 14.5px; }
+  .kd-bar { grid-template-columns: 92px minmax(0, 1fr) 38px; gap: 10px; }
+  .kd-b-name { font-size: 12.5px; }
+  .kd-lab i { display: block; width: 100%; }
+  .kd-ends { font-size: 8.5px; letter-spacing: 0.1em; }
+  .kd-disc { padding: 13px 15px; gap: 10px; }
+}
+
+/* a coarse pointer needs a bigger thumb to grab */
+@media (hover: none), (pointer: coarse) {
+  .kd-range { height: 30px; }
+  .kd-range::-webkit-slider-thumb { width: 22px; height: 22px; margin-top: -9px; }
+  .kd-range::-moz-range-thumb { width: 20px; height: 20px; }
+  .kd-preset { padding: 10px 14px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kd-state.kd-pop { animation: none; }
+  .kd-b-fill, .kd-range::-webkit-slider-thumb, .kd-range::-moz-range-thumb { transition: none; }
+}
+
+
+/* ===== module 6 ===== */
+
+/* ============================================================
+   LIGHT MODE
+   One alternate token set on :root[data-theme="light"], so every
+   component that already reads a token flips for free. Under the
+   tokens sits the audit: every place the page hard coded a dark
+   value instead of a token gets a light value picked on purpose.
+   The terminal is the one deliberate exception. It stays a dark
+   instrument in both themes, the way a screen is dark whatever
+   room it is sitting in.
+   Appended last, so equal-specificity ties resolve here.
+   ============================================================ */
+
+:root[data-theme="dark"] { color-scheme: dark; }
+
+:root[data-theme="light"] {
+  color-scheme: light;
+
+  --bg: #f6f7fa;
+  --panel: #ffffff;
+  --panel-2: #fbfcfe;
+  --ink: #0e1420;
+  --body: #46536a;          /* 7.8:1 on white */
+  --dim: #5a6478;           /* 6.0:1 on white */
+  --faint: #626c86;         /* 5.2:1 on white, 4.8:1 on the page */
+  --line: rgba(15, 23, 42, 0.09);
+  --line-2: rgba(15, 23, 42, 0.16);
+  --blue: #2563d4;          /* 5.4:1 on white */
+  --blue-2: #1a4cb0;        /* the hover step darkens here instead of lightening */
+  --indigo: #3f4fd8;
+  --sky: #0d72b8;           /* 5.2:1 on white */
+  --cyan: #0a7f96;          /* 4.7:1, so gradient text still clears small copy */
+  --grad: linear-gradient(100deg, #3f4fd8, #1f5ec9 45%, #0a6fae 80%, #0a7f96);
+  --btn: #1f5ec9;
+  --btn-hover: #1a4cb0;
+}
+
+/* ---------- the toggle: same pill as the search control ---------- */
+.th-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  flex: none;
+  width: 36px; height: 36px;
+  padding: 0;
+  color: var(--dim);
+  background: rgba(14, 18, 25, 0.5);
+  border: 1px solid var(--line-2);
+  border-radius: 10px;
+  cursor: pointer;
+  -webkit-appearance: none; appearance: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: color 0.25s, border-color 0.25s, background 0.25s, transform 0.25s var(--ease);
+}
+[data-theme="light"] .th-btn { background: rgba(255, 255, 255, 0.7); }
+.th-btn:hover { color: var(--ink); border-color: var(--blue); }
+.th-btn:active { transform: scale(0.94); }
+.th-btn:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+
+.th-ico { position: relative; display: block; width: 16px; height: 16px; }
+.th-ico svg {
+  position: absolute; inset: 0;
+  width: 16px; height: 16px;
+  transition: opacity 0.4s var(--ease), transform 0.5s var(--ease);
+}
+.th-sun { opacity: 0; transform: rotate(-90deg) scale(0.5); }
+.th-moon { opacity: 1; transform: none; }
+[data-theme="light"] .th-sun { opacity: 1; transform: none; }
+[data-theme="light"] .th-moon { opacity: 0; transform: rotate(90deg) scale(0.5); }
+
+/* the nav had 40px of slack at 375px and a third control needs 39 of it */
+@media (max-width: 640px) {
+  .th-btn { width: 32px; height: 32px; border-radius: 9px; }
+  .nav-end { gap: 7px; }
+  .nav-cta { padding-inline: 14px; }
+}
+
+/* ---------- the swap itself ---------- */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.4s;
+  animation-timing-function: var(--ease);
+}
+/* fallback for engines without view transitions: a short colour crossfade,
+   armed only for the length of the swap */
+html.th-x, html.th-x *, html.th-x *::before, html.th-x *::after {
+  transition: background-color 0.32s var(--ease), border-color 0.32s var(--ease),
+              color 0.32s var(--ease), box-shadow 0.32s var(--ease),
+              fill 0.32s var(--ease), stroke 0.32s var(--ease) !important;
+}
+
+/* ============================================================
+   THE AUDIT
+   ============================================================ */
+
+/* ---- grain: on a light page the noise reads as paper, not dust ---- */
+[data-theme="light"] .grain { opacity: 0.03; mix-blend-mode: multiply; }
+[data-theme="light"] ::selection { background: rgba(37, 99, 212, 0.18); color: var(--ink); }
+
+/* ---- nav ---- */
+[data-theme="light"] .nav.scrolled { background: rgba(246, 247, 250, 0.82); }
+
+/* ---- hero: the glow rises instead of falling, the tile grid multiplies ----
+   The canvas paints translucent indigo-to-cyan tiles that were tuned to add
+   light. Multiply makes them subtract it instead, and the brightness step
+   darkens each tile enough that its own border reads again. */
+[data-theme="light"] .hero-glow {
+  background:
+    linear-gradient(to top, rgba(37, 99, 212, 0.1), transparent 72%),
+    radial-gradient(60% 50% at 28% 100%, rgba(63, 79, 216, 0.09), transparent 65%),
+    radial-gradient(55% 45% at 74% 98%, rgba(10, 127, 150, 0.07), transparent 65%);
+}
+[data-theme="light"] .hero-cursor {
+  background: radial-gradient(circle, rgba(37, 99, 212, 0.08), rgba(37, 99, 212, 0.05) 40%, transparent 65%);
+}
+[data-theme="light"] #tileCanvas {
+  mix-blend-mode: multiply;
+  filter: saturate(1.3) brightness(0.72);
+}
+
+/* ---- the terminal stays dark in both themes ----
+   It is a screen. Its palette is pinned here rather than left on the tokens,
+   so nothing inside it inverts along with the page. */
+[data-theme="light"] .term {
+  background: rgba(12, 16, 24, 0.97);
+  border-color: rgba(226, 232, 244, 0.14);
+  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.18);
+}
+[data-theme="light"] .term-bar { border-bottom-color: rgba(226, 232, 244, 0.09); }
+[data-theme="light"] .term-title { color: #7d879e; }
+[data-theme="light"] .term-status { color: #7fb0ff; }
+[data-theme="light"] .term-status .pulse { background: #7fb0ff; }
+[data-theme="light"] .term-body { color: #99a3b4; }
+[data-theme="light"] .term-body .t-prompt { color: #7fb0ff; }
+[data-theme="light"] .term-body .t-cmd { color: #eef1f6; }
+[data-theme="light"] .term-body .t-out { color: #99a3b4; }
+[data-theme="light"] .term-body .t-hl { color: #a9caff; }
+[data-theme="light"] .term-caret { background: #7fb0ff; }
+[data-theme="light"] .float-chip {
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.1);
+}
+
+/* ---- the scrubbed statement: unlit words are ink at 13% ---- */
+[data-theme="light"] .statement-text .w { color: rgba(14, 20, 32, 0.13); }
+
+/* ---- surfaces. On black, cards are lifted by a white top edge and a deep
+   shadow. On white there is no lighter value to lift with, so the work is
+   done by a hairline, a tight contact shadow and a wide soft one. ---- */
+[data-theme="light"] .now-item,
+[data-theme="light"] .beyond-card,
+[data-theme="light"] .press-card {
+  background: var(--panel);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 12px 30px rgba(15, 23, 42, 0.055);
+}
+[data-theme="light"] .now-item::before,
+[data-theme="light"] .beyond-card::before,
+[data-theme="light"] .press-card::before,
+[data-theme="light"] .receipt::before,
+[data-theme="light"] .stack-in::before { box-shadow: none; }
+[data-theme="light"] .now-item:hover::before,
+[data-theme="light"] .beyond-card:hover::before,
+[data-theme="light"] .press-card:hover::before { box-shadow: inset 0 0 0 1px rgba(37, 99, 212, 0.22); }
+[data-theme="light"] .receipt {
+  background: var(--panel);
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04), 0 22px 55px rgba(15, 23, 42, 0.08);
+}
+[data-theme="light"] .stack-in {
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05), 0 -12px 44px rgba(15, 23, 42, 0.07);
+}
+[data-theme="light"] .chip { background: rgba(15, 23, 42, 0.03); }
+[data-theme="light"] .chip-blue {
+  background: rgba(37, 99, 212, 0.07);
+  border-color: rgba(37, 99, 212, 0.28);
+}
+[data-theme="light"] .tags li { background: rgba(15, 23, 42, 0.028); }
+[data-theme="light"] .stat {
+  background-image: linear-gradient(90deg,
+    rgba(37, 99, 212, 0.85), rgba(37, 99, 212, 0.12) 58%, transparent);
+}
+[data-theme="light"] .tilt-glare-dot {
+  background: radial-gradient(circle, rgba(37, 99, 212, 0.07) 0%, rgba(37, 99, 212, 0.03) 38%, transparent 66%);
+}
+
+/* ---- the primary button carries white text, so its lightest stop has to
+   stay under 4.5:1 against it ---- */
+[data-theme="light"] .btn-primary {
+  background: linear-gradient(120deg, #2447c8, #1c5cc9 55%, #0f70b0);
+  background-size: 150% 100%;
+  box-shadow: 0 6px 20px rgba(31, 92, 201, 0.24);
+}
+[data-theme="light"] .btn-primary:hover { box-shadow: 0 10px 28px rgba(15, 112, 176, 0.3); }
+[data-theme="light"] .pf-chip[aria-pressed="true"] {
+  background: linear-gradient(120deg, #2447c8, #1c5cc9 55%, #0f70b0);
+  box-shadow: 0 6px 18px rgba(31, 92, 201, 0.22);
+}
+[data-theme="light"] .contact-glow {
+  background: linear-gradient(to top, rgba(37, 99, 212, 0.09), transparent 75%);
+}
+
+/* ---- photographs: white mat, hairline, one soft shadow ---- */
+[data-theme="light"] .photo { box-shadow: 0 10px 34px rgba(15, 23, 42, 0.09); }
+[data-theme="light"] .photo.pic-margin { box-shadow: 0 8px 26px rgba(15, 23, 42, 0.08); }
+[data-theme="light"] .gal-badge {
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.88);
+  border-color: rgba(37, 99, 212, 0.3);
+}
+[data-theme="light"] .gal-trigger:hover .gal-badge,
+[data-theme="light"] .gal-trigger:focus-visible .gal-badge {
+  background: rgba(37, 99, 212, 0.14);
+  border-color: var(--blue);
+}
+
+/* ---- the classroom mosaic ---- */
+[data-theme="light"] .band {
+  background:
+    radial-gradient(64% 58% at 50% 0%, rgba(37, 99, 212, 0.05), transparent 62%),
+    linear-gradient(180deg,
+      rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.85) 20%,
+      rgba(255, 255, 255, 0.85) 80%, rgba(255, 255, 255, 0) 100%);
+}
+[data-theme="light"] .band-hit img {
+  background: #eef1f6;
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.1);
+}
+[data-theme="light"] .band-shot:hover .band-hit img,
+[data-theme="light"] .band-hit:focus-visible img { box-shadow: 0 20px 46px rgba(15, 23, 42, 0.14); }
+[data-theme="light"] .band-hit::after { box-shadow: inset 0 0 0 1px var(--line-2); }
+[data-theme="light"] .band-shot:hover .band-hit::after,
+[data-theme="light"] .band-hit:focus-visible::after { box-shadow: inset 0 0 0 1px rgba(37, 99, 212, 0.45); }
+[data-theme="light"] .band-zoom { color: var(--ink); background: rgba(255, 255, 255, 0.86); }
+[data-theme="light"] .band-shot:hover .band-zoom,
+[data-theme="light"] .band-hit:focus-visible .band-zoom {
+  background: rgba(37, 99, 212, 0.16);
+  border-color: var(--blue);
+}
+[data-theme="light"] .band-btn { background: rgba(255, 255, 255, 0.9); }
+
+/* ---- section rail ---- */
+[data-theme="light"] .rail-pip { background: rgba(15, 23, 42, 0.22); }
+[data-theme="light"] .rail-lab { background: rgba(255, 255, 255, 0.94); }
+
+/* ---- lightbox: a bright room instead of a dark one ---- */
+[data-theme="light"] .lb { background: rgba(238, 241, 246, 0.94); }
+[data-theme="light"] .lb-img { box-shadow: 0 24px 70px rgba(15, 23, 42, 0.22); }
+[data-theme="light"] .lb-nav { background: rgba(255, 255, 255, 0.9); }
+[data-theme="light"] .lb-nav:hover { background: rgba(37, 99, 212, 0.12); }
+[data-theme="light"] .lb-close:hover { background: rgba(37, 99, 212, 0.1); }
+[data-theme="light"] .lb-thumb { opacity: 0.55; }
+
+/* ---- command palette and the shortcuts sheet ---- */
+[data-theme="light"] .cp-open { background: rgba(255, 255, 255, 0.7); }
+[data-theme="light"] .cp-kbd { background: rgba(15, 23, 42, 0.04); }
+[data-theme="light"] .cp-scrim,
+[data-theme="light"] .ks-scrim { background: rgba(226, 231, 240, 0.7); }
+[data-theme="light"] .cp-panel,
+[data-theme="light"] .ks-panel {
+  background: linear-gradient(180deg, #ffffff, #fbfcfe);
+  box-shadow: 0 30px 80px rgba(15, 23, 42, 0.16), 0 0 0 1px rgba(15, 23, 42, 0.04);
+}
+[data-theme="light"] .cp-group {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 72%, rgba(255, 255, 255, 0));
+}
+[data-theme="light"] .cp-hint,
+[data-theme="light"] .ks-foot { background: rgba(246, 247, 250, 0.8); }
+[data-theme="light"] .cp-hint kbd,
+[data-theme="light"] .ks-cmds li { background: rgba(15, 23, 42, 0.035); }
+[data-theme="light"] .ks-k {
+  background: rgba(15, 23, 42, 0.035);
+  box-shadow: inset 0 -1px 0 rgba(15, 23, 42, 0.14);
+}
+[data-theme="light"] .ks-hint {
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 14px 34px rgba(15, 23, 42, 0.12);
+}
+[data-theme="light"] .cp-list,
+[data-theme="light"] .ks-body,
+[data-theme="light"] .wk-drawer-in { scrollbar-color: rgba(15, 23, 42, 0.25) transparent; }
+[data-theme="light"] .cp-list::-webkit-scrollbar-thumb,
+[data-theme="light"] .ks-body::-webkit-scrollbar-thumb { background: rgba(15, 23, 42, 0.2); }
+
+/* ---- timeline: the drawn line takes the light gradient ---- */
+[data-theme="light"] .tl-fill {
+  background: linear-gradient(180deg, #3f4fd8, #1f5ec9 42%, #0a6fae 78%, #0a7f96);
+}
+[data-theme="light"] .tl-fill::after { box-shadow: 0 0 12px 2px rgba(13, 114, 184, 0.45); }
+[data-theme="light"] [data-tl] .tl-item.on .tl-dot {
+  box-shadow: 0 0 0 4px rgba(37, 99, 212, 0.14), 0 0 14px rgba(37, 99, 212, 0.3);
+}
+
+/* ---- the sticky work stack ----
+   A covered card is dimmed with an inline brightness filter. On black that
+   pushes it back; on white it just turns the card grey. The scale, the lift
+   and the opacity already carry the depth here, so the filter comes off. */
+[data-theme="light"] .stack-in { filter: none !important; }
+
+/* ---- the Kora slider demo ---- */
+[data-theme="light"] .kd-panel {
+  background: linear-gradient(180deg, var(--panel-2), var(--panel));
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05), 0 18px 44px rgba(15, 23, 42, 0.07);
+}
+[data-theme="light"] .kd-preset { background: rgba(15, 23, 42, 0.03); }
+[data-theme="light"] .kd-b-track { background: rgba(15, 23, 42, 0.08); }
+[data-theme="light"] .kd-b-fill {
+  background: linear-gradient(90deg, rgba(63, 79, 216, 0.45), rgba(10, 127, 150, 0.45));
+}
+[data-theme="light"] .kd-head { fill: rgba(37, 99, 212, 0.05); }
+/* the vendor tracks and thumbs stay in rules of their own: one unknown
+   pseudo-element would drop the whole selector list */
+[data-theme="light"] .kd-range::-webkit-slider-runnable-track {
+  background: linear-gradient(90deg, rgba(15, 23, 42, 0.1), rgba(37, 99, 212, 0.55));
+}
+[data-theme="light"] .kd-range::-moz-range-track {
+  background: linear-gradient(90deg, rgba(15, 23, 42, 0.1), rgba(37, 99, 212, 0.55));
+}
+[data-theme="light"] .kd-range::-webkit-slider-thumb {
+  background: #ffffff;
+  border-color: rgba(37, 99, 212, 0.75);
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.22);
+}
+[data-theme="light"] .kd-range::-moz-range-thumb {
+  background: #ffffff;
+  border-color: rgba(37, 99, 212, 0.75);
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.22);
+}
+
+
+/* ============================================================
+   FLY-IN CHOREOGRAPHY
+   The flat .reveal fade is retired for everything this engine owns:
+   main.js strips .reveal / .d1 / .d2 / .d3 off each claimed element at
+   init and drives it from [data-fly] instead, so nothing animates twice
+   and a failure anywhere leaves the element plainly visible.
+   Section heads are deliberately NOT claimed. They keep the letter and
+   word stagger from the motion pass and act as the beat the cards follow.
+   The triple attribute selector is on purpose: it has to outrank
+   .photo.pic-sign { transform: none }, .photo:hover, .reveal.on and
+   .sec-head.stag, all of which land earlier in this file.
+   ============================================================ */
+[data-fly][data-fly][data-fly] {
+  opacity: 0;
+  transform: translate3d(var(--fx, 0px), var(--fy, 48px), 0) scale(var(--fs, 0.94));
+  filter: blur(var(--fb, 0px));
+  transition:
+    opacity 0.86s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 1.15s cubic-bezier(0.16, 1, 0.3, 1),
+    filter 0.72s cubic-bezier(0.16, 1, 0.3, 1);
+}
+[data-fly][data-fly][data-fly].fly-in {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale(1);
+  filter: blur(0px);
+}
+
+/* motion off: land in the finished state, no travel, no blur */
+@media (prefers-reduced-motion: reduce) {
+  [data-fly][data-fly][data-fly],
+  [data-fly][data-fly][data-fly].fly-in {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+    transition: none !important;
+  }
+}
+@media print {
+  [data-fly][data-fly][data-fly] {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+  }
+}
+
+
+/* ============================================================
+   PINNED SET PIECES
+   Two moments where the page slows down and something happens.
+   1. THE BOARD: the four numbers hold still in the middle of the
+      screen and count against the scroll, so they run backwards
+      as well as forwards.
+   2. THE CLASSROOM: the nine frames start scattered, tilted and
+      soft, and converge into the mosaic as they scroll in.
+   Both are scrubbed from JS every frame, so nothing in here may
+   carry a transition: the scroll position is the only clock.
+   Appended last, so equal-specificity ties resolve here.
+   ============================================================ */
+
+/* the pin is a sticky inner wrapper inside a taller outer block. The
+   spacer is what makes the block taller, so the sticky child can never
+   escape the layout or reach the nav. */
+.ps-pin { position: relative; }
+.ps-stick { position: static; }
+.ps-spacer { height: 0; pointer-events: none; }
+
+/* the four stats hand themselves over from the entry engine. Default
+   state is the finished state, so any failure above leaves them read. */
+.ps-stat {
+  opacity: 1;
+  transform: none;
+  filter: none;
+  transition: none;
+}
+.ps-stat .num,
+.ps-stat .num > span,
+.ps-stat p { transition: none; }
+
+/* the frames are driven one layer below .band-shot, on the button and
+   its caption, so a skew on the figure still composes cleanly on top */
+.ps-mosaic { opacity: 1; }
+.ps-mosaic .band-hit {
+  opacity: 1;
+  transform: none;
+  filter: none;
+  transition: none;
+}
+.ps-mosaic .band-cap { opacity: 1; }
+
+/* the frame lifts on hover from the image inside it, which is a
+   different element from the one this module writes, so the two never
+   overwrite each other. Nothing to add. */
+
+@media (prefers-reduced-motion: reduce) {
+  .ps-spacer { height: 0 !important; }
+  .ps-stick { position: static !important; top: auto !important; }
+  .ps-stat,
+  .ps-mosaic .band-hit,
+  .ps-mosaic .band-cap {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+  }
+}
+
+@media print {
+  .ps-spacer { display: none; }
+  .ps-stick { position: static !important; }
+  .ps-stat,
+  .ps-mosaic .band-hit,
+  .ps-mosaic .band-cap {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+  }
+}
+
+/* at 375 the three controls and the name share 319px, so the last tier
+   trims the toggle and the gaps rather than letting the name wrap */
+@media (max-width: 400px) {
+  .th-btn { width: 30px; height: 30px; }
+  .nav-end { gap: 6px; }
+  .nav-cta { padding-inline: 12px; }
+}
+
+
+/* ============================================================
+   FRICTIONLESS CONTACT
+   A readable, selectable address under the two buttons, a copy
+   control that draws a check, and one share control. Same pill
+   vocabulary the rest of the page already uses.
+   ============================================================ */
+
+.fc-row {
+  margin-top: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.7s var(--ease), transform 0.7s var(--ease);
+}
+.fc-row.fc-in { opacity: 1; transform: none; }
+
+/* ---- the address plate ---- */
+.fc-field {
+  display: inline-flex;
+  align-items: stretch;
+  max-width: 100%;
+  min-height: 38px;
+  border: 1px solid var(--line-2);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.022);
+}
+.fc-addr {
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+  padding: 9px 14px 9px 17px;
+  border-radius: 999px 0 0 999px;
+  font-size: 13px;
+  line-height: 1.3;
+  letter-spacing: 0.01em;
+  color: var(--body);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  /* one click takes the whole address, for the people who read it
+     rather than press the button */
+  user-select: all;
+  -webkit-user-select: all;
+}
+
+/* ---- copy ---- */
+.fc-copy,
+.fc-share {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-family: var(--mono);
+  font-size: 10px;
+  line-height: 1;
+  letter-spacing: 0.18em;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: color 0.25s, border-color 0.25s, background 0.25s;
+}
+.fc-copy {
+  flex: none;
+  padding: 10px 11px 10px 16px;
+  color: var(--ink);
+  border: 0;
+  border-left: 1px solid var(--line-2);
+  border-radius: 0 999px 999px 0;
+  background: rgba(92, 157, 255, 0.075);
+}
+.fc-copy:hover { background: rgba(92, 157, 255, 0.18); }
+.fc-copy.is-done { color: var(--blue-2); background: rgba(92, 157, 255, 0.2); }
+.fc-copy.is-fail { color: var(--body); background: rgba(255, 255, 255, 0.05); }
+
+/* ---- share ---- */
+.fc-share {
+  min-height: 38px;
+  padding: 10px 17px;
+  color: var(--dim);
+  border: 1px solid var(--line-2);
+  border-radius: 999px;
+  background: transparent;
+}
+.fc-share:hover {
+  color: var(--ink);
+  border-color: rgba(92, 157, 255, 0.45);
+  background: rgba(92, 157, 255, 0.07);
+}
+.fc-share.is-done { color: var(--blue-2); border-color: rgba(92, 157, 255, 0.45); }
+
+/* the label holds its width so COPY to COPIED does not shove the row */
+.fc-label { min-width: 4.7em; text-align: left; }
+.fc-share .fc-label { min-width: 0; }
+
+/* ---- the icon that becomes a check ---- */
+.fc-ico {
+  position: relative;
+  flex: none;
+  width: 14px;
+  height: 14px;
+}
+.fc-i {
+  position: absolute;
+  inset: 0;
+  width: 14px;
+  height: 14px;
+}
+.fc-i-share { position: static; }
+.fc-i-copy {
+  opacity: 1;
+  transform: none;
+  transition: opacity 0.2s var(--ease), transform 0.32s var(--ease);
+}
+.fc-i-check { opacity: 0; transition: opacity 0.18s var(--ease); }
+.fc-i-check path {
+  stroke-dasharray: 15;
+  stroke-dashoffset: 15;
+}
+.fc-copy.is-done .fc-i-copy { opacity: 0; transform: scale(0.6) rotate(-12deg); }
+.fc-copy.is-done .fc-i-check { opacity: 1; }
+.fc-copy.is-done .fc-i-check path {
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 0.42s var(--ease) 0.06s;
+}
+
+/* ---- the announcement, for screen readers only ---- */
+.fc-live {
+  position: absolute;
+  width: 1px; height: 1px;
+  margin: -1px; padding: 0; border: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+}
+
+@media (max-width: 480px) {
+  .fc-row { margin-top: 20px; gap: 9px; }
+  .fc-addr { padding: 9px 9px 9px 12px; }
+  .fc-copy { padding: 9px 9px 9px 12px; gap: 7px; letter-spacing: 0.14em; }
+  .fc-share { padding: 9px 14px; gap: 7px; letter-spacing: 0.14em; }
+}
+@media (max-width: 380px) {
+  .fc-addr { font-size: 11.5px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fc-row { opacity: 1; transform: none; }
+  .fc-i-check path { stroke-dashoffset: 0; }
+}
+
+/* ============================================================
+   APPLE SCROLL CHOREOGRAPHY
+   Directional fly-ins with scale and a blur that resolves,
+   masked word reveals on section titles, and the classroom
+   photos flying into place. Appended last so it takes over
+   the old flat .reveal fade.
+   ============================================================ */
+
+/* ---- richer base entry: travel + scale + blur ---- */
+.reveal {
+  transform: translate3d(0, 54px, 0) scale(0.965);
+  filter: blur(6px);
+  transition:
+    opacity 1.15s var(--ease),
+    transform 1.15s var(--ease),
+    filter 1.05s var(--ease);
+  will-change: transform, opacity;
+}
+.reveal.on {
+  transform: none;
+  filter: blur(0);
+}
+
+/* ---- directional variants, assigned from JS by layout position ---- */
+
+/* the page never scrolls sideways because of a fly-in */
+main { overflow-x: clip; }
+
+/* ---- masked word reveal on section titles ---- */
+.sec-title .wr {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+  padding-bottom: 0.14em;
+  margin-bottom: -0.14em;
+}
+.sec-title .wi {
+  display: inline-block;
+  transform: translateY(108%);
+  transition: transform 1s var(--ease);
+}
+.reveal.on .sec-title .wi { transform: none; }
+
+/* ---- the classroom photos fly into place ---- */
+.band-shot.ch {
+  opacity: 0;
+  transition:
+    opacity 1s var(--ease),
+    transform 1.15s var(--ease),
+    filter 0.95s var(--ease);
+  filter: blur(7px);
+  will-change: transform, opacity;
+}
+.band-shot.ch.ch-in {
+  opacity: 1;
+  transform: none;
+  filter: blur(0);
+}
+
+/* ---- depth: ambient washes drift a little slower than the page ---- */
+.hero-glow, .contact-glow { will-change: transform; }
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .reveal.fly-l,
+  .reveal.fly-r,
+  .reveal.fly-u {
+    transform: none !important;
+    filter: none !important;
+  }
+  .sec-title .wi { transform: none !important; }
+  .band-shot.ch { opacity: 1 !important; transform: none !important; filter: none !important; }
+}

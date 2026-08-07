@@ -2753,3 +2753,1987 @@
     }
   }
 })();
+
+
+/* ============================================================
+   THE SHORTCUTS SHEET
+   "?" opens a help sheet for everything this page can do from
+   the keyboard: the command palette, the lightbox arrows, the
+   terminal commands. Escape, a click outside, or the close
+   button shuts it. A one time pill points at the "?" on a
+   first visit and then never appears again.
+   Self contained. Every lookup is guarded.
+   ============================================================ */
+(function () {
+  "use strict";
+
+  var root = document.documentElement;
+  var body = document.body;
+  if (!root || !body) return;
+  if (root.hasAttribute("data-ks-sheet")) return;
+  root.setAttribute("data-ks-sheet", "");
+
+  var reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var touch = matchMedia("(hover: none), (pointer: coarse)").matches;
+  var isMac = /Mac|iPhone|iPad|iPod/.test((navigator.platform || "") + " " + (navigator.userAgent || ""));
+  var MOD = isMac ? "⌘" : "Ctrl";
+
+  /* what this page actually has, read off the page rather than assumed */
+  var hasPalette = !!(document.getElementById("cpOpen") || document.getElementById("cmdPalette"));
+  var hasGallery = !!document.getElementById("luminGallery");
+  var hasTerm = !!(document.getElementById("term") && document.getElementById("termBody"));
+  var hasFilters = !!document.querySelector(".press-filters .pf-chip");
+
+  /* the commands the terminal documents in its own help output */
+  var CMDS = ["help", "whoami", "work", "kora", "lumin", "yale", "safestrides",
+              "frc", "fbla", "honors", "press", "photos", "contact", "clear"];
+
+  var GROUPS = [];
+
+  if (hasPalette) {
+    GROUPS.push({
+      t: "SEARCH",
+      rows: [
+        { l: "Search the whole page", k: [MOD, "K", "~or", "/"] },
+        { l: "Move through results", k: ["↑", "↓"] },
+        { l: "Open the highlighted result", k: ["↵"] },
+        { l: "Close the search", k: ["Esc"] }
+      ]
+    });
+  }
+
+  GROUPS.push({
+    t: "THIS SHEET",
+    rows: [
+      { l: "Open the shortcuts", k: ["?"] },
+      { l: "Close whatever is open", k: ["Esc"] }
+    ]
+  });
+
+  if (hasGallery) {
+    GROUPS.push({
+      t: "PHOTOS",
+      rows: [
+        { l: "Open a teaching photo", k: ["↵", "~or", "Space"] },
+        { l: "Previous, next photo", k: ["←", "→"] },
+        { l: "Close the gallery", k: ["Esc"] }
+      ]
+    });
+  }
+
+  var pageRows = [
+    { l: "Step through links and buttons", k: ["Tab"] },
+    { l: "Step backwards", k: ["Shift", "Tab"] },
+    { l: "Open whatever is focused", k: ["↵", "~or", "Space"] }
+  ];
+  if (hasFilters) pageRows.push({ l: "Move along the press filters", k: ["←", "→"] });
+  GROUPS.push({ t: "THE PAGE", rows: pageRows });
+
+  var shell = null, panel = null, closeBtn = null;
+  var built = false, isOpen = false, lastFocus = null;
+
+  function keyEl(token) {
+    if (token.charAt(0) === "~") {
+      var s = document.createElement("span");
+      s.className = "ks-sep";
+      s.textContent = token.slice(1);
+      return s;
+    }
+    var k = document.createElement("kbd");
+    k.className = "ks-k";
+    k.textContent = token;
+    return k;
+  }
+
+  function groupEl(def) {
+    var sec = document.createElement("section");
+    sec.className = "ks-group";
+
+    var h = document.createElement("h3");
+    h.className = "ks-gt mono";
+    h.textContent = def.t;
+    sec.appendChild(h);
+
+    var dl = document.createElement("dl");
+    dl.className = "ks-rows";
+    for (var i = 0; i < def.rows.length; i++) {
+      var row = document.createElement("div");
+      row.className = "ks-row";
+      var dt = document.createElement("dt");
+      dt.textContent = def.rows[i].l;
+      var dd = document.createElement("dd");
+      for (var j = 0; j < def.rows[i].k.length; j++) dd.appendChild(keyEl(def.rows[i].k[j]));
+      row.appendChild(dt);
+      row.appendChild(dd);
+      dl.appendChild(row);
+    }
+    sec.appendChild(dl);
+    return sec;
+  }
+
+  function build() {
+    shell = document.createElement("div");
+    shell.className = "ks";
+    shell.id = "ksSheet";
+
+    var scrim = document.createElement("div");
+    scrim.className = "ks-scrim";
+    scrim.addEventListener("click", function () { close(true); });
+
+    panel = document.createElement("div");
+    panel.className = "ks-panel";
+    panel.setAttribute("role", "dialog");
+    panel.setAttribute("aria-modal", "true");
+    panel.setAttribute("aria-labelledby", "ksTitle");
+
+    var head = document.createElement("div");
+    head.className = "ks-head";
+    var titles = document.createElement("div");
+    titles.className = "ks-titles";
+    var t1 = document.createElement("p");
+    t1.className = "ks-title";
+    t1.id = "ksTitle";
+    t1.textContent = "Shortcuts";
+    var t2 = document.createElement("p");
+    t2.className = "ks-sub mono";
+    t2.textContent = "WHAT THIS PAGE DOES WITHOUT A MOUSE";
+    titles.appendChild(t1);
+    titles.appendChild(t2);
+    head.appendChild(titles);
+
+    closeBtn = document.createElement("button");
+    closeBtn.type = "button";
+    closeBtn.className = "ks-x mono";
+    closeBtn.textContent = "ESC";
+    closeBtn.setAttribute("aria-label", "Close the shortcuts");
+    closeBtn.addEventListener("click", function () { close(true); });
+    head.appendChild(closeBtn);
+
+    var main = document.createElement("div");
+    main.className = "ks-body";
+    for (var i = 0; i < GROUPS.length; i++) main.appendChild(groupEl(GROUPS[i]));
+
+    if (hasTerm) {
+      var term = document.createElement("section");
+      term.className = "ks-group ks-full";
+      var th = document.createElement("h3");
+      th.className = "ks-gt mono";
+      th.textContent = "THE TERMINAL";
+      var note = document.createElement("p");
+      note.className = "ks-note";
+      note.textContent = "The terminal at the top of the page is real. Click it, type, press Enter.";
+      var ul = document.createElement("ul");
+      ul.className = "ks-cmds";
+      for (var c = 0; c < CMDS.length; c++) {
+        var li = document.createElement("li");
+        li.textContent = CMDS[c];
+        ul.appendChild(li);
+      }
+      term.appendChild(th);
+      term.appendChild(note);
+      term.appendChild(ul);
+      main.appendChild(term);
+    }
+
+    var foot = document.createElement("p");
+    foot.className = "ks-foot mono";
+    foot.textContent = "ESC CLOSES ANYTHING ON THIS PAGE";
+
+    panel.appendChild(head);
+    panel.appendChild(main);
+    panel.appendChild(foot);
+    shell.appendChild(scrim);
+    shell.appendChild(panel);
+
+    /* a click on the padding around the panel counts as outside */
+    shell.addEventListener("click", function (e) {
+      if (e.target === shell) close(true);
+    });
+    panel.addEventListener("keydown", onPanelKey);
+
+    body.appendChild(shell);
+    built = true;
+  }
+
+  function focusables() {
+    if (!panel) return [];
+    var all = panel.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+    var out = [];
+    for (var i = 0; i < all.length; i++) {
+      if (!all[i].disabled && all[i].offsetParent !== null) out.push(all[i]);
+    }
+    return out;
+  }
+
+  function onPanelKey(e) {
+    if (e.key !== "Tab") return;
+    var list = focusables();
+    if (!list.length) { e.preventDefault(); return; }
+    var at = list.indexOf(document.activeElement);
+    var next = e.shiftKey ? at - 1 : at + 1;
+    if (at < 0) next = e.shiftKey ? list.length - 1 : 0;
+    if (next < 0) next = list.length - 1;
+    if (next >= list.length) next = 0;
+    e.preventDefault();
+    if (list[next] && list[next].focus) list[next].focus();
+  }
+
+  function open() {
+    if (isOpen) return;
+    if (document.querySelector(".lb.open")) return;   /* the lightbox owns the screen */
+    if (document.querySelector(".cp.open")) return;   /* so does the palette */
+    if (!built) build();
+    dropHint();
+    lastFocus = document.activeElement;
+    var sbw = window.innerWidth - root.clientWidth;
+    root.style.setProperty("--ks-sbw", (sbw > 0 ? sbw : 0) + "px");
+    body.classList.add("ks-lock");
+    shell.classList.add("open");
+    isOpen = true;
+    if (closeBtn && closeBtn.focus) {
+      try { closeBtn.focus({ preventScroll: true }); } catch (err) { closeBtn.focus(); }
+    }
+  }
+
+  /* restore false is for the hand-off to the command palette, which has
+     already taken focus for itself by the time this runs */
+  function close(restore) {
+    if (!isOpen) return;
+    isOpen = false;
+    if (shell) shell.classList.remove("open");
+    body.classList.remove("ks-lock");
+    var back = lastFocus;
+    lastFocus = null;
+    if (restore === false) return;
+    if (back && back !== body && back.focus && document.contains(back)) {
+      try { back.focus({ preventScroll: true }); } catch (err) { try { back.focus(); } catch (e2) {} }
+    }
+    /* the thing that opened the sheet may be gone by now, the dismissed hint
+       pill being the obvious case. never leave focus on a closed dialog */
+    var still = document.activeElement;
+    if (still && still !== back && panel && panel.contains(still) && still.blur) still.blur();
+  }
+
+  function typing(t) {
+    if (!t) return false;
+    var tag = t.tagName ? t.tagName.toLowerCase() : "";
+    if (tag === "input" || tag === "textarea" || tag === "select") return true;
+    if (t.isContentEditable) return true;
+    if (typeof t.closest === "function" && t.closest("#term")) return true;
+    return false;
+  }
+
+  document.addEventListener("keydown", function (e) {
+    var k = e.key;
+    if (isOpen) {
+      if (k === "Escape") { e.preventDefault(); close(true); return; }
+      /* the palette handled this keystroke a moment ago and is opening
+         over the top, so step aside instead of stacking */
+      if ((e.metaKey || e.ctrlKey) && (k === "k" || k === "K")) { close(false); }
+      return;
+    }
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    if (k !== "?" && !(k === "/" && e.shiftKey)) return;
+    if (typing(e.target)) return;
+    e.preventDefault();
+    open();
+  });
+
+  /* ---------- the first visit pill ---------- */
+  var SEEN = "sm-shortcuts-hint-v1";
+  var hint = null, hintTimer = 0;
+
+  function seen() {
+    try { return window.localStorage.getItem(SEEN) === "1"; }
+    catch (err) { return true; }
+  }
+  function markSeen() {
+    try { window.localStorage.setItem(SEEN, "1"); } catch (err) {}
+  }
+  function dropHint() {
+    if (hintTimer) { clearTimeout(hintTimer); hintTimer = 0; }
+    if (!hint) return;
+    hint.classList.remove("on");
+    var el = hint;
+    hint = null;
+    setTimeout(function () { if (el.parentNode) el.parentNode.removeChild(el); }, reduced ? 0 : 600);
+  }
+
+  /* true when nothing the visitor came here to read sits under that box */
+  function clearOf(r) {
+    var els = document.querySelectorAll(".term, .float-chip, .btn, .hero-sub, .hero-title, .eyebrow-pill, .nav-inner, .rail");
+    for (var i = 0; i < els.length; i++) {
+      var b = els[i].getBoundingClientRect();
+      if (!b.width || !b.height) continue;
+      if (b.right > r.left && b.left < r.right && b.bottom > r.top && b.top < r.bottom) return false;
+    }
+    return true;
+  }
+
+  function showHint() {
+    if (seen() || touch || window.innerWidth < 760) return;
+    if (document.querySelector(".lb.open") || document.querySelector(".cp.open")) return;
+    /* someone already reading the work does not need to be told about a key */
+    if (window.pageYOffset > window.innerHeight) return;
+
+    hint = document.createElement("div");
+    hint.className = "ks-hint";
+    hint.setAttribute("aria-live", "polite");
+
+    var go = document.createElement("button");
+    go.type = "button";
+    go.className = "ks-hint-go";
+    go.setAttribute("aria-label", "Open the keyboard shortcuts");
+    var k1 = document.createElement("kbd");
+    k1.className = "ks-k";
+    k1.textContent = "?";
+    var l1 = document.createElement("span");
+    l1.textContent = "shortcuts";
+    var mid = document.createElement("i");
+    mid.textContent = "·";
+    var k2 = document.createElement("kbd");
+    k2.className = "ks-k";
+    k2.textContent = MOD + "K";
+    var l2 = document.createElement("span");
+    l2.textContent = "search";
+    go.appendChild(k1); go.appendChild(l1);
+    go.appendChild(mid);
+    go.appendChild(k2); go.appendChild(l2);
+    go.addEventListener("click", function () { open(); });
+
+    var x = document.createElement("button");
+    x.type = "button";
+    x.className = "ks-hint-x";
+    x.setAttribute("aria-label", "Dismiss this hint");
+    x.innerHTML = "&times;";
+    x.addEventListener("click", dropHint);
+
+    hint.appendChild(go);
+    hint.appendChild(x);
+    body.appendChild(hint);
+
+    /* a pill that sits on top of the terminal or a floating chip is not
+       unobtrusive. try the corner, then the gap above the terminal, and if
+       the hero is too short for either, say nothing and keep the one showing
+       in the bank for the next visit */
+    if (!clearOf(hint.getBoundingClientRect())) {
+      var termEl = document.getElementById("term");
+      if (termEl) {
+        var tb = termEl.getBoundingClientRect();
+        hint.style.bottom = Math.round(Math.max(20, window.innerHeight - tb.top + 14)) + "px";
+      }
+      if (!clearOf(hint.getBoundingClientRect())) {
+        if (hint.parentNode) hint.parentNode.removeChild(hint);
+        hint = null;
+        return;
+      }
+    }
+    markSeen();
+
+    /* force layout so the fade has a from-state. a rAF would be prettier and
+       would also never run in a backgrounded tab, which would strand the pill
+       invisible until its own timer removed it */
+    void hint.offsetHeight;
+    hint.classList.add("on");
+    hintTimer = setTimeout(dropHint, 9000);
+  }
+
+  /* wait for the hero to finish typing itself before saying anything, so the
+     pill never arrives underneath the preloader and burns its one showing */
+  (function arm() {
+    if (seen() || touch) return;
+    var heroEl = document.querySelector(".hero");
+    var fired = false;
+    function go() {
+      if (fired) return;
+      fired = true;
+      setTimeout(showHint, 2600);
+    }
+    if (!heroEl || heroEl.classList.contains("typed")) { go(); return; }
+    if (window.MutationObserver) {
+      var mo = new MutationObserver(function () {
+        if (heroEl.classList.contains("typed")) { mo.disconnect(); go(); }
+      });
+      mo.observe(heroEl, { attributes: true, attributeFilter: ["class"] });
+    }
+    setTimeout(go, 9000);
+  })();
+})();
+
+
+/* ============================================================
+   THE TIMELINE
+   The spine draws itself from scroll position and each node
+   ignites as the drawing head reaches its dot. One rAF loop,
+   live only while the section is on screen. Under reduced
+   motion the script does nothing at all: the CSS default is
+   already the finished, static list.
+   ============================================================ */
+(function () {
+  "use strict";
+
+  var reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var touch = matchMedia("(hover: none), (pointer: coarse)").matches;
+
+  var root = document.documentElement;
+  if (!root || root.hasAttribute("data-tl")) return;
+
+  var sec = document.getElementById("timeline");
+  var rail = document.getElementById("tlRail");
+  var fill = document.getElementById("tlFill");
+  var track = document.getElementById("tlTrack");
+  if (!sec || !rail || !fill || !track) return;
+
+  var items = Array.prototype.slice.call(track.querySelectorAll(".tl-item"));
+  if (!items.length) return;
+
+  /* the drawn line and the lit nodes are the CSS default, so asking for
+     reduced motion means leaving the markup exactly as it is */
+  if (reduced) return;
+
+  root.setAttribute("data-tl", "");
+
+  var HEAD = 0.66;                  /* where on screen the pen sits */
+  var K = touch ? 0.3 : 0.16;       /* follow rate: tighter under momentum scroll */
+
+  var stops = [];                   /* each dot's position along the rail, 0 to 1 */
+  var measured = false;
+  var lit = -1, tip = false;
+  var drawn = 0, target = 0;
+  var raf = 0, live = false, mRaf = 0;
+
+  function clamp01(v) { return v < 0 ? 0 : (v > 1 ? 1 : v); }
+
+  /* every read first, then the two writes. the rail is trimmed to run from
+     the first dot to the last, so the line starts and stops on a node
+     instead of trailing off past the end of the list */
+  function measure() {
+    mRaf = 0;
+    var tr = track.getBoundingClientRect();
+    if (!tr.height) { measured = false; return; }
+    var mid = [];
+    var i;
+    for (i = 0; i < items.length; i++) {
+      var dot = items[i].querySelector(".tl-dot") || items[i];
+      var d = dot.getBoundingClientRect();
+      mid.push(d.top + d.height / 2 - tr.top);
+    }
+    var first = mid[0];
+    var span = mid[mid.length - 1] - first;
+    if (span < 1) { measured = false; return; }
+    rail.style.top = first.toFixed(1) + "px";
+    rail.style.bottom = (tr.height - first - span).toFixed(1) + "px";
+    var next = [];
+    for (i = 0; i < mid.length; i++) next.push(clamp01((mid[i] - first) / span));
+    stops = next;
+    measured = true;
+  }
+
+  function want() {
+    var rr = rail.getBoundingClientRect();
+    if (!rr.height) return target;
+    return clamp01((window.innerHeight * HEAD - rr.top) / rr.height);
+  }
+
+  /* writes only */
+  function paint() {
+    fill.style.height = (drawn * 100).toFixed(2) + "%";
+    /* the bright tip is the pen: it shows while the line is being drawn and
+       nowhere else, so it never sits on top of the first or last node */
+    var drawing = drawn > 0.004 && drawn < 0.997;
+    if (drawing !== tip) {
+      tip = drawing;
+      rail.classList.toggle("is-drawing", drawing);
+    }
+    if (!measured) return;
+    var n = -1, i;
+    if (drawn > 0) {
+      for (i = 0; i < stops.length; i++) {
+        if (drawn >= stops[i] - 0.002) n = i;
+      }
+    }
+    if (n === lit) return;
+    if (n > lit) { for (i = lit + 1; i <= n; i++) items[i].classList.add("on"); }
+    else { for (i = lit; i > n; i--) items[i].classList.remove("on"); }
+    lit = n;
+  }
+
+  function loop() {
+    raf = 0;
+    target = want();
+    drawn += (target - drawn) * K;
+    if (Math.abs(target - drawn) < 0.002) drawn = target;
+    paint();
+    if (live) raf = requestAnimationFrame(loop);
+  }
+
+  /* coming back into view, take the scroll position as it is rather than
+     easing up from wherever the last visit left the line. a jump that skips
+     the section entirely (an anchor link, a restored scroll position) never
+     crosses the observer, so the value on entry can be stale */
+  function resume() {
+    measure();
+    if (!live) {
+      target = want();
+      drawn = target;
+      paint();
+    }
+    live = true;
+    if (!raf) raf = requestAnimationFrame(loop);
+  }
+
+  /* off screen there is nothing to animate toward: land on the final value */
+  function settle() {
+    live = false;
+    if (raf) { cancelAnimationFrame(raf); raf = 0; }
+    if (!measured) measure();
+    target = want();
+    drawn = target;
+    paint();
+  }
+
+  function remeasure() {
+    if (mRaf) return;
+    mRaf = requestAnimationFrame(function () {
+      measure();
+      if (!live) settle();
+    });
+  }
+
+  measure();
+  settle();
+
+  if (typeof IntersectionObserver === "function") {
+    var io = new IntersectionObserver(function (entries) {
+      for (var i = 0; i < entries.length; i++) {
+        if (entries[i].isIntersecting) resume();
+        else settle();
+      }
+    }, { rootMargin: "25% 0px 25% 0px", threshold: 0 });
+    io.observe(sec);
+  } else {
+    /* no observer: one frame per scroll tick, no idle loop */
+    window.addEventListener("scroll", function () {
+      if (!raf) raf = requestAnimationFrame(function () { raf = 0; target = want(); drawn = target; paint(); });
+    }, { passive: true });
+  }
+
+  window.addEventListener("resize", remeasure, { passive: true });
+  window.addEventListener("load", remeasure);
+  if (typeof ResizeObserver === "function") {
+    new ResizeObserver(remeasure).observe(track);
+  }
+})();
+
+
+/* ============================================================
+   KORA, THE IDEA
+   Four cue sliders drive a weighted distance against five hand
+   written prototypes. The winner and the split animate into a
+   line drawing and five bars. Deterministic arithmetic, nothing
+   trained, nothing fetched, nothing left running when it settles.
+   ============================================================ */
+(function () {
+  "use strict";
+
+  var root = document.documentElement;
+  if (!root || root.hasAttribute("data-kora-demo")) return;
+
+  var panel = document.getElementById("kdPanel");
+  if (!panel) return;
+
+  var reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var touch = matchMedia("(hover: none), (pointer: coarse)").matches;
+
+  /* ---------- the model, such as it is ---------- */
+  var KEYS = ["eye", "voice", "posture", "movement"];
+  var CUE_NAME = ["eye contact", "voice", "posture", "movement"];
+  var WORDS = {
+    eye: ["looking away", "glancing", "steady", "locked on"],
+    voice: ["quiet", "soft", "raised", "loud"],
+    posture: ["turned away", "closed", "settled", "facing you"],
+    movement: ["still", "slow", "restless", "fast"]
+  };
+
+  /* cue weights, and how sharply the read commits to one answer */
+  var W = [1.15, 1, 0.95, 1];
+  var WSUM = 4.1;
+  var SHARP = 4.5;
+
+  /* prototype: where each state sits on the four cues, plus what the
+     drawing does when that state is the whole answer */
+  var STATES = [
+    { k: "calm",        p: [0.62, 0.32, 0.72, 0.24], mouth: 8,   brow: 0,  open: 0.55 },
+    { k: "engaged",     p: [0.88, 0.70, 0.86, 0.62], mouth: 20,  brow: -4, open: 0.78 },
+    { k: "anxious",     p: [0.26, 0.56, 0.30, 0.78], mouth: -6,  brow: 9,  open: 0.86 },
+    { k: "overwhelmed", p: [0.10, 0.92, 0.16, 0.94], mouth: -13, brow: 13, open: 0.96 },
+    { k: "withdrawn",   p: [0.10, 0.14, 0.22, 0.10], mouth: -4,  brow: 3,  open: 0.30 }
+  ];
+  var N = STATES.length;
+
+  /* ---------- the parts, every one of them optional ---------- */
+  var inputs = [], wordEls = [];
+  var i, el;
+  for (i = 0; i < KEYS.length; i++) {
+    el = panel.querySelector('[data-kd-cue="' + KEYS[i] + '"]');
+    if (!el) return;
+    inputs.push(el);
+    wordEls.push(panel.querySelector('[data-kd-word="' + KEYS[i] + '"]'));
+  }
+
+  var bars = [], fills = [], vals = [], lastVal = [];
+  for (i = 0; i < N; i++) {
+    var row = panel.querySelector('[data-kd-state="' + STATES[i].k + '"]');
+    bars.push(row);
+    fills.push(row ? row.querySelector(".kd-b-fill") : null);
+    vals.push(row ? row.querySelector(".kd-b-val") : null);
+    lastVal.push("");
+  }
+
+  var stateEl = document.getElementById("kdState");
+  var driverEl = document.getElementById("kdDriver");
+  var auraEl = document.getElementById("kdAura");
+  var eyeL = document.getElementById("kdEyeL");
+  var eyeR = document.getElementById("kdEyeR");
+  var pupL = document.getElementById("kdPupL");
+  var pupR = document.getElementById("kdPupR");
+  var browL = document.getElementById("kdBrowL");
+  var browR = document.getElementById("kdBrowR");
+  var mouthEl = document.getElementById("kdMouth");
+
+  /* the state names live in the markup, so the copy stays in one place */
+  var LABEL = [];
+  for (i = 0; i < N; i++) {
+    var nameEl = bars[i] ? bars[i].querySelector(".kd-b-name") : null;
+    LABEL.push(nameEl ? (nameEl.textContent || "").trim() : STATES[i].k);
+  }
+
+  root.setAttribute("data-kora-demo", "");
+
+  var live = document.createElement("p");
+  live.className = "kd-sr";
+  live.setAttribute("aria-live", "polite");
+  panel.appendChild(live);
+
+  /* ---------- state ---------- */
+  var tgt = { c: [], open: 0.6, gaze: -3.2, mouth: 7.2, brow: 0.7, aura: 0.33 };
+  var cur = { c: [], open: 0.6, gaze: -3.2, mouth: 7.2, brow: 0.7, aura: 0.33 };
+  for (i = 0; i < N; i++) { tgt.c.push(0); cur.c.push(0); }
+
+  var top = -1, lastDriver = "", raf = 0, sayTimer = 0, first = true;
+
+  function clamp01(v) { return v < 0 ? 0 : (v > 1 ? 1 : v); }
+
+  function read() {
+    var x = [];
+    for (var j = 0; j < inputs.length; j++) {
+      var v = parseFloat(inputs[j].value);
+      if (isNaN(v)) v = 50;
+      x.push(clamp01(v / 100));
+    }
+    return x;
+  }
+
+  function wordFor(j, v) {
+    var list = WORDS[KEYS[j]];
+    var n = Math.floor(v * list.length);
+    if (n >= list.length) n = list.length - 1;
+    if (n < 0) n = 0;
+    return list[n];
+  }
+
+  /* ---------- the arithmetic ---------- */
+  function score(x) {
+    var out = [], sum = 0, j, s, d;
+    for (s = 0; s < N; s++) {
+      d = 0;
+      for (j = 0; j < 4; j++) d += W[j] * Math.abs(x[j] - STATES[s].p[j]);
+      d /= WSUM;
+      var v = Math.pow(d < 1 ? 1 - d : 0, SHARP);
+      out.push(v);
+      sum += v;
+    }
+    for (s = 0; s < N; s++) out[s] = sum > 0 ? out[s] / sum : 1 / N;
+    return out;
+  }
+
+  /* what separates the winner from the runner up, which is the only
+     honest thing this arithmetic can say about why */
+  function driver(x, c) {
+    var a = -1, b = -1, s;
+    for (s = 0; s < N; s++) {
+      if (a < 0 || c[s] > c[a]) { b = a; a = s; }
+      else if (b < 0 || c[s] > c[b]) { b = s; }
+    }
+    if (a < 0 || b < 0) return "";
+    var lead = [];
+    for (var j = 0; j < 4; j++) {
+      var gain = W[j] * (Math.abs(x[j] - STATES[b].p[j]) - Math.abs(x[j] - STATES[a].p[j]));
+      if (gain > 0.02) lead.push({ j: j, g: gain });
+    }
+    lead.sort(function (p, q) { return q.g - p.g; });
+    if (!lead.length) return "AN EVEN SPLIT ACROSS THE FOUR CUES";
+    if (lead.length === 1) return "TIPPED BY " + CUE_NAME[lead[0].j].toUpperCase();
+    return "TIPPED BY " + CUE_NAME[lead[0].j].toUpperCase() + " AND " + CUE_NAME[lead[1].j].toUpperCase();
+  }
+
+  /* ---------- writes only, once per frame ---------- */
+  function eyePath(cx, o) {
+    var up = (96 - (4 + 26 * o)).toFixed(1);
+    var dn = (96 + (4 + 14 * o)).toFixed(1);
+    return "M" + (cx - 13) + " 96Q" + cx + " " + up + " " + (cx + 13) + " 96Q" +
+           cx + " " + dn + " " + (cx - 13) + " 96Z";
+  }
+
+  function paint() {
+    var j;
+    for (j = 0; j < N; j++) {
+      if (fills[j]) fills[j].style.transform = "scaleX(" + cur.c[j].toFixed(4) + ")";
+      if (vals[j]) {
+        var s = Math.round(cur.c[j] * 100) + "%";
+        if (s !== lastVal[j]) { vals[j].textContent = s; lastVal[j] = s; }
+      }
+    }
+    if (auraEl) {
+      auraEl.setAttribute("r", (74 + cur.aura * 18).toFixed(1));
+      auraEl.style.opacity = (0.1 + cur.aura * 0.3).toFixed(3);
+    }
+    if (eyeL) eyeL.setAttribute("d", eyePath(78, cur.open));
+    if (eyeR) eyeR.setAttribute("d", eyePath(122, cur.open));
+    var po = clamp01(cur.open * 1.7 - 0.25) * (0.45 + 0.55 * clamp01((cur.gaze + 8.5) / 8.5));
+    if (pupL) {
+      pupL.setAttribute("cx", (78 + cur.gaze).toFixed(1));
+      pupL.style.opacity = po.toFixed(3);
+    }
+    if (pupR) {
+      pupR.setAttribute("cx", (122 + cur.gaze).toFixed(1));
+      pupR.style.opacity = po.toFixed(3);
+    }
+    if (browL) browL.setAttribute("transform", "rotate(" + cur.brow.toFixed(2) + " 86 76)");
+    if (browR) browR.setAttribute("transform", "rotate(" + (-cur.brow).toFixed(2) + " 114 76)");
+    if (mouthEl) mouthEl.setAttribute("d", "M76 136Q100 " + (136 + cur.mouth).toFixed(1) + " 124 136");
+  }
+
+  function step() {
+    raf = 0;
+    var k = 0.18, max = 0, j, d;
+    for (j = 0; j < N; j++) {
+      d = tgt.c[j] - cur.c[j];
+      if (Math.abs(d) > max) max = Math.abs(d);
+      cur.c[j] += d * k;
+    }
+    var fields = ["open", "gaze", "mouth", "brow", "aura"];
+    var scale = [1, 0.08, 0.06, 0.06, 1];
+    for (j = 0; j < fields.length; j++) {
+      d = tgt[fields[j]] - cur[fields[j]];
+      if (Math.abs(d) * scale[j] > max) max = Math.abs(d) * scale[j];
+      cur[fields[j]] += d * k;
+    }
+    if (max < 0.0012) {
+      for (j = 0; j < N; j++) cur.c[j] = tgt.c[j];
+      for (j = 0; j < fields.length; j++) cur[fields[j]] = tgt[fields[j]];
+      paint();
+      return;
+    }
+    paint();
+    raf = requestAnimationFrame(step);
+  }
+
+  function settle() {
+    if (reduced) {
+      for (var j = 0; j < N; j++) cur.c[j] = tgt.c[j];
+      cur.open = tgt.open; cur.gaze = tgt.gaze; cur.mouth = tgt.mouth;
+      cur.brow = tgt.brow; cur.aura = tgt.aura;
+      paint();
+      return;
+    }
+    if (!raf) raf = requestAnimationFrame(step);
+  }
+
+  /* ---------- one update ---------- */
+  function update() {
+    var x = read();
+    var c = score(x);
+    var j;
+
+    for (j = 0; j < inputs.length; j++) {
+      var word = wordFor(j, x[j]);
+      if (wordEls[j] && wordEls[j].textContent !== word) wordEls[j].textContent = word;
+      if (inputs[j].getAttribute("aria-valuetext") !== word) {
+        inputs[j].setAttribute("aria-valuetext", word);
+      }
+    }
+
+    var win = 0;
+    for (j = 1; j < N; j++) if (c[j] > c[win]) win = j;
+
+    for (j = 0; j < N; j++) tgt.c[j] = c[j];
+    tgt.open = 0; tgt.mouth = 0; tgt.brow = 0;
+    for (j = 0; j < N; j++) {
+      tgt.open += c[j] * STATES[j].open;
+      tgt.mouth += c[j] * STATES[j].mouth;
+      tgt.brow += c[j] * STATES[j].brow;
+    }
+    tgt.gaze = -(1 - x[0]) * 8.5;
+    tgt.aura = (x[1] + x[3]) / 2;
+
+    if (win !== top) {
+      top = win;
+      for (j = 0; j < N; j++) if (bars[j]) bars[j].classList.toggle("is-top", j === win);
+      if (stateEl) {
+        stateEl.textContent = LABEL[win];
+        if (!reduced && !first) {
+          stateEl.classList.remove("kd-pop");
+          void stateEl.offsetWidth;
+          stateEl.classList.add("kd-pop");
+        }
+      }
+    }
+
+    var d = driver(x, c);
+    if (driverEl && d && d !== lastDriver) {
+      lastDriver = d;
+      driverEl.textContent = d;
+    }
+
+    if (sayTimer) clearTimeout(sayTimer);
+    sayTimer = setTimeout(function () {
+      sayTimer = 0;
+      live.textContent = LABEL[top] + ", " + Math.round(tgt.c[top] * 100) + " percent";
+    }, 600);
+
+    first = false;
+    settle();
+  }
+
+  for (i = 0; i < inputs.length; i++) {
+    inputs[i].addEventListener("input", update, { passive: true });
+    inputs[i].addEventListener("change", update, { passive: true });
+  }
+
+  var presets = panel.querySelectorAll("[data-kd-set]");
+  Array.prototype.forEach.call(presets, function (btn) {
+    btn.addEventListener("click", function () {
+      var parts = (btn.getAttribute("data-kd-set") || "").split(",");
+      for (var j = 0; j < inputs.length && j < parts.length; j++) {
+        var v = parseFloat(parts[j]);
+        if (isNaN(v)) continue;
+        inputs[j].value = String(Math.max(0, Math.min(100, v)));
+      }
+      update();
+      /* on one column the answer sits above the chips, so a tap near the
+         bottom of the panel can change something that is off screen.
+         block nearest does nothing at all when it is already in view. */
+      if (touch) {
+        var readtop = panel.querySelector(".kd-readtop");
+        if (readtop && readtop.scrollIntoView) {
+          try {
+            readtop.scrollIntoView({ block: "nearest", behavior: reduced ? "auto" : "smooth" });
+          } catch (err) { readtop.scrollIntoView(); }
+        }
+      }
+    });
+  });
+
+  /* the sliders keep their markup values, so the first paint is the same
+     picture a page without any script would have shown, and nothing
+     animates out of a wrong resting position on load */
+  var x0 = read();
+  var c0 = score(x0);
+  cur.open = 0; cur.mouth = 0; cur.brow = 0;
+  for (i = 0; i < N; i++) {
+    cur.c[i] = c0[i];
+    cur.open += c0[i] * STATES[i].open;
+    cur.mouth += c0[i] * STATES[i].mouth;
+    cur.brow += c0[i] * STATES[i].brow;
+  }
+  cur.gaze = -(1 - x0[0]) * 8.5;
+  cur.aura = (x0[1] + x0[3]) / 2;
+  update();
+})();
+
+
+/* ============================================================
+   LIGHT MODE
+   The stored choice wins, then the operating system, then dark.
+   The head script has normally already applied it before first
+   paint; this re-applies it in case that never ran, then owns
+   the toggle, the persistence and the theme-color meta.
+   ============================================================ */
+(function () {
+  "use strict";
+
+  var root = document.documentElement;
+  if (!root || root.hasAttribute("data-theme-live")) return;
+  root.setAttribute("data-theme-live", "");
+
+  var reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var touch = matchMedia("(hover: none), (pointer: coarse)").matches;
+
+  var KEY = "sm-theme";
+  var TINT = { light: "#f6f7fa", dark: "#07090e" };
+
+  var meta = document.querySelector('meta[name="theme-color"]');
+  var btn = document.getElementById("themeBtn");
+
+  var mql = null;
+  try { mql = matchMedia("(prefers-color-scheme: light)"); } catch (e) {}
+
+  function saved() {
+    try {
+      var v = localStorage.getItem(KEY);
+      return (v === "light" || v === "dark") ? v : null;
+    } catch (e) { return null; }
+  }
+  function save(v) {
+    try { localStorage.setItem(KEY, v); } catch (e) {}
+  }
+  function system() { return (mql && mql.matches) ? "light" : "dark"; }
+  function now() { return root.getAttribute("data-theme") === "light" ? "light" : "dark"; }
+
+  function paint(theme) {
+    root.setAttribute("data-theme", theme);
+    if (meta) meta.setAttribute("content", TINT[theme] || TINT.dark);
+    if (btn) btn.setAttribute("aria-pressed", theme === "light" ? "true" : "false");
+  }
+
+  paint(saved() || system());
+
+  var xT = 0;
+  function swap(theme) {
+    function run() { paint(theme); }
+    if (!reduced && typeof document.startViewTransition === "function") {
+      try { document.startViewTransition(run); return; } catch (e) {}
+    }
+    if (!reduced && !touch) {
+      root.classList.add("th-x");
+      clearTimeout(xT);
+      xT = setTimeout(function () { root.classList.remove("th-x"); }, 360);
+    }
+    run();
+  }
+
+  if (btn) {
+    btn.addEventListener("click", function () {
+      var next = now() === "light" ? "dark" : "light";
+      save(next);
+      swap(next);
+    });
+  }
+
+  /* until there is an explicit choice, follow the operating system live */
+  function follow() { if (!saved()) paint(system()); }
+  if (mql) {
+    if (mql.addEventListener) mql.addEventListener("change", follow);
+    else if (mql.addListener) mql.addListener(follow);
+  }
+})();
+
+
+/* ============================================================
+   fly-in choreography
+   Replaces the flat .reveal fade with a directional entry engine.
+   Every claimed element gets an entry vector read off its own
+   position inside its layout group: left column enters from the
+   left, right column from the right, full width blocks rise. The
+   entry is travel + a scale + a short blur that resolves, on one
+   long curve. Batches that enter together stagger in document
+   order. Purely IntersectionObserver driven: no scroll listener,
+   no rAF loop.
+   ============================================================ */
+(function () {
+  "use strict";
+
+  var reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var touch = matchMedia("(hover: none), (pointer: coarse)").matches;
+
+  var root = document.documentElement;
+  if (!root || root.hasAttribute("data-flyin")) return;
+  root.setAttribute("data-flyin", "");
+
+  var all = document.querySelectorAll(".reveal");
+  if (!all.length) return;
+
+  /* section heads run their own letter and word stagger, the receipt
+     rows have a printer, the work stack has the sticky scrub. Claim
+     nothing that another module already owns. */
+  var items = [];
+  var i;
+  for (i = 0; i < all.length; i++) {
+    var cand = all[i];
+    if (cand.closest && cand.closest(".sec-head, .stack-card, .statement-text")) continue;
+    items.push(cand);
+  }
+  if (!items.length) return;
+
+  /* Retire the old flat fade for everything below. Dropping .reveal on
+     its own leaves the element fully visible, so every early return and
+     every failure from here down is a safe one. */
+  for (i = 0; i < items.length; i++) {
+    items[i].classList.remove("reveal", "d1", "d2", "d3");
+    items[i].classList.remove("on");
+  }
+
+  var IO = window.IntersectionObserver;
+  if (reduced || typeof IO !== "function" || !document.body) return;
+
+  /* ---------- layout groups ---------- */
+  var MARK = "data-fly-m";
+  for (i = 0; i < items.length; i++) items[i].setAttribute(MARK, "");
+
+  function groupOf(el) {
+    var n = el.parentElement;
+    while (n && n !== document.body) {
+      if (n.querySelectorAll("[" + MARK + "]").length >= 2) return n;
+      if (n.tagName === "SECTION" || n.tagName === "MAIN") return n;
+      n = n.parentElement;
+    }
+    return el.parentElement || document.body;
+  }
+
+  var recs = [];
+  for (i = 0; i < items.length; i++) {
+    recs.push({ el: items[i], group: groupOf(items[i]) });
+  }
+  for (i = 0; i < items.length; i++) items[i].removeAttribute(MARK);
+
+  /* ---------- entry vectors, all reads then all writes ---------- */
+  var TRAVEL = touch ? 44 : 88;   /* max lateral travel, px */
+  var EDGE = 3;                   /* keep this much clear of the viewport edge */
+
+  function clamp(v, a, b) { return v < a ? a : (v > b ? b : v); }
+
+  function measure(list) {
+    var vw = window.innerWidth || root.clientWidth;
+    var reads = [];
+    var k;
+    /* an element already carrying a fly transform would measure its
+       moved box, so strip the state before reading, then write it back.
+       No paint happens between the two loops. */
+    for (k = 0; k < list.length; k++) list[k].el.removeAttribute("data-fly");
+    for (k = 0; k < list.length; k++) {
+      reads.push({
+        r: list[k].el.getBoundingClientRect(),
+        g: list[k].group.getBoundingClientRect()
+      });
+    }
+    for (k = 0; k < list.length; k++) {
+      var el = list[k].el;
+      var r = reads[k].r;
+      var g = reads[k].g;
+      if (!r.width || !r.height) continue;
+
+      /* full width of its group means it rises, otherwise it enters from
+         whichever side of the group centre line it sits on, and the
+         further out it sits the further it travels */
+      var x = 0;
+      if (g.width > 0 && r.width / g.width < 0.72) {
+        var off = (r.left + r.width / 2) - (g.left + g.width / 2);
+        var d = clamp(off / (g.width / 2), -1, 1);
+        if (Math.abs(d) >= 0.14) x = d * TRAVEL;
+      }
+
+      /* HARD BOUND: never let the moved box cross a viewport edge, so the
+         document can never gain horizontal scroll. Narrow viewports lose
+         the lateral travel on their own and become a clean rise. */
+      var room = x < 0 ? Math.max(0, r.left - EDGE) : Math.max(0, vw - r.right - EDGE);
+      if (Math.abs(x) > room) x = (x < 0 ? -room : room);
+      if (Math.abs(x) < 14) x = 0;
+
+      var wide = r.width > 860;
+      var y = x === 0 ? (touch ? 34 : 58) : (touch ? 18 : 26);
+      var s = wide ? 0.978 : (touch ? 0.968 : 0.942);
+      var b = 0;
+      if (!touch && !el.classList.contains("band-rail")) b = wide ? 3 : 5;
+
+      el.style.setProperty("--fx", Math.round(x) + "px");
+      el.style.setProperty("--fy", y + "px");
+      el.style.setProperty("--fs", String(s));
+      el.style.setProperty("--fb", b + "px");
+      el.setAttribute("data-fly", "");
+    }
+  }
+
+  measure(recs);
+  /* flush the entry state once so the very first element the observer
+     reports actually has something to transition from */
+  void root.offsetHeight;
+
+  /* ---------- settle: back to a plain, untouched element ---------- */
+  function settle(el) {
+    if (!el.hasAttribute("data-fly")) return;
+    el.classList.remove("fly-in");
+    el.removeAttribute("data-fly");
+    var s = el.style;
+    s.willChange = "";
+    s.transitionDelay = "";
+    s.removeProperty("--fx");
+    s.removeProperty("--fy");
+    s.removeProperty("--fs");
+    s.removeProperty("--fb");
+  }
+
+  var STEP = 72;      /* stagger between siblings entering together */
+  var MAXI = 5;       /* cap the cascade so a wide batch never drags */
+  var LIFE = 1500;    /* transform duration plus headroom */
+
+  function show(el, delay) {
+    if (!el.hasAttribute("data-fly") || el.classList.contains("fly-in")) return;
+    el.style.willChange = "transform, opacity, filter";
+    el.style.transitionDelay = delay + "ms";
+    el.classList.add("fly-in");
+    setTimeout(function () { settle(el); }, delay + LIFE);
+  }
+
+  function order(a, b) {
+    var p = a.compareDocumentPosition(b);
+    if (p & 4) return -1;   /* DOCUMENT_POSITION_FOLLOWING */
+    if (p & 2) return 1;    /* DOCUMENT_POSITION_PRECEDING */
+    return 0;
+  }
+
+  var io = null;
+  try {
+    io = new IO(function (entries) {
+      var hit = [];
+      var n;
+      for (n = 0; n < entries.length; n++) {
+        if (entries[n].isIntersecting) hit.push(entries[n].target);
+      }
+      if (!hit.length) return;
+      hit.sort(order);
+      for (n = 0; n < hit.length; n++) {
+        if (io) io.unobserve(hit[n]);
+        show(hit[n], Math.min(n, MAXI) * STEP);
+      }
+    }, { threshold: 0, rootMargin: "0px 0px -12% 0px" });
+  } catch (err) {
+    io = null;
+  }
+
+  if (!io) {
+    for (i = 0; i < recs.length; i++) settle(recs[i].el);
+    return;
+  }
+  for (i = 0; i < recs.length; i++) io.observe(recs[i].el);
+
+  /* ---------- safety net ----------
+     If the observer ever stops delivering, anything already scrolled
+     past still lands. Costs one rect read every 2.5s and stops itself
+     once nothing is pending. */
+  var net = setInterval(function () {
+    var pending = 0;
+    var vh = window.innerHeight || root.clientHeight;
+    for (var k = 0; k < recs.length; k++) {
+      var el = recs[k].el;
+      if (!el.hasAttribute("data-fly")) continue;
+      if (el.classList.contains("fly-in")) { pending++; continue; }
+      pending++;
+      if (el.getBoundingClientRect().top < vh * 0.95) settle(el);
+    }
+    if (!pending) { clearInterval(net); net = 0; }
+  }, 2500);
+
+  /* ---------- press wall ----------
+     The filter module owns the motion of a cell that comes back from
+     display:none, so hand any still pending card straight to it. */
+  var filters = document.querySelector(".press-filters");
+  if (filters) {
+    filters.addEventListener("click", function () {
+      var cards = document.querySelectorAll(".press-card[data-fly]");
+      for (var k = 0; k < cards.length; k++) {
+        if (io) io.unobserve(cards[k]);
+        settle(cards[k]);
+      }
+    }, { passive: true });
+  }
+
+  /* ---------- resize: re-derive the vectors for anything still waiting ---------- */
+  var rz = 0;
+  window.addEventListener("resize", function () {
+    clearTimeout(rz);
+    rz = setTimeout(function () {
+      var pending = [];
+      for (var k = 0; k < recs.length; k++) {
+        var el = recs[k].el;
+        if (el.hasAttribute("data-fly") && !el.classList.contains("fly-in")) pending.push(recs[k]);
+      }
+      if (pending.length) measure(pending);
+    }, 180);
+  }, { passive: true });
+
+})();
+
+
+/* ============================================================
+   pinned set pieces
+   Two places where the page stops and something happens, both
+   scrubbed from a 0..1 progress read off a wrapper's own rect.
+
+   1. THE BOARD. The four stats move into a sticky inner wrapper
+      inside a taller outer block, so the board holds in the
+      middle of the screen for about half a viewport while the
+      numbers count. Scrolling back up runs the count backwards.
+   2. THE CLASSROOM. The nine frames start scattered, tilted,
+      shrunk and soft, and converge into the mosaic. Released to
+      transform: none at the end, so the layout is untouched.
+
+   One scroll listener, one rAF, all reads before all writes.
+   Elements are handed over from the entry engine by dropping
+   [data-fly], which every path in that module guards on.
+   ============================================================ */
+(function () {
+  "use strict";
+
+  var reduced = false, touch = false;
+  try { reduced = matchMedia("(prefers-reduced-motion: reduce)").matches; } catch (e) {}
+  try { touch = matchMedia("(hover: none), (pointer: coarse)").matches; } catch (e) {}
+  if (reduced) return;
+
+  var root = document.documentElement;
+  if (!root || root.hasAttribute("data-setpiece")) return;
+  root.setAttribute("data-setpiece", "");
+
+  function clamp(v, a, b) { return v < a ? a : (v > b ? b : v); }
+  function ease(t) { return 1 - Math.pow(1 - t, 3); }
+  function fmt(n) { return n.toLocaleString("en-US"); }
+
+  /* take an element back off the entry engine and off the old flat fade,
+     leaving it in its plain, fully visible state */
+  function claim(el) {
+    if (!el) return null;
+    el.classList.remove("reveal", "d1", "d2", "d3", "on", "fly-in");
+    el.removeAttribute("data-fly");
+    var s = el.style;
+    s.willChange = "";
+    s.transitionDelay = "";
+    s.removeProperty("--fx");
+    s.removeProperty("--fy");
+    s.removeProperty("--fs");
+    s.removeProperty("--fb");
+    return el;
+  }
+
+  var winH = window.innerHeight || root.clientHeight || 800;
+  var winW = window.innerWidth || root.clientWidth || 1200;
+
+  /* ---------------------------------------------------------
+     1. THE BOARD
+     --------------------------------------------------------- */
+  var board = (function () {
+    var sec = document.querySelector(".stats");
+    if (!sec) return null;
+    var grid = sec.querySelector(".stats-grid");
+    if (!grid || !grid.parentNode) return null;
+    var list = Array.prototype.slice.call(grid.querySelectorAll(".stat"));
+    if (list.length < 2) return null;
+
+    var cells = [];
+    for (var i = 0; i < list.length; i++) {
+      var el = claim(list[i]);
+      el.classList.add("ps-stat");
+      var num = null, target = 0;
+      var old = el.querySelector("[data-count]");
+      if (old && old.parentNode) {
+        /* the node the one shot counter observes leaves the document, so
+           that counter can never fire a second animation over this one */
+        num = old.cloneNode(true);
+        old.parentNode.replaceChild(num, old);
+        target = parseInt(num.getAttribute("data-count"), 10);
+        if (isNaN(target) || target < 0) target = 0;
+        num.textContent = fmt(target);
+      }
+      cells.push({ el: el, num: num, target: target, txt: num ? fmt(target) : "" });
+    }
+
+    var pin = document.createElement("div");
+    pin.className = "ps-pin";
+    var stick = document.createElement("div");
+    stick.className = "ps-stick";
+    var spacer = document.createElement("div");
+    spacer.className = "ps-spacer";
+    spacer.setAttribute("aria-hidden", "true");
+
+    grid.parentNode.insertBefore(pin, grid);
+    stick.appendChild(grid);
+    pin.appendChild(stick);
+    pin.appendChild(spacer);
+
+    var extra = 0, top = 0, pinTop = 0, last = -1;
+
+    function measure() {
+      /* the pin costs scroll height, so it only exists where there is a
+         viewport tall enough to hold the board still and read it */
+      var on = !touch && winW >= 900 && winH >= 620;
+      spacer.style.height = "0px";
+      stick.style.position = "static";
+      stick.style.top = "";
+      extra = 0;
+      top = 0;
+      last = -1;
+      if (!on) return;
+      var h = stick.offsetHeight;
+      if (!h || h > winH - 140) return;          /* too tall to pin: no pin */
+      top = Math.round(Math.max(96, (winH - h) / 2));
+      extra = Math.round(winH * 0.55);
+      stick.style.position = "sticky";
+      stick.style.top = top + "px";
+      spacer.style.height = extra + "px";
+    }
+
+    function read() { pinTop = pin.getBoundingClientRect().top; }
+
+    function write() {
+      var from = winH * 0.8;
+      var span = Math.max(1, from - top + extra);
+      var p = clamp((from - pinTop) / span, 0, 1);
+      /* nothing moved, so nothing is written. This also leaves the
+         click to recount interaction a clear field between scrolls. */
+      if (p === last) return;
+      last = p;
+      for (var i = 0; i < cells.length; i++) {
+        var c = cells[i];
+        /* the block is fully present well before the numbers finish, so
+           a jump straight into the middle of the pin never lands on a
+           board that is not there */
+        var b = ease(clamp((p - (0.04 + i * 0.07)) / 0.2, 0, 1));
+        var n = ease(clamp((p - (0.08 + i * 0.09)) / 0.4, 0, 1));
+        var st = c.el.style;
+        if (b >= 1) {
+          st.transform = "none";
+          st.filter = "none";
+          st.opacity = "1";
+          st.willChange = "";
+        } else {
+          st.transform = "translate3d(0," + (34 * (1 - b)).toFixed(1) + "px,0) scale(" + (0.955 + 0.045 * b).toFixed(4) + ")";
+          st.filter = b > 0.72 ? "none" : "blur(" + (4 * (1 - b / 0.72)).toFixed(2) + "px)";
+          st.opacity = b.toFixed(3);
+          st.willChange = "transform, opacity, filter";
+        }
+        if (c.num) {
+          var t = fmt(Math.round(c.target * n));
+          if (t !== c.txt) { c.num.textContent = t; c.txt = t; }
+        }
+      }
+    }
+
+    function reset() {
+      spacer.style.height = "0px";
+      stick.style.position = "static";
+      stick.style.top = "";
+      for (var i = 0; i < cells.length; i++) {
+        var c = cells[i];
+        c.el.style.transform = "none";
+        c.el.style.filter = "none";
+        c.el.style.opacity = "1";
+        c.el.style.willChange = "";
+        if (c.num) c.num.textContent = fmt(c.target);
+      }
+    }
+
+    return { measure: measure, read: read, write: write, reset: reset };
+  })();
+
+  /* ---------------------------------------------------------
+     2. THE CLASSROOM
+     --------------------------------------------------------- */
+  var mosaic = (function () {
+    var rail = document.getElementById("bandRail");
+    if (!rail) return null;
+    var shots = Array.prototype.slice.call(rail.querySelectorAll(".band-shot"));
+    if (shots.length < 3) return null;
+
+    claim(rail);
+    rail.classList.add("ps-mosaic");
+
+    var frames = [];
+    for (var i = 0; i < shots.length; i++) {
+      var hit = shots[i].querySelector(".band-hit");
+      if (!hit) continue;
+      frames.push({
+        shot: shots[i],
+        hit: hit,
+        cap: shots[i].querySelector(".band-cap"),
+        dir: 0, top: 0, last: -1
+      });
+    }
+    if (frames.length < 3) return null;
+
+    var wide = false, dx = 0;
+
+    function measure() {
+      /* below 721 the mosaic is a horizontal rail with overflow-y hidden,
+         so sideways travel and a downward rise would both be clipped. The
+         phone gets the same choreography with scale and opacity only. */
+      wide = winW >= 721 && !touch;
+      var k;
+      /* a frame carrying a transform would measure its moved box, so the
+         state comes off before the reads and goes back on in the same
+         frame, before any paint */
+      for (k = 0; k < frames.length; k++) {
+        frames[k].hit.style.transform = "none";
+        frames[k].hit.style.filter = "none";
+        if (frames[k].cap) frames[k].cap.style.transform = "none";
+        frames[k].last = -1;
+      }
+      var rr = rail.getBoundingClientRect();
+      var pad = parseFloat(window.getComputedStyle(rail).paddingLeft);
+      if (!(pad >= 0)) pad = 24;
+      /* HARD BOUND: the sideways travel is never wider than the gutter it
+         lives in, so a frame can never reach the viewport edge and the
+         document can never gain horizontal scroll */
+      dx = wide ? Math.max(0, Math.min(52, pad - 14)) : 0;
+      var mid = rr.left + rr.width / 2;
+      var half = (rr.width / 2) || 1;
+      for (k = 0; k < frames.length; k++) {
+        var r = frames[k].hit.getBoundingClientRect();
+        frames[k].dir = clamp((((r.left + r.width / 2) - mid) / half) * 1.7, -1, 1);
+      }
+    }
+
+    function read() {
+      for (var k = 0; k < frames.length; k++) {
+        frames[k].top = frames[k].shot.getBoundingClientRect().top;
+      }
+    }
+
+    function write() {
+      var from = winH * 0.94;
+      var span = winH * (wide ? 0.52 : 0.42);
+      if (span < 1) span = 1;
+      for (var k = 0; k < frames.length; k++) {
+        var f = frames[k];
+        /* on the rail every frame shares one top, so the stagger there is
+           read off the index instead of the layout */
+        var raw = clamp((from - f.top + (wide ? 0 : k * 26)) / span, 0, 1);
+        var e = ease(raw);
+        if (e === f.last) continue;
+        f.last = e;
+        var hs = f.hit.style;
+        if (e >= 1) {
+          hs.transform = "none";
+          hs.filter = "none";
+          hs.opacity = "1";
+          hs.willChange = "";
+          if (f.cap) { f.cap.style.transform = "none"; f.cap.style.opacity = "1"; }
+          continue;
+        }
+        var inv = 1 - e;
+        var x = wide ? f.dir * dx * inv : 0;
+        var y = wide ? 46 * inv : 0;
+        var rot = wide ? f.dir * 2.4 * inv : 0;
+        var sc = wide ? (0.9 + 0.1 * e) : (0.95 + 0.05 * e);
+        hs.transform = "translate3d(" + x.toFixed(1) + "px," + y.toFixed(1) + "px,0) rotate(" + rot.toFixed(2) + "deg) scale(" + sc.toFixed(4) + ")";
+        hs.filter = (!wide || e > 0.66) ? "none" : "blur(" + (3 * (1 - e / 0.66)).toFixed(2) + "px)";
+        hs.opacity = (0.15 + 0.85 * e).toFixed(3);
+        hs.willChange = "transform, opacity, filter";
+        if (f.cap) {
+          f.cap.style.transform = "translate3d(" + x.toFixed(1) + "px," + y.toFixed(1) + "px,0)";
+          f.cap.style.opacity = e.toFixed(3);
+        }
+      }
+    }
+
+    function reset() {
+      for (var k = 0; k < frames.length; k++) {
+        var f = frames[k];
+        f.hit.style.transform = "none";
+        f.hit.style.filter = "none";
+        f.hit.style.opacity = "1";
+        f.hit.style.willChange = "";
+        if (f.cap) { f.cap.style.transform = "none"; f.cap.style.opacity = "1"; }
+      }
+    }
+
+    return { measure: measure, read: read, write: write, reset: reset };
+  })();
+
+  var pieces = [];
+  if (board) pieces.push(board);
+  if (mosaic) pieces.push(mosaic);
+  if (!pieces.length) return;
+
+  /* ---------------------------------------------------------
+     one loop
+     --------------------------------------------------------- */
+  var queued = false, remeasure = true, ran = false, dead = false;
+
+  function bail() {
+    if (dead) return;
+    dead = true;
+    try { window.removeEventListener("scroll", tick); } catch (e) {}
+    try { window.removeEventListener("resize", onResize); } catch (e) {}
+    for (var i = 0; i < pieces.length; i++) {
+      try { pieces[i].reset(); } catch (e) {}
+    }
+    pieces = [];
+  }
+
+  function frame() {
+    queued = false;
+    if (dead) return;
+    try {
+      if (remeasure) {
+        remeasure = false;
+        winH = window.innerHeight || root.clientHeight || winH;
+        winW = window.innerWidth || root.clientWidth || winW;
+        for (var m = 0; m < pieces.length; m++) pieces[m].measure();
+      }
+      for (var r = 0; r < pieces.length; r++) pieces[r].read();    /* reads */
+      for (var w = 0; w < pieces.length; w++) pieces[w].write();   /* writes */
+      ran = true;
+    } catch (e) {
+      bail();
+    }
+  }
+
+  function tick() {
+    if (dead || queued) return;
+    queued = true;
+    requestAnimationFrame(frame);
+  }
+
+  var rz = 0;
+  function onResize() {
+    clearTimeout(rz);
+    rz = setTimeout(function () { remeasure = true; tick(); }, 140);
+  }
+
+  window.addEventListener("scroll", tick, { passive: true });
+  window.addEventListener("resize", onResize, { passive: true });
+  window.addEventListener("orientationchange", onResize, { passive: true });
+
+  /* the mosaic's column balance only settles once the nine files have
+     their real heights, so re-derive the vectors as they arrive */
+  var imgs = document.querySelectorAll("#bandRail img");
+  for (var q = 0; q < imgs.length; q++) {
+    if (imgs[q].complete) continue;
+    imgs[q].addEventListener("load", onResize);
+    imgs[q].addEventListener("error", onResize);
+  }
+  window.addEventListener("load", onResize);
+
+  frame();                                   /* first state before paint */
+  setTimeout(function () { remeasure = true; tick(); }, 400);
+  setTimeout(function () { remeasure = true; tick(); }, 1400);
+
+  /* if the loop never got through a single pass, put everything back */
+  setTimeout(function () { if (!ran) bail(); }, 5000);
+
+  window.addEventListener("pagehide", function () { clearTimeout(rz); });
+
+})();
+
+
+/* ============================================================
+   FRICTIONLESS CONTACT
+   The mailto button stays a mailto button. Under it the address
+   becomes readable text you can select, a copy control that
+   draws a check when it lands, and a share control that hands
+   off to the system sheet when there is one and copies the page
+   link when there is not. Announced politely, keyboard first.
+   Self contained. Every lookup is guarded.
+   ============================================================ */
+(function () {
+  "use strict";
+
+  var root = document.documentElement;
+  if (!root || root.hasAttribute("data-contact-copy")) return;
+
+  var reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var touch = matchMedia("(hover: none), (pointer: coarse)").matches;
+
+  var contact = document.getElementById("contact");
+  if (!contact) return;
+
+  var mail = contact.querySelector('a[href^="mailto:"]');
+  if (!mail) return;
+
+  var addr = (mail.getAttribute("href") || "").replace(/^mailto:/i, "").split("?")[0];
+  try { addr = decodeURIComponent(addr); } catch (err) {}
+  addr = addr.trim();
+  if (!addr) return;
+
+  var host = mail.parentNode;
+  if (!host || !host.parentNode) return;
+
+  root.setAttribute("data-contact-copy", "");
+
+  /* a phone gets a beat longer, since the hand is often in the way */
+  var HOLD = touch ? 2300 : 1900;
+  var canShare = !!(window.navigator && typeof navigator.share === "function");
+
+  /* ---------- clipboard: async API first, execCommand second ---------- */
+  function legacyCopy(text) {
+    if (!document.execCommand || !document.body) return false;
+    var ta = document.createElement("textarea");
+    ta.value = text;
+    ta.setAttribute("readonly", "");
+    ta.setAttribute("aria-hidden", "true");
+    ta.tabIndex = -1;
+    ta.style.cssText = "position:fixed;top:0;left:0;width:1px;height:1px;padding:0;" +
+      "border:0;opacity:0;pointer-events:none;";
+    document.body.appendChild(ta);
+    var ok = false;
+    try {
+      ta.select();
+      if (ta.setSelectionRange) ta.setSelectionRange(0, text.length);
+      ok = document.execCommand("copy");
+    } catch (err) { ok = false; }
+    if (ta.parentNode) ta.parentNode.removeChild(ta);
+    return !!ok;
+  }
+
+  function copy(text, done) {
+    var nav = window.navigator;
+    if (nav && nav.clipboard && nav.clipboard.writeText) {
+      try {
+        var p = nav.clipboard.writeText(text);
+        if (p && p.then) {
+          p.then(function () { done(true); }, function () { done(legacyCopy(text)); });
+          return;
+        }
+      } catch (err) {}
+    }
+    done(legacyCopy(text));
+  }
+
+  /* ---------- markup ---------- */
+  var ICON_COPY =
+    '<svg class="fc-i fc-i-copy" viewBox="0 0 14 14" fill="none" aria-hidden="true" focusable="false">' +
+    '<rect x="1.15" y="4.15" width="7.7" height="8.7" rx="2" stroke="currentColor" stroke-width="1.3"/>' +
+    '<path d="M4.4 4.15V3.1a2 2 0 0 1 2-2h4.45a2 2 0 0 1 2 2v5.65a2 2 0 0 1-2 2h-.55" ' +
+    'stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>';
+  var ICON_CHECK =
+    '<svg class="fc-i fc-i-check" viewBox="0 0 14 14" fill="none" aria-hidden="true" focusable="false">' +
+    '<path d="M2.2 7.4 5.6 10.8 11.8 3.6" stroke="currentColor" stroke-width="1.7" ' +
+    'stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  var ICON_SHARE =
+    '<svg class="fc-i fc-i-share" viewBox="0 0 14 14" fill="none" aria-hidden="true" focusable="false">' +
+    '<path d="M7 1.4v7.3M4.3 4.1 7 1.4l2.7 2.7M2.2 8.4v3.1a1 1 0 0 0 1 1h7.6a1 1 0 0 0 1-1V8.4" ' +
+    'stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+  var row = document.createElement("div");
+  row.className = "fc-row";
+
+  var field = document.createElement("div");
+  field.className = "fc-field";
+
+  var addrEl = document.createElement("span");
+  addrEl.className = "fc-addr mono";
+  addrEl.textContent = addr;
+  field.appendChild(addrEl);
+
+  var copyBtn = document.createElement("button");
+  copyBtn.type = "button";
+  copyBtn.className = "fc-copy mono";
+  copyBtn.innerHTML = '<span class="fc-ico" aria-hidden="true">' + ICON_COPY + ICON_CHECK + "</span>" +
+    '<span class="fc-label">COPY</span>';
+  copyBtn.setAttribute("aria-label", "Copy the email address " + addr + " to the clipboard");
+  field.appendChild(copyBtn);
+
+  var shareBtn = document.createElement("button");
+  shareBtn.type = "button";
+  shareBtn.className = "fc-share mono";
+  shareBtn.innerHTML = '<span class="fc-ico" aria-hidden="true">' + ICON_SHARE + "</span>" +
+    '<span class="fc-label">' + (canShare ? "SHARE" : "COPY LINK") + "</span>";
+  shareBtn.setAttribute("aria-label", canShare ? "Share this page" : "Copy a link to this page");
+
+  var live = document.createElement("p");
+  live.className = "fc-live";
+  live.setAttribute("role", "status");
+  live.setAttribute("aria-live", "polite");
+
+  row.appendChild(field);
+  row.appendChild(shareBtn);
+  row.appendChild(live);
+  host.parentNode.insertBefore(row, host.nextSibling);
+
+  var copyLabel = copyBtn.querySelector(".fc-label");
+  var shareLabel = shareBtn.querySelector(".fc-label");
+
+  /* the address is spelled out below now, so the button says what it does */
+  var btnLabel = mail.querySelector("span");
+  if (btnLabel && btnLabel.textContent.trim().toLowerCase() === addr.toLowerCase()) {
+    btnLabel.textContent = "Email me";
+  }
+
+  /* ---------- announcements ---------- */
+  var sayTimer = 0;
+  function say(msg) {
+    if (sayTimer) { clearTimeout(sayTimer); sayTimer = 0; }
+    live.textContent = "";
+    sayTimer = setTimeout(function () {
+      sayTimer = 0;
+      live.textContent = msg;
+    }, 40);
+  }
+
+  /* ---------- copy ---------- */
+  function selectAddr() {
+    try {
+      var sel = window.getSelection ? window.getSelection() : null;
+      if (!sel || !document.createRange) return;
+      var r = document.createRange();
+      r.selectNodeContents(addrEl);
+      sel.removeAllRanges();
+      sel.addRange(r);
+    } catch (err) {}
+  }
+
+  var copyTimer = 0;
+  function copyState(kind) {
+    if (copyTimer) { clearTimeout(copyTimer); copyTimer = 0; }
+    copyBtn.classList.toggle("is-done", kind === "done");
+    copyBtn.classList.toggle("is-fail", kind === "fail");
+    copyLabel.textContent = kind === "done" ? "COPIED" : kind === "fail" ? "SELECTED" : "COPY";
+    if (!kind) return;
+    copyTimer = setTimeout(function () {
+      copyTimer = 0;
+      copyState("");
+    }, kind === "fail" ? 4600 : HOLD);
+  }
+
+  copyBtn.addEventListener("click", function () {
+    copy(addr, function (ok) {
+      if (ok) {
+        copyState("done");
+        say("Email address copied to the clipboard.");
+        return;
+      }
+      selectAddr();
+      copyState("fail");
+      say("The browser blocked copying. The address is selected, so you can copy it with your keyboard.");
+    });
+  });
+
+  /* ---------- share ---------- */
+  var shareTimer = 0;
+  function shareState(text, done) {
+    if (shareTimer) { clearTimeout(shareTimer); shareTimer = 0; }
+    shareLabel.textContent = text;
+    shareBtn.classList.toggle("is-done", !!done);
+    shareTimer = setTimeout(function () {
+      shareTimer = 0;
+      shareBtn.classList.remove("is-done");
+      shareLabel.textContent = canShare ? "SHARE" : "COPY LINK";
+    }, HOLD + 400);
+  }
+
+  function shareFallback() {
+    copy(window.location.href, function (ok) {
+      if (ok) {
+        shareState("LINK COPIED", true);
+        say("A link to this page was copied to the clipboard.");
+        return;
+      }
+      shareState("BLOCKED", false);
+      say("The browser blocked copying the link.");
+    });
+  }
+
+  shareBtn.addEventListener("click", function () {
+    if (canShare) {
+      try {
+        var p = navigator.share({ title: document.title || "Shashank Madala", url: window.location.href });
+        if (p && p.then) {
+          p.then(null, function (err) {
+            if (err && err.name === "AbortError") return;
+            shareFallback();
+          });
+        }
+        return;
+      } catch (err) {}
+    }
+    shareFallback();
+  });
+
+  /* ---------- entrance ---------- */
+  if (reduced || typeof IntersectionObserver !== "function") {
+    row.classList.add("fc-in");
+  } else {
+    var io = new IntersectionObserver(function (entries) {
+      if (entries[0] && entries[0].isIntersecting) {
+        row.classList.add("fc-in");
+        io.disconnect();
+      }
+    }, { threshold: 0.35 });
+    io.observe(row);
+  }
+})();
+
+/* ---------- Apple style scroll choreography ----------
+   1. every .reveal gets a directional entry vector derived from
+      where it actually sits in its row, plus a stagger
+   2. section titles reveal word by word from behind a mask
+   3. the nine classroom photos fly in from alternating sides
+   4. ambient washes drift for depth
+   Falls back to fully visible if anything goes wrong.        */
+(function () {
+  "use strict";
+
+  var root = document.documentElement;
+  if (!root || root.hasAttribute("data-choreo")) return;
+  root.setAttribute("data-choreo", "");
+
+  var reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var touch = matchMedia("(hover: none), (pointer: coarse)").matches;
+
+  /* ---------- 1. split section titles into masked words ---------- */
+  var titles = document.querySelectorAll(".sec-title");
+  Array.prototype.forEach.call(titles, function (t) {
+    if (!t || t.getAttribute("data-split")) return;
+    var text = (t.textContent || "").trim();
+    if (!text) return;
+    var words = text.split(/\s+/);
+    if (words.length > 14) return;
+    t.textContent = "";
+    words.forEach(function (w, i) {
+      var wrap = document.createElement("span");
+      wrap.className = "wr";
+      var inner = document.createElement("span");
+      inner.className = "wi";
+      inner.textContent = w;
+      if (!reduced) inner.style.transitionDelay = (0.06 + i * 0.055).toFixed(3) + "s";
+      wrap.appendChild(inner);
+      t.appendChild(wrap);
+      if (i < words.length - 1) t.appendChild(document.createTextNode(" "));
+    });
+    t.setAttribute("data-split", "1");
+  });
+
+  /* ---------- 3. classroom photos fly in ---------- */
+  var shots = document.querySelectorAll(".band-shot");
+  if (shots.length && !reduced) {
+    Array.prototype.forEach.call(shots, function (s, i) {
+      s.classList.add("ch");
+      var dir = i % 3;
+      var x = dir === 0 ? -60 : dir === 2 ? 60 : 0;
+      var rot = dir === 0 ? -3 : dir === 2 ? 3 : 0;
+      s.style.transform = "translate3d(" + x + "px, 60px, 0) scale(0.93) rotate(" + rot + "deg)";
+      s.style.transitionDelay = (i % 3) * 0.09 + "s";
+    });
+
+    var shotIO = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        e.target.classList.add("ch-in");
+        e.target.style.transform = "";
+        shotIO.unobserve(e.target);
+        setTimeout(function () { e.target.style.willChange = "auto"; }, 1400);
+      });
+    }, { threshold: 0.12, rootMargin: "0px 0px -8% 0px" });
+    Array.prototype.forEach.call(shots, function (s) { shotIO.observe(s); });
+  }
+
+  /* ---------- 4. depth drift on the ambient washes ---------- */
+  if (!reduced && !touch) {
+    var washes = [];
+    var hg = document.querySelector(".hero-glow");
+    var cg = document.querySelector(".contact-glow");
+    if (hg) washes.push({ el: hg, f: 0.055 });
+    if (cg) washes.push({ el: cg, f: -0.045 });
+
+    if (washes.length) {
+      var ticking = false;
+      var onScroll = function () {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(function () {
+          var vh = window.innerHeight || 800;
+          washes.forEach(function (w) {
+            var r = w.el.getBoundingClientRect();
+            var mid = r.top + r.height / 2 - vh / 2;
+            var off = Math.max(-38, Math.min(38, mid * w.f));
+            w.el.style.transform = "translate3d(0," + off.toFixed(1) + "px,0)";
+          });
+          ticking = false;
+        });
+      };
+      window.addEventListener("scroll", onScroll, { passive: true });
+      onScroll();
+    }
+  }
+
+  /* ---------- safety net: nothing may stay invisible ---------- */
+  setTimeout(function () {
+    Array.prototype.forEach.call(document.querySelectorAll(".reveal"), function (el) {
+      var r = el.getBoundingClientRect();
+      if (r.top < (window.innerHeight || 800) && !el.classList.contains("on")) el.classList.add("on");
+    });
+    Array.prototype.forEach.call(document.querySelectorAll(".band-shot.ch"), function (s) {
+      var r = s.getBoundingClientRect();
+      if (r.top < (window.innerHeight || 800)) { s.classList.add("ch-in"); s.style.transform = ""; }
+    });
+  }, 5000);
+})();
+
+
+/* ---------- directional fly-in ----------
+   The [data-fly] entry system already travels, scales and blurs,
+   but it ships --fx at 0 so everything rises straight up. This
+   assigns a horizontal vector from each element's real position:
+   left column flies in from the left, right column from the right,
+   full width blocks keep rising. Idempotent, runs again as new
+   elements are claimed (the press filter reveals cards late).   */
+(function () {
+  "use strict";
+
+  var root = document.documentElement;
+  if (!root || root.hasAttribute("data-flyx")) return;
+  root.setAttribute("data-flyx", "");
+
+  var reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (reduced) return;
+
+  var MAX = 78;   /* px of sideways travel, clipped by main{overflow-x:clip} */
+
+  function assign() {
+    var els = document.querySelectorAll("[data-fly]");
+    if (!els.length) return 0;
+    var vw = window.innerWidth || 1280;
+    var n = 0;
+
+    /* read every rect first, then write, so we never thrash layout */
+    var reads = [];
+    Array.prototype.forEach.call(els, function (el) {
+      if (!el || el.getAttribute("data-flyx")) return;
+      var r;
+      try { r = el.getBoundingClientRect(); } catch (e) { return; }
+      if (!r || r.width < 40) return;
+      reads.push({ el: el, left: r.left, width: r.width });
+    });
+
+    reads.forEach(function (item) {
+      var centre = item.left + item.width / 2;
+      var wide = item.width > vw * 0.6;
+      var fx = 0;
+      if (!wide) {
+        if (centre < vw * 0.44) fx = -MAX;
+        else if (centre > vw * 0.56) fx = MAX;
+        else fx = 0;
+        /* narrower cards travel a touch further, big ones stay calm */
+        if (item.width < vw * 0.3) fx = fx * 1.15;
+      }
+      if (fx !== 0) item.el.style.setProperty("--fx", Math.round(fx) + "px");
+      item.el.setAttribute("data-flyx", "1");
+      n++;
+    });
+    return n;
+  }
+
+  function run() { requestAnimationFrame(assign); }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", run, { once: true });
+  } else {
+    run();
+  }
+  window.addEventListener("load", run, { once: true });
+  /* catch elements claimed late, then stop */
+  var tries = 0;
+  var timer = setInterval(function () {
+    run();
+    if (++tries > 6) clearInterval(timer);
+  }, 700);
+})();

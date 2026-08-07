@@ -18,6 +18,15 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="styles.css" />
+<script>
+/* theme before first paint: the stored choice, then the OS, then dark */
+(function(){try{var d=document.documentElement,v=null;
+try{v=localStorage.getItem("sm-theme");}catch(e){}
+if(v!=="light"&&v!=="dark"){v=(window.matchMedia&&window.matchMedia("(prefers-color-scheme: light)").matches)?"light":"dark";}
+d.setAttribute("data-theme",v);
+if(v==="light"){var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute("content","#f6f7fa");}
+}catch(e){}})();
+</script>
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -71,6 +80,12 @@
         <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true"><circle cx="6.4" cy="6.4" r="4.6" stroke="currentColor" stroke-width="1.5"/><path d="M10 10L13.4 13.4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
         <span class="cp-open-label">Search</span>
         <kbd class="cp-kbd" id="cpKbd">&#8984;K</kbd>
+      </button>
+      <button class="th-btn" id="themeBtn" type="button" aria-pressed="false" aria-label="Light theme">
+        <span class="th-ico" aria-hidden="true">
+          <svg class="th-moon" viewBox="0 0 16 16" fill="none"><path d="M14 8.53A6 6 0 1 1 7.47 2 4.67 4.67 0 0 0 14 8.53Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>
+          <svg class="th-sun" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="3.2" stroke="currentColor" stroke-width="1.4"/><path d="M8 1.1V2.6M8 13.4V14.9M14.9 8H13.4M2.6 8H1.1M12.88 3.12l-1.06 1.06M4.18 11.82l-1.06 1.06M12.88 12.88l-1.06-1.06M4.18 4.18 3.12 3.12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+        </span>
       </button>
       <a href="#contact" class="nav-cta" data-magnet>Contact</a>
     </div>
@@ -549,6 +564,126 @@
     </div>
   </section>
 
+  <!-- ============ KORA, THE IDEA ============ -->
+  <section class="kd" id="koraDemo" aria-labelledby="kdTitle">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <p class="eyebrow">KORA, THE IDEA</p>
+        <h2 class="sec-title" id="kdTitle">Reading a moment.</h2>
+        <p class="kd-note">Kora looks at several cues at once and gives a caregiver somewhere to start. Move the sliders and the read moves with them.</p>
+      </div>
+
+      <p class="kd-disc reveal"><b class="mono">NOT THE REAL MODEL</b><span>A simplified illustration of the idea. The real Kora model is a CNN trained on facial expression data. Nothing here runs it, the drawing is not a person, and every number below is arithmetic on the four sliders.</span></p>
+
+      <div class="kd-panel spot reveal d1" id="kdPanel">
+        <div class="kd-grid">
+
+          <div class="kd-controls">
+            <p class="kd-lab mono">CUES</p>
+
+            <div class="kd-cue">
+              <div class="kd-cue-top">
+                <label for="kdEye">Eye contact</label>
+                <b class="mono" data-kd-word="eye">steady</b>
+              </div>
+              <input class="kd-range" type="range" id="kdEye" min="0" max="100" step="1" value="62" data-kd-cue="eye" aria-valuetext="steady" />
+              <p class="kd-ends mono"><span>looks away</span><span>holds your eyes</span></p>
+            </div>
+
+            <div class="kd-cue">
+              <div class="kd-cue-top">
+                <label for="kdVoice">Voice</label>
+                <b class="mono" data-kd-word="voice">soft</b>
+              </div>
+              <input class="kd-range" type="range" id="kdVoice" min="0" max="100" step="1" value="38" data-kd-cue="voice" aria-valuetext="soft" />
+              <p class="kd-ends mono"><span>quiet</span><span>loud</span></p>
+            </div>
+
+            <div class="kd-cue">
+              <div class="kd-cue-top">
+                <label for="kdPosture">Posture</label>
+                <b class="mono" data-kd-word="posture">settled</b>
+              </div>
+              <input class="kd-range" type="range" id="kdPosture" min="0" max="100" step="1" value="70" data-kd-cue="posture" aria-valuetext="settled" />
+              <p class="kd-ends mono"><span>turned away</span><span>facing you</span></p>
+            </div>
+
+            <div class="kd-cue">
+              <div class="kd-cue-top">
+                <label for="kdMove">Movement</label>
+                <b class="mono" data-kd-word="movement">slow</b>
+              </div>
+              <input class="kd-range" type="range" id="kdMove" min="0" max="100" step="1" value="28" data-kd-cue="movement" aria-valuetext="slow" />
+              <p class="kd-ends mono"><span>still</span><span>fast</span></p>
+            </div>
+
+            <div class="kd-try">
+              <p class="kd-lab mono">TRY</p>
+              <div class="kd-chips">
+                <button class="kd-preset" type="button" data-kd-set="70,30,76,22">Quiet play</button>
+                <button class="kd-preset" type="button" data-kd-set="84,74,88,64">Favorite song</button>
+                <button class="kd-preset" type="button" data-kd-set="24,50,30,74">New person</button>
+                <button class="kd-preset" type="button" data-kd-set="14,88,18,90">Loud room</button>
+                <button class="kd-preset" type="button" data-kd-set="12,12,20,8">End of the day</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="kd-read">
+            <div class="kd-readtop">
+              <svg class="kd-face" viewBox="0 0 200 200" aria-hidden="true" focusable="false">
+                <circle class="kd-aura" id="kdAura" cx="100" cy="100" r="79.9" />
+                <circle class="kd-head" cx="100" cy="100" r="62" />
+                <path class="kd-brow" id="kdBrowL" d="M64 76H86" />
+                <path class="kd-brow" id="kdBrowR" d="M114 76H136" />
+                <path class="kd-eye" id="kdEyeL" d="M65 96Q78 76.4 91 96Q78 108.4 65 96Z" />
+                <path class="kd-eye" id="kdEyeR" d="M109 96Q122 76.4 135 96Q122 108.4 109 96Z" />
+                <circle class="kd-pup" id="kdPupL" cx="74.8" cy="96" r="3.4" />
+                <circle class="kd-pup" id="kdPupR" cx="118.8" cy="96" r="3.4" />
+                <path class="kd-mouth" id="kdMouth" d="M76 136Q100 143.2 124 136" />
+              </svg>
+              <div class="kd-verdict">
+                <p class="kd-lab mono">MOST LIKELY</p>
+                <p class="kd-state" id="kdState">Calm</p>
+                <p class="kd-driver mono" id="kdDriver">TIPPED BY MOVEMENT AND EYE CONTACT</p>
+              </div>
+            </div>
+
+            <div class="kd-bars">
+              <p class="kd-lab mono">HOW IT SPLITS<i>from the four sliders, not from a model</i></p>
+              <div class="kd-bar is-top" data-kd-state="calm">
+                <span class="kd-b-name">Calm</span>
+                <span class="kd-b-track"><i class="kd-b-fill" style="transform:scaleX(0.62)"></i></span>
+                <b class="kd-b-val mono">62%</b>
+              </div>
+              <div class="kd-bar" data-kd-state="engaged">
+                <span class="kd-b-name">Engaged</span>
+                <span class="kd-b-track"><i class="kd-b-fill" style="transform:scaleX(0.17)"></i></span>
+                <b class="kd-b-val mono">17%</b>
+              </div>
+              <div class="kd-bar" data-kd-state="anxious">
+                <span class="kd-b-name">Anxious</span>
+                <span class="kd-b-track"><i class="kd-b-fill" style="transform:scaleX(0.10)"></i></span>
+                <b class="kd-b-val mono">10%</b>
+              </div>
+              <div class="kd-bar" data-kd-state="withdrawn">
+                <span class="kd-b-name">Withdrawn</span>
+                <span class="kd-b-track"><i class="kd-b-fill" style="transform:scaleX(0.10)"></i></span>
+                <b class="kd-b-val mono">10%</b>
+              </div>
+              <div class="kd-bar" data-kd-state="overwhelmed">
+                <span class="kd-b-name">Overwhelmed</span>
+                <span class="kd-b-track"><i class="kd-b-fill" style="transform:scaleX(0.02)"></i></span>
+                <b class="kd-b-val mono">2%</b>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- ============ PRESS ============ -->
   <section class="press" id="press">
     <div class="wrap">
@@ -681,6 +816,95 @@
       </div>
 
       <p class="press-empty mono" id="pressEmpty" hidden>Nothing under that filter yet.</p>
+    </div>
+  </section>
+
+  <!-- ============ TIMELINE ============ -->
+  <section class="timeline" id="timeline">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <p class="eyebrow">TIMELINE</p>
+        <h2 class="sec-title">The path so far.</h2>
+        <p class="tl-note">Dated where this page has a date.</p>
+      </div>
+
+      <div class="tl-wrap">
+        <div class="tl-rail" id="tlRail" aria-hidden="true"><span class="tl-fill" id="tlFill"></span></div>
+        <ol class="tl-track" id="tlTrack">
+
+          <li class="tl-item">
+            <span class="tl-dot" aria-hidden="true"></span>
+            <div class="tl-in">
+              <p class="tl-date mono">2024</p>
+              <h3 class="tl-title">Curie Division, FIRST Worlds</h3>
+              <p class="tl-say">FRC Team 2590 won the Curie Division at the FIRST World Championship and reached the Einstein semifinals.</p>
+            </div>
+          </li>
+
+          <li class="tl-item">
+            <span class="tl-dot" aria-hidden="true"></span>
+            <div class="tl-in">
+              <p class="tl-date mono">NOV 2024</p>
+              <h3 class="tl-title">Kora</h3>
+              <p class="tl-say">An AI app that helps caregivers of autistic children read emotional cues, built with a four-student team and inspired by my cousin.</p>
+            </div>
+          </li>
+
+          <li class="tl-item">
+            <span class="tl-dot" aria-hidden="true"></span>
+            <div class="tl-in">
+              <p class="tl-date mono">2025</p>
+              <h3 class="tl-title">Yale Child Study Center</h3>
+              <p class="tl-say">Research intern in the Cha Lab, modeling autism-related social communication from 120+ hours of parent and child interaction data.</p>
+            </div>
+          </li>
+
+          <li class="tl-item">
+            <span class="tl-dot" aria-hidden="true"></span>
+            <div class="tl-in">
+              <p class="tl-date mono">2025</p>
+              <h3 class="tl-title">Congressional App Challenge, NJ-10</h3>
+              <p class="tl-say">Kora won New Jersey's 10th District, announced by the office of Rep. LaMonica McIver.</p>
+            </div>
+          </li>
+
+          <li class="tl-item">
+            <span class="tl-dot" aria-hidden="true"></span>
+            <div class="tl-in">
+              <p class="tl-date mono">2026</p>
+              <h3 class="tl-title">International Economics Olympiad</h3>
+              <p class="tl-say">Represented the USA in Shenzhen. Team USA placed 6th of 52 countries in the business case competition.</p>
+            </div>
+          </li>
+
+          <li class="tl-item tl-nodate">
+            <span class="tl-dot" aria-hidden="true"></span>
+            <div class="tl-in">
+              <h3 class="tl-title">USAMO and USACO Gold</h3>
+              <p class="tl-say">Qualified for the USA Mathematical Olympiad, and reached the Gold Division in USACO.</p>
+            </div>
+          </li>
+
+          <li class="tl-item">
+            <span class="tl-dot" aria-hidden="true"></span>
+            <div class="tl-in">
+              <p class="tl-date mono">ONGOING</p>
+              <h3 class="tl-title">FBLA</h3>
+              <p class="tl-say">Chapter president, and two years on the NJ FBLA State Technology Committee. The chapter went from 45 to 175+ members.</p>
+            </div>
+          </li>
+
+          <li class="tl-item">
+            <span class="tl-dot" aria-hidden="true"></span>
+            <div class="tl-in">
+              <p class="tl-date mono">ONGOING</p>
+              <h3 class="tl-title">Lumin AI</h3>
+              <p class="tl-say">A 501(c)(3) that teaches AI for free. 15,000+ students, 5,200+ certificates, and 50+ chapters in 16+ countries.</p>
+            </div>
+          </li>
+
+        </ol>
+      </div>
     </div>
   </section>
 
