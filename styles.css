@@ -2010,3 +2010,267 @@ body.cp-lock .nav { padding-right: var(--cp-sbw, 0px); }
   [data-wk-cards] .wk-drawer.wk-open { transition-delay: 0s !important; }
   .wk-toggle svg { transition: none; }
 }
+
+
+/* ============================================================
+   FINAL PASS
+   1. THE CLASSROOM stops being a rail you have to drag. Above
+      720px it becomes a masonry mosaic that shows all nine
+      frames at once, wider than the text column, every image
+      width:100% height:auto so no face is ever cropped. Below
+      720px it stays the swipeable rail, which is the right
+      object on a phone.
+   2. A system pass on the page itself: one mono label scale,
+      chips as plates, card surfaces that catch light, a spine
+      on every section header, the other three photographs
+      sized to matter, and a progress bar you can see.
+   Appended last, so equal-specificity ties resolve here.
+   ============================================================ */
+
+
+/* ============================================================
+   1. THE CLASSROOM MOSAIC
+   ============================================================ */
+
+/* ---- above 720 the rail is not a rail ---------------------------------
+   Nine frames laid into balanced columns. Column layout, not grid, because
+   the nine files run 0.76 to 2.19 in aspect ratio and a fixed grid row can
+   only equalize that by cropping. Here every frame keeps its own ratio and
+   the columns balance themselves. */
+@media (min-width: 721px) {
+  .band-rail {
+    /* the mosaic breaks out past the 1120px text column, so the photographs
+       are the widest thing on the page. capped, so it never runs to the bezel */
+    --gut: max(24px, calc((100% - 1240px) / 2 + 24px));
+    --mgap: clamp(16px, 1.7vw, 24px);
+    display: block;
+    columns: 3 auto;
+    column-gap: var(--mgap);
+    column-fill: balance;
+    overflow: visible;
+    padding: 4px var(--gut) 0;
+    scroll-snap-type: none;
+    cursor: default;
+  }
+  .band-shot {
+    display: block;
+    width: auto;
+    margin: 0 0 var(--mgap);
+    break-inside: avoid;
+    -webkit-column-break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  /* a display:block button still shrink-to-fits, so the width is explicit */
+  .band-hit { width: 100%; }
+
+  /* the repair that matters: width drives the box, height follows the file.
+     max-width caps it, height:auto keeps the second axis indefinite, so the
+     intrinsic ratio always wins and object-fit has nothing left to carve. */
+  .band-hit img {
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+    border-radius: 14px;
+    box-shadow: 0 18px 44px rgba(4, 7, 14, 0.5);
+  }
+  .band-hit, .band-hit::after { border-radius: 14px; }
+
+  /* the affordance no longer waits for a hover: every frame says OPEN */
+  .band-zoom {
+    opacity: 1;
+    transform: none;
+    right: 12px; bottom: 12px;
+    background: rgba(10, 13, 18, 0.6);
+    border-color: rgba(92, 157, 255, 0.28);
+  }
+  .band-shot:hover .band-zoom,
+  .band-hit:focus-visible .band-zoom {
+    background: rgba(92, 157, 255, 0.24);
+    border-color: var(--blue);
+  }
+
+  /* nothing scrolls sideways any more, so the scrollbar, the thumb, the
+     arrows and the DRAG TO SCROLL line have nothing left to say */
+  .band-foot { display: none; }
+
+  .band-cap { padding: 12px 2px 0; }
+}
+
+@media (min-width: 721px) and (max-width: 1023px) {
+  .band-rail { columns: 2 auto; }
+}
+
+/* the frames lift together with their ring, and stop dead for reduced motion */
+@media (min-width: 721px) and (prefers-reduced-motion: reduce) {
+  .band-shot:hover .band-hit img,
+  .band-shot:hover .band-hit::after { transform: none; }
+}
+
+/* the band hands its closing rule to the tail row below it, so the two read
+   as one block instead of two stacked ones */
+.band {
+  border-bottom: 0;
+  padding-bottom: clamp(26px, 3vw, 40px);
+}
+.band-note { color: var(--body); }
+
+/* ---- the tail: the band's sign-off and a keyboard-reachable way in ---- */
+.ct-tail {
+  border-bottom: 1px solid var(--line);
+  padding-bottom: clamp(58px, 6vw, 92px);
+}
+.ct-row {
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 16px 20px;
+  padding-top: clamp(20px, 2.4vw, 30px);
+  border-top: 1px solid var(--line);
+}
+.ct-meta {
+  display: flex; align-items: baseline; gap: 12px;
+  font-size: 9.5px; letter-spacing: 0.2em; color: var(--dim);
+  font-variant-numeric: tabular-nums;
+}
+.ct-meta b { color: var(--sky); font-weight: 500; }
+.ct-open {
+  display: inline-flex; align-items: center; gap: 9px;
+  font-family: var(--mono);
+  font-size: 10px; letter-spacing: 0.2em; line-height: 1;
+  color: var(--ink);
+  background: rgba(92, 157, 255, 0.08);
+  border: 1px solid rgba(92, 157, 255, 0.28);
+  border-radius: 999px;
+  padding: 11px 17px;
+  cursor: pointer;
+  -webkit-appearance: none; appearance: none;
+  transition: background 0.25s, border-color 0.25s, gap 0.3s var(--ease);
+}
+.ct-open:hover { background: rgba(92, 157, 255, 0.2); border-color: var(--blue); gap: 13px; }
+.ct-open svg { flex: none; color: var(--blue); }
+.ct-open[hidden] { display: none; }
+
+
+/* ============================================================
+   2. THE SYSTEM PASS
+   ============================================================ */
+
+/* ---- 2a. the scroll progress bar was 1px of 70% blue, which on this
+     background is close to invisible. 2px of the page gradient. ---- */
+.progress { height: 2px; opacity: 1; background: var(--grad); }
+
+/* ---- 2b. every section header now opens on the same beat: a hairline
+     across the column with a short gradient tick at the left. The hairline
+     was already there; the tick is what turns it into a spine. ---- */
+.sec-head { position: relative; }
+.sec-head::after {
+  content: "";
+  position: absolute; top: -1px; left: 0;
+  width: 56px; height: 1px;
+  background: var(--grad);
+}
+
+/* ---- 2c. one mono label scale. There were eight ad-hoc size and tracking
+     pairs across the page (11.5/0.22, 11/0.18, 10.5/0.18, 10.5/0.2,
+     10.5/0.24, 10/0.2, 10/0.24, 10.5/0.2). Three tiers now carry all of it,
+     so small caps stop competing with each other for attention. ---- */
+.eyebrow { font-size: 11.5px; letter-spacing: 0.2em; }
+.chip, .press-top, .receipt-head { font-size: 10.5px; letter-spacing: 0.18em; }
+.press-cta, .receipt-foot, .foot-row,
+.photo.pic figcaption, .band-cap { font-size: 9.5px; letter-spacing: 0.2em; }
+
+/* the functional micro-labels were --faint, which is about 4.3:1 on this
+   background at 10px. --dim clears 5.8:1 and they are still quiet. */
+.press-cta, .photo.pic figcaption, .band-cap { color: var(--dim); }
+.stat p { color: var(--body); }
+
+/* ---- 2d. chips were bare grey words sitting at body weight directly above
+     body copy, so RESEARCH and TEAM USA read as sentences. As small plates
+     they read as metadata and stop competing. ---- */
+.chip {
+  border: 1px solid var(--line-2);
+  border-radius: 999px;
+  padding: 5px 11px;
+  background: rgba(255, 255, 255, 0.022);
+  line-height: 1.5;
+}
+.chip-blue {
+  color: var(--blue);
+  border-color: rgba(92, 157, 255, 0.3);
+  background: rgba(92, 157, 255, 0.075);
+}
+
+/* ---- 2e. the tag pills were 11.5px inside a 0.07 alpha border, which on a
+     dark panel reads as scattered outlines rather than one list. ---- */
+.tags li {
+  font-size: 11px;
+  border-color: var(--line-2);
+  background: rgba(255, 255, 255, 0.022);
+  color: var(--body);
+}
+
+/* ---- 2f. card surfaces. The panels were a flat fill on a flat background.
+     A 3% highlight falling off over the top half, on top of the 1px top edge
+     already there, is the difference between a rectangle and a surface. ---- */
+.now-item, .beyond-card, .press-card {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.028), rgba(255, 255, 255, 0) 46%),
+    var(--panel);
+}
+.receipt {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.028), rgba(255, 255, 255, 0) 30%),
+    var(--panel);
+}
+
+/* ---- 2g. the work card index was 14px of grey letterspacing, the same
+     weight as the chip beside it. On the two-column layout it becomes a
+     ruled index instead. ---- */
+@media (min-width: 961px) {
+  .stack-meta > .stack-num {
+    width: 100%;
+    font-size: 12px; letter-spacing: 0.2em;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--line);
+  }
+}
+
+/* ---- 2h. the other three photographs. They were the right pictures at the
+     wrong size: a 300px sign-off and two frames tilted like snapshots. The
+     tilt goes (the page is minimal, not scrapbook) and the sign-off gets
+     real presence. Ratios untouched, so nothing crops. ---- */
+.photo.pic-band { transform: none; }
+.photo.pic-band img { filter: saturate(0.92); }
+.photo.pic-margin { transform: none; }
+.photo.pic-sign {
+  width: clamp(280px, 33vw, 430px);
+  margin-top: clamp(56px, 6vw, 84px);
+  transform: none;
+}
+
+/* the buried thumbnail reads as a door: the badge is always on, blue edged,
+   and fills blue under the cursor */
+.gal-badge {
+  border-color: rgba(92, 157, 255, 0.34);
+  background: rgba(8, 11, 17, 0.7);
+}
+.gal-trigger:hover .gal-badge,
+.gal-trigger:focus-visible .gal-badge {
+  background: rgba(92, 157, 255, 0.24);
+  border-color: var(--blue);
+}
+
+@media (max-width: 700px) {
+  .photo.pic-sign { width: min(280px, 100%); }
+  /* keep the tighter tracking the phone layout already asked for */
+  .photo.pic figcaption { letter-spacing: 0.14em; }
+  .ct-row { padding-top: 20px; }
+  .ct-meta { font-size: 9px; letter-spacing: 0.16em; }
+  .ct-open { font-size: 9.5px; padding: 10px 14px; }
+}
+@media (max-width: 420px) {
+  .ct-row { flex-direction: column; align-items: flex-start; gap: 14px; }
+}
+
+/* the NOW cards became column flex containers when they became links, so a
+   chip that is now a plate would stretch the full card width */
+.now-item .chip { align-self: flex-start; }

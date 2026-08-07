@@ -2672,3 +2672,84 @@
     e.stopPropagation();
   }, true);
 })();
+
+
+/* ============================================================
+   THE CLASSROOM, FINAL PASS
+   Above 720px the rail is laid out as a mosaic, so there is
+   nothing left to drag. Three small jobs follow from that:
+   keep the band module's drag handler from swallowing clicks,
+   keep the region's accessible name honest, and wire the tail
+   button into the gallery the page already builds.
+   Self contained, guarded, no second lightbox.
+   ============================================================ */
+(function () {
+  "use strict";
+
+  var root = document.documentElement;
+  if (root.hasAttribute("data-classroom-final")) return;
+  root.setAttribute("data-classroom-final", "");
+
+  var rail = document.getElementById("bandRail");
+  var trigger = document.getElementById("luminGallery");
+
+  function scrolls() {
+    if (!rail) return false;
+    return (rail.scrollWidth - rail.clientWidth) > 2;
+  }
+
+  /* ---- 1. the drag handler belongs to the phone layout only ----
+     The band module arms a drag on pointerdown and then suppresses the
+     click that follows any movement over 6px. In the mosaic there is no
+     horizontal scroll, so that only means a mouse that twitches while
+     clicking a photo silently fails to open it. A capture listener on the
+     document stops pointerdown before it ever reaches the rail whenever
+     the rail has nothing to scroll. Click, focus and keyboard are
+     untouched, and the phone rail keeps its drag. */
+  if (rail && window.PointerEvent) {
+    document.addEventListener("pointerdown", function (e) {
+      var t = e.target;
+      if (!t || typeof t.closest !== "function") return;
+      if (!t.closest("#bandRail")) return;
+      if (scrolls()) return;
+      e.stopPropagation();
+    }, true);
+  }
+
+  /* ---- 2. the accessible name follows the layout ---- */
+  var nameTimer = 0;
+  function name() {
+    nameTimer = 0;
+    if (!rail) return;
+    rail.setAttribute("aria-label", scrolls()
+      ? "Lumin AI teaching photos, scrollable row of nine"
+      : "Lumin AI teaching photos, nine frames");
+  }
+  function queueName() {
+    if (nameTimer) return;
+    nameTimer = setTimeout(name, 180);
+  }
+  if (rail) {
+    name();
+    window.addEventListener("resize", queueName, { passive: true });
+    Array.prototype.forEach.call(rail.querySelectorAll("img"), function (img) {
+      if (img.complete) return;
+      img.addEventListener("load", queueName);
+      img.addEventListener("error", queueName);
+    });
+  }
+
+  /* ---- 3. the tail button opens the existing lightbox at frame one ----
+     If work card 02 ever loses the trigger, the button hides itself rather
+     than sitting there as a control that cannot do anything. */
+  var openAll = document.getElementById("ctOpenAll");
+  if (openAll) {
+    if (!trigger || typeof trigger.click !== "function") {
+      openAll.hidden = true;
+    } else {
+      openAll.addEventListener("click", function () {
+        try { trigger.click(); } catch (err) {}
+      });
+    }
+  }
+})();
