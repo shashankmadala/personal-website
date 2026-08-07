@@ -1377,3 +1377,1298 @@
     if (e.key === "Enter" || e.key === " ") { e.preventDefault(); open(0); }
   });
 })();
+
+
+
+/* ============================================================
+   motion + clickability pass
+   staggered section heads, a right-hand section rail that also
+   drives the nav active state
+   ============================================================ */
+
+(function () {
+  "use strict";
+
+  var reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var touch = matchMedia("(hover: none), (pointer: coarse)").matches;
+  var root = document.documentElement;
+  if (root.hasAttribute("data-motion-pass")) return;
+  root.setAttribute("data-motion-pass", "");
+
+  /* ---------- 1) section heads: letters, then words ---------- */
+  (function () {
+    if (reduced) return;
+    var heads = document.querySelectorAll(".sec-head");
+    if (!heads.length) return;
+
+    function letters(el, start, step) {
+      var text = el.textContent.trim();
+      if (!text) return;
+      var box = document.createElement("span");
+      box.className = "sh-ey";
+      for (var i = 0; i < text.length; i++) {
+        var s = document.createElement("span");
+        s.className = "sh-l";
+        s.textContent = text.charAt(i);
+        s.style.transitionDelay = (start + i * step) + "ms";
+        box.appendChild(s);
+      }
+      el.textContent = "";
+      el.appendChild(box);
+    }
+
+    function words(el, start, step) {
+      var parts = el.textContent.trim().split(/(\s+)/);
+      if (!parts.length) return;
+      var frag = document.createDocumentFragment();
+      var n = 0;
+      for (var i = 0; i < parts.length; i++) {
+        if (!parts[i]) continue;
+        if (/^\s+$/.test(parts[i])) {
+          frag.appendChild(document.createTextNode(parts[i]));
+          continue;
+        }
+        var s = document.createElement("span");
+        s.className = "sh-w";
+        s.textContent = parts[i];
+        s.style.transitionDelay = (start + n * step) + "ms";
+        n++;
+        frag.appendChild(s);
+      }
+      el.textContent = "";
+      el.appendChild(frag);
+    }
+
+    var io = null;
+    if (typeof IntersectionObserver === "function") {
+      io = new IntersectionObserver(function (entries) {
+        for (var i = 0; i < entries.length; i++) {
+          if (entries[i].isIntersecting) {
+            entries[i].target.classList.add("in");
+            io.unobserve(entries[i].target);
+          }
+        }
+      }, { threshold: 0.25, rootMargin: "0px 0px -8% 0px" });
+    }
+
+    Array.prototype.forEach.call(heads, function (head) {
+      if (!head || head.querySelector(".sh-l") || head.querySelector(".sh-w")) return;
+      var ey = head.querySelector(".eyebrow");
+      var ti = head.querySelector(".sec-title");
+      if (!ey && !ti) return;
+      if (ey) letters(ey, 0, 18);
+      if (ti) words(ti, 120, 55);
+      head.classList.add("stag");
+      if (io) io.observe(head);
+      else head.classList.add("in");
+    });
+  })();
+
+  /* ---------- 2) section rail + nav active state ---------- */
+  (function () {
+    if (touch) return;
+
+    var DEFS = [
+      ["top", "START"], ["now", "NOW"], ["work", "WORK"], ["honors", "HONORS"],
+      ["press", "PRESS"], ["beyond", "ALSO"], ["contact", "CONTACT"]
+    ];
+    var items = [];
+    for (var i = 0; i < DEFS.length; i++) {
+      var el = document.getElementById(DEFS[i][0]);
+      if (el) items.push({ el: el, id: DEFS[i][0], label: DEFS[i][1], top: 0, dot: null });
+    }
+    if (items.length < 3) return;
+
+    var rail = document.createElement("nav");
+    rail.className = "rail";
+    rail.setAttribute("aria-label", "Page sections");
+    items.forEach(function (it) {
+      var a = document.createElement("a");
+      a.className = "rail-dot";
+      a.href = "#" + it.id;
+      a.setAttribute("aria-label", "Jump to " + it.label.toLowerCase());
+      var lab = document.createElement("span");
+      lab.className = "rail-lab mono";
+      lab.textContent = it.label;
+      var pip = document.createElement("i");
+      pip.className = "rail-pip";
+      a.appendChild(lab);
+      a.appendChild(pip);
+      rail.appendChild(a);
+      it.dot = a;
+    });
+    if (!document.body) return;
+    document.body.appendChild(rail);
+
+    var navLinks = document.querySelectorAll(".nav-links a");
+    var active = -1;
+    var shown = false;
+    var raf = 0;
+
+    function measure() {
+      var sy = window.pageYOffset;
+      for (var i = 0; i < items.length; i++) {
+        items[i].top = items[i].el.getBoundingClientRect().top + sy;
+      }
+    }
+
+    function paint() {
+      raf = 0;
+      var y = window.pageYOffset + window.innerHeight * 0.38;
+      var idx = 0;
+      for (var i = 0; i < items.length; i++) {
+        if (items[i].top <= y) idx = i;
+      }
+      if (idx !== active) {
+        active = idx;
+        for (var j = 0; j < items.length; j++) {
+          items[j].dot.classList.toggle("on", j === idx);
+        }
+        var hash = "#" + items[idx].id;
+        Array.prototype.forEach.call(navLinks, function (a) {
+          a.classList.toggle("is-active", a.getAttribute("href") === hash);
+        });
+      }
+      var want = window.pageYOffset > window.innerHeight * 0.55;
+      if (want !== shown) {
+        shown = want;
+        rail.classList.toggle("show", want);
+      }
+    }
+
+    function queue() { if (!raf) raf = requestAnimationFrame(paint); }
+    function remeasure() { measure(); queue(); }
+
+    window.addEventListener("scroll", queue, { passive: true });
+    window.addEventListener("resize", remeasure, { passive: true });
+    window.addEventListener("load", remeasure);
+    if (typeof ResizeObserver === "function") {
+      new ResizeObserver(remeasure).observe(document.body);
+    }
+    measure();
+    paint();
+  })();
+
+})();
+
+
+
+
+/* ============================================================
+   command palette
+   Cmd/Ctrl+K, "/" or the nav search button. Indexes the page by
+   reading the DOM at init, so it never goes stale.
+   ============================================================ */
+(function () {
+  "use strict";
+
+  var reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var touch = matchMedia("(hover: none), (pointer: coarse)").matches;
+
+  var root = document.documentElement;
+  var body = document.body;
+  if (!root || !body) return;
+  if (root.hasAttribute("data-cmdk")) return;
+  root.setAttribute("data-cmdk", "");
+
+  var isMac = /Mac|iPhone|iPad|iPod/.test((navigator.platform || "") + " " + (navigator.userAgent || ""));
+  var NAV_OFFSET = 100;
+
+  var openBtn = document.getElementById("cpOpen");
+  var kbdEl = document.getElementById("cpKbd");
+  if (kbdEl) kbdEl.textContent = isMac ? "⌘K" : "Ctrl K";
+
+  /* ---------- helpers ---------- */
+  function txt(el) { return el ? (el.textContent || "").replace(/\s+/g, " ").trim() : ""; }
+
+  function clip(s, n) {
+    if (!s) return "";
+    if (s.length <= n) return s;
+    var cut = s.slice(0, n);
+    var sp = cut.lastIndexOf(" ");
+    if (sp > n * 0.55) cut = cut.slice(0, sp);
+    return cut.replace(/[\s,;:.]+$/, "") + "…";
+  }
+
+  function firstBit(s, n) {
+    if (!s) return "";
+    var stop = s.indexOf(". ");
+    if (stop > 12 && stop < n) return s.slice(0, stop);
+    return clip(s, n);
+  }
+
+  /* ---------- scroll + highlight ---------- */
+
+  /* sticky cards report their stuck position, not their place in the
+     document. drop the stickiness for the one measuring read. */
+  function docTop(el) {
+    root.classList.add("cp-measure");
+    var t = el.getBoundingClientRect().top + (window.pageYOffset || document.documentElement.scrollTop || 0);
+    root.classList.remove("cp-measure");
+    return t;
+  }
+
+  var flashTimers = [];
+  function flash(el) {
+    var i;
+    for (i = 0; i < flashTimers.length; i++) clearTimeout(flashTimers[i]);
+    flashTimers = [];
+    var prev = document.querySelectorAll(".cp-flash, .cp-flash-out");
+    for (i = 0; i < prev.length; i++) {
+      prev[i].classList.remove("cp-flash");
+      prev[i].classList.remove("cp-flash-out");
+    }
+    if (!el) return;
+    /* wait out the smooth scroll, and outlast the reveal and receipt-print
+       animations that may still be running on the target */
+    var lead = reduced ? 0 : 420;
+    flashTimers.push(setTimeout(function () { el.classList.add("cp-flash"); }, lead));
+    flashTimers.push(setTimeout(function () { el.classList.add("cp-flash-out"); }, lead + 1400));
+    flashTimers.push(setTimeout(function () {
+      el.classList.remove("cp-flash");
+      el.classList.remove("cp-flash-out");
+    }, lead + 2100));
+  }
+
+  function scrollTo(y) {
+    y = Math.max(0, Math.round(y));
+    try { window.scrollTo({ top: y, behavior: reduced ? "auto" : "smooth" }); }
+    catch (err) { window.scrollTo(0, y); }
+  }
+
+  function jump(target, flashEl) {
+    if (!target) return;
+    scrollTo(docTop(target) - NAV_OFFSET);
+    flash(flashEl || target);
+    var f = flashEl || target;
+    setTimeout(function () {
+      if (!f.hasAttribute("tabindex")) f.setAttribute("tabindex", "-1");
+      try { f.focus({ preventScroll: true }); } catch (err) {}
+    }, reduced ? 60 : 520);
+  }
+
+  function openUrl(url) {
+    if (!url) return;
+    var w = window.open(url, "_blank", "noopener,noreferrer");
+    if (w) { try { w.opener = null; } catch (err) {} }
+  }
+
+  /* ---------- index ---------- */
+  var GROUPS = ["Work", "Honors", "Press", "Photos", "Contact", "Facts"];
+  var entries = [];
+  var seq = 0;
+
+  function add(group, title, sub, kind, keys, ext, run) {
+    if (!title || typeof run !== "function") return;
+    entries.push({
+      id: "cp-o-" + (seq++),
+      g: group,
+      t: title,
+      s: sub || "",
+      kind: kind || "",
+      ext: !!ext,
+      tl: title.toLowerCase(),
+      sl: (sub || "").toLowerCase(),
+      kl: (keys || "").toLowerCase(),
+      run: run
+    });
+  }
+
+  function cardByTitle(needle) {
+    var cards = document.querySelectorAll(".stack .stack-card");
+    for (var i = 0; i < cards.length; i++) {
+      if (txt(cards[i].querySelector(".stack-title")).toLowerCase().indexOf(needle) > -1) return cards[i];
+    }
+    return null;
+  }
+
+  function capOf(fig) {
+    if (!fig) return "";
+    var c = fig.querySelector("figcaption");
+    if (!c) return "";
+    var b = txt(c.querySelector("b"));
+    var s = txt(c.querySelector("span"));
+    if (b && s) return b + " · " + s;
+    return b || s;
+  }
+
+  var SCOPE = { INTL: "International", NATL: "National", STATE: "State" };
+
+  function buildIndex() {
+    entries = [];
+    seq = 0;
+    var i;
+
+    /* --- work: the six sticky cards --- */
+    var cards = document.querySelectorAll(".stack .stack-card");
+    for (i = 0; i < cards.length; i++) {
+      (function (card) {
+        var title = txt(card.querySelector(".stack-title"));
+        if (!title) return;
+        var num = txt(card.querySelector(".stack-num"));
+        var role = txt(card.querySelector(".chip-blue"));
+        var desc = txt(card.querySelector(".stack-desc"));
+        var tags = [];
+        var lis = card.querySelectorAll(".tags li");
+        for (var j = 0; j < lis.length; j++) tags.push(txt(lis[j]));
+        var inner = card.querySelector(".stack-in") || card;
+        add("Work", title, firstBit(desc, 74), num || "WORK",
+          title + " " + role + " " + desc + " " + tags.join(" "), false,
+          function () { jump(card, inner); });
+      })(cards[i]);
+    }
+
+    /* --- honors: the receipt ledger --- */
+    var receipt = document.getElementById("receipt") || document.getElementById("honors");
+    var rows = document.querySelectorAll(".receipt-list .r-row");
+    for (i = 0; i < rows.length; i++) {
+      (function (row) {
+        var label = txt(row.querySelector("span"));
+        if (!label) return;
+        var scope = txt(row.querySelector("b"));
+        add("Honors", label, SCOPE[scope] || scope, scope || "HONOR",
+          label + " award honor " + scope, false,
+          function () { jump(receipt || row, row); });
+      })(rows[i]);
+    }
+
+    /* --- press: every article on the wall, never hardcoded --- */
+    var pcards = document.querySelectorAll(".press-grid .press-card");
+    for (i = 0; i < pcards.length; i++) {
+      (function (a) {
+        var head = txt(a.querySelector("h3"));
+        var href = a.getAttribute("href");
+        if (!head || !href) return;
+        var tops = a.querySelectorAll(".press-top span");
+        var outlet = tops.length ? txt(tops[0]) : "";
+        var date = tops.length > 1 ? txt(tops[1]) : "";
+        var sub = outlet + (date ? " · " + date : "");
+        add("Press", head, sub, "LINK",
+          head + " " + sub + " " + txt(a.querySelector(".press-peek")) + " news article coverage", true,
+          function () { openUrl(href); });
+      })(pcards[i]);
+    }
+
+    /* --- photos --- */
+    var gal = document.getElementById("luminGallery");
+    if (gal) {
+      var badge = txt(gal.querySelector(".gal-badge"));
+      add("Photos", "Lumin AI teaching photos", (badge || "9 photos") + " · opens the gallery", "PHOTOS",
+        "lumin class classroom teaching gallery slideshow pictures", false,
+        function () { setTimeout(function () { gal.click(); }, 60); });
+    }
+    var band = document.querySelector(".photo.pic-band");
+    if (band) {
+      add("Photos", "Team USA with the flag, Shenzhen", capOf(band), "PHOTO",
+        "team usa flag ieo shenzhen china olympiad picture", false,
+        function () { jump(band, band); });
+    }
+    var sign = document.querySelector(".photo.pic-sign");
+    if (sign) {
+      add("Photos", "Closing day at the Olympiad", capOf(sign), "PHOTO",
+        "shenzhen closing thank you ieo picture", false,
+        function () { jump(sign, sign); });
+    }
+
+    /* --- contact --- */
+    var contact = document.getElementById("contact");
+    var mail = document.querySelector('.contact a[href^="mailto:"]') || document.querySelector('a[href^="mailto:"]');
+    if (mail) {
+      var addr = (mail.getAttribute("href") || "").replace(/^mailto:/, "");
+      add("Contact", "Email Shashank", addr, "MAIL", "email mail contact reach out write", true,
+        function () { window.location.href = mail.getAttribute("href"); });
+    }
+    var li = document.querySelector('.contact a[href*="linkedin"]') || document.querySelector('a[href*="linkedin"]');
+    if (li) {
+      var lh = li.getAttribute("href") || "";
+      add("Contact", "LinkedIn", lh.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, ""), "LINK",
+        "linkedin social profile connect", true,
+        function () { openUrl(lh); });
+    }
+    if (contact) {
+      add("Contact", "Go to the contact section", "Let's talk", "JUMP", "contact talk hire email section", false,
+        function () { jump(contact, contact); });
+    }
+
+    /* --- quick facts --- */
+    var stats = document.querySelector(".stats");
+    var kora = cardByTitle("kora");
+    var lumin = cardByTitle("lumin");
+    var yale = cardByTitle("yale");
+    var nowSec = document.getElementById("now");
+
+    add("Facts", "Team USA, 6th of 52", "IEO 2026 business case, Shenzhen", "FACT",
+      "team usa 6th 52 economics olympiad ieo shenzhen china 2026", false,
+      function () { jump(stats || nowSec, stats || nowSec); });
+
+    add("Facts", "15,000+ students taught", "Lumin AI, 50+ chapters in 16+ countries", "FACT",
+      "15000 students lumin nonprofit chapters countries taught certificates", false,
+      function () { jump(lumin || stats, lumin ? (lumin.querySelector(".stack-in") || lumin) : stats); });
+
+    add("Facts", "700+ Kora users", "25 therapy centers across 12 countries", "FACT",
+      "700 users kora therapy centers countries autism app", false,
+      function () { jump(kora || stats, kora ? (kora.querySelector(".stack-in") || kora) : stats); });
+
+    add("Facts", "AUC 0.80 fusion models", "Yale Child Study Center, anxiety risk in autism", "FACT",
+      "auc 0.80 fusion multimodal yale research anxiety autism cha lab", false,
+      function () { jump(yale || stats, yale ? (yale.querySelector(".stack-in") || yale) : stats); });
+
+    add("Facts", "Class of 2027", "Robbinsville High School, New Jersey", "FACT",
+      "class 2027 robbinsville high school new jersey student", false,
+      function () { scrollTo(0); });
+  }
+
+  /* ---------- matching ---------- */
+  function tierFor(e, tok) {
+    var i = e.tl.indexOf(tok);
+    if (i === 0) return 0;
+    if (i > 0) return /[a-z0-9]/.test(e.tl.charAt(i - 1)) ? 2 : 1;
+    i = e.sl.indexOf(tok);
+    if (i === 0) return 3;
+    if (i > 0) return 4;
+    if (e.kl.indexOf(tok) > -1) return 5;
+    return -1;
+  }
+
+  function filter(q) {
+    if (!q) return entries.slice();
+    var toks = q.split(/\s+/);
+    var hit = [];
+    var i, j;
+    for (i = 0; i < entries.length; i++) {
+      var e = entries[i], best = 99, ok = true;
+      for (j = 0; j < toks.length; j++) {
+        var t = tierFor(e, toks[j]);
+        if (t < 0) { ok = false; break; }
+        if (t < best) best = t;
+      }
+      if (ok) hit.push({ e: e, s: best, i: i });
+    }
+    /* keep one header per group: bucket first, then order groups by
+       their strongest hit so a prefix match still floats to the top */
+    var buckets = {}, order = [];
+    for (i = 0; i < hit.length; i++) {
+      var g = hit[i].e.g;
+      if (!buckets[g]) { buckets[g] = []; order.push(g); }
+      buckets[g].push(hit[i]);
+    }
+    order.sort(function (a, b) {
+      var ba = 99, bb = 99;
+      for (var k = 0; k < buckets[a].length; k++) ba = Math.min(ba, buckets[a][k].s);
+      for (k = 0; k < buckets[b].length; k++) bb = Math.min(bb, buckets[b][k].s);
+      return ba - bb || GROUPS.indexOf(a) - GROUPS.indexOf(b);
+    });
+    var out = [];
+    for (i = 0; i < order.length; i++) {
+      var list2 = buckets[order[i]];
+      list2.sort(function (a, b) { return a.s - b.s || a.i - b.i; });
+      for (j = 0; j < list2.length; j++) out.push(list2[j].e);
+    }
+    return out;
+  }
+
+  /* ---------- overlay ---------- */
+  var shell = null, panel = null, input = null, listEl = null, hintN = null, closeBtn = null;
+  var results = [], rowEls = [], active = -1, isOpen = false, lastFocus = null, hiQ = "";
+
+  function fill(el, text, q) {
+    el.textContent = "";
+    var i = q ? text.toLowerCase().indexOf(q) : -1;
+    if (i < 0) { el.textContent = text; return; }
+    el.appendChild(document.createTextNode(text.slice(0, i)));
+    var m = document.createElement("mark");
+    m.className = "cp-hit";
+    m.textContent = text.slice(i, i + q.length);
+    el.appendChild(m);
+    el.appendChild(document.createTextNode(text.slice(i + q.length)));
+  }
+
+  function buildUI() {
+    shell = document.createElement("div");
+    shell.className = "cp";
+    shell.id = "cmdPalette";
+
+    var scrim = document.createElement("div");
+    scrim.className = "cp-scrim";
+    scrim.addEventListener("click", close);
+
+    panel = document.createElement("div");
+    panel.className = "cp-panel";
+    panel.setAttribute("role", "dialog");
+    panel.setAttribute("aria-modal", "true");
+    panel.setAttribute("aria-label", "Search this site");
+
+    var field = document.createElement("div");
+    field.className = "cp-field";
+    field.innerHTML = '<svg class="cp-mag" width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true">' +
+      '<circle cx="6.4" cy="6.4" r="4.6" stroke="currentColor" stroke-width="1.5"/>' +
+      '<path d="M10 10L13.4 13.4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>';
+
+    input = document.createElement("input");
+    input.className = "cp-input";
+    input.type = "text";
+    input.placeholder = "Search work, honors, press, photos";
+    input.setAttribute("role", "combobox");
+    input.setAttribute("aria-expanded", "true");
+    input.setAttribute("aria-controls", "cpList");
+    input.setAttribute("aria-autocomplete", "list");
+    input.setAttribute("aria-label", "Search this site");
+    input.setAttribute("autocomplete", "off");
+    input.setAttribute("autocapitalize", "off");
+    input.setAttribute("autocorrect", "off");
+    input.setAttribute("spellcheck", "false");
+    input.maxLength = 60;
+    field.appendChild(input);
+
+    closeBtn = document.createElement("button");
+    closeBtn.type = "button";
+    closeBtn.className = "cp-esc mono";
+    closeBtn.textContent = "ESC";
+    closeBtn.setAttribute("aria-label", "Close search");
+    closeBtn.addEventListener("click", close);
+    field.appendChild(closeBtn);
+
+    listEl = document.createElement("div");
+    listEl.className = "cp-list";
+    listEl.id = "cpList";
+    listEl.setAttribute("role", "listbox");
+    listEl.setAttribute("aria-label", "Search results");
+
+    var hint = document.createElement("div");
+    hint.className = "cp-hint mono";
+    hint.innerHTML =
+      '<span class="cp-hk"><kbd>&#8593;</kbd><kbd>&#8595;</kbd>move</span>' +
+      '<span class="cp-hk"><kbd>&#8629;</kbd>open</span>' +
+      '<span class="cp-hk"><kbd>esc</kbd>close</span>' +
+      '<span class="cp-hn"></span>';
+    hintN = hint.querySelector(".cp-hn");
+
+    panel.appendChild(field);
+    panel.appendChild(listEl);
+    panel.appendChild(hint);
+    shell.appendChild(scrim);
+    shell.appendChild(panel);
+    body.appendChild(shell);
+
+    input.addEventListener("input", render);
+    panel.addEventListener("keydown", onPanelKey);
+    listEl.addEventListener("click", onListClick);
+    if (!touch) listEl.addEventListener("mousemove", onListMove);
+  }
+
+  function render() {
+    if (!listEl) return;
+    var raw = (input.value || "").trim();
+    var q = raw.toLowerCase();
+    hiQ = q.split(/\s+/)[0] || "";
+    results = filter(q);
+    listEl.innerHTML = "";
+    rowEls = [];
+
+    if (!results.length) {
+      var em = document.createElement("p");
+      em.className = "cp-empty";
+      em.textContent = "Nothing here matches “" + raw + "”. Try kora, yale, olympiad, or fbla.";
+      listEl.appendChild(em);
+      setActive(-1);
+      if (hintN) hintN.textContent = "0 results";
+      listEl.scrollTop = 0;
+      return;
+    }
+
+    var lastG = null;
+    for (var i = 0; i < results.length; i++) {
+      var e = results[i];
+      if (e.g !== lastG) {
+        lastG = e.g;
+        var h = document.createElement("div");
+        h.className = "cp-group";
+        h.setAttribute("aria-hidden", "true");
+        h.textContent = e.g;
+        listEl.appendChild(h);
+      }
+
+      var row = document.createElement("div");
+      row.className = "cp-row";
+      row.id = e.id;
+      row.setAttribute("role", "option");
+      row.setAttribute("aria-selected", "false");
+      row.setAttribute("data-i", String(i));
+
+      var kind = document.createElement("span");
+      kind.className = "cp-kind mono";
+      kind.textContent = e.kind;
+
+      var mid = document.createElement("span");
+      mid.className = "cp-mid";
+      var t1 = document.createElement("span");
+      t1.className = "cp-t";
+      fill(t1, e.t, hiQ);
+      mid.appendChild(t1);
+      if (e.s) {
+        var t2 = document.createElement("span");
+        t2.className = "cp-s mono";
+        fill(t2, e.s, hiQ);
+        mid.appendChild(t2);
+      }
+
+      var go = document.createElement("span");
+      go.className = "cp-go mono";
+      go.textContent = e.ext ? "↗" : "↵";
+
+      row.appendChild(kind);
+      row.appendChild(mid);
+      row.appendChild(go);
+      listEl.appendChild(row);
+      rowEls.push(row);
+    }
+
+    if (hintN) hintN.textContent = results.length + (results.length === 1 ? " result" : " results");
+    listEl.scrollTop = 0;
+    setActive(0);
+  }
+
+  function ensureVisible(row) {
+    if (!listEl || !row) return;
+    var top = row.offsetTop;
+    var bot = top + row.offsetHeight;
+    var vt = listEl.scrollTop;
+    var vb = vt + listEl.clientHeight;
+    var pad = 32; /* the sticky group header sits on top of the first row */
+    if (top - pad < vt) listEl.scrollTop = Math.max(0, top - pad);
+    else if (bot + 6 > vb) listEl.scrollTop = bot + 6 - listEl.clientHeight;
+  }
+
+  function setActive(i) {
+    for (var j = 0; j < rowEls.length; j++) {
+      var on = j === i;
+      rowEls[j].classList.toggle("on", on);
+      rowEls[j].setAttribute("aria-selected", on ? "true" : "false");
+    }
+    active = i;
+    if (input) {
+      if (i >= 0 && rowEls[i]) input.setAttribute("aria-activedescendant", rowEls[i].id);
+      else input.removeAttribute("aria-activedescendant");
+    }
+    if (i >= 0) ensureVisible(rowEls[i]);
+  }
+
+  function move(d) {
+    if (!rowEls.length) return;
+    var n = active + d;
+    if (n < 0) n = rowEls.length - 1;
+    if (n >= rowEls.length) n = 0;
+    setActive(n);
+  }
+
+  function activate(i) {
+    var e = results[i];
+    if (!e) return;
+    /* jumps and the gallery move focus themselves, so only hand it back to
+       the nav button when the entry leaves the page as it is */
+    close(!!e.ext);
+    e.run();
+  }
+
+  function onListClick(e) {
+    var row = e.target && e.target.closest ? e.target.closest(".cp-row") : null;
+    if (!row) return;
+    var i = parseInt(row.getAttribute("data-i"), 10);
+    if (!isNaN(i)) activate(i);
+  }
+
+  function onListMove(e) {
+    var row = e.target && e.target.closest ? e.target.closest(".cp-row") : null;
+    if (!row) return;
+    var i = parseInt(row.getAttribute("data-i"), 10);
+    if (!isNaN(i) && i !== active) setActive(i);
+  }
+
+  function onPanelKey(e) {
+    var k = e.key;
+    if (k === "ArrowDown") { e.preventDefault(); move(1); }
+    else if (k === "ArrowUp") { e.preventDefault(); move(-1); }
+    else if (k === "Home" && e.target === input && !input.value) { e.preventDefault(); setActive(0); }
+    else if (k === "End" && e.target === input && !input.value) { e.preventDefault(); setActive(rowEls.length - 1); }
+    else if (k === "Enter") { e.preventDefault(); activate(active); }
+    else if (k === "Tab") {
+      /* keep tabbing inside the dialog, but escape is always one key away */
+      var stops = [input, closeBtn];
+      var at = stops.indexOf(document.activeElement);
+      var next = e.shiftKey ? at - 1 : at + 1;
+      if (next < 0) next = stops.length - 1;
+      if (next >= stops.length) next = 0;
+      if (stops[next]) { e.preventDefault(); stops[next].focus(); }
+    }
+  }
+
+  function onGlobalKey(e) {
+    var k = e.key;
+    if ((e.metaKey || e.ctrlKey) && (k === "k" || k === "K")) {
+      e.preventDefault();
+      if (isOpen) close(); else open();
+      return;
+    }
+    if (isOpen && k === "Escape") { e.preventDefault(); close(); return; }
+    if (isOpen || e.metaKey || e.ctrlKey || e.altKey) return;
+    if (k !== "/") return;
+    /* never steal a slash from the hero terminal or any other field */
+    var t = e.target;
+    var tag = t && t.tagName ? t.tagName.toLowerCase() : "";
+    if (tag === "input" || tag === "textarea" || tag === "select" || (t && t.isContentEditable)) return;
+    e.preventDefault();
+    open();
+  }
+
+  function open() {
+    if (isOpen) return;
+    if (document.querySelector(".lb.open")) return; /* the photo lightbox owns the screen */
+    if (!shell) buildUI();
+    lastFocus = document.activeElement;
+    var sbw = window.innerWidth - root.clientWidth;
+    root.style.setProperty("--cp-sbw", (sbw > 0 ? sbw : 0) + "px");
+    body.classList.add("cp-lock");
+    shell.classList.add("open");
+    isOpen = true;
+    input.value = "";
+    input.placeholder = window.innerWidth < 560 ? "Search this site" : "Search work, honors, press, photos";
+    render();
+    if (!touch) {
+      try { input.focus({ preventScroll: true }); } catch (err) { input.focus(); }
+    }
+    if (openBtn) openBtn.setAttribute("aria-expanded", "true");
+  }
+
+  function close(restore) {
+    if (!isOpen) return;
+    isOpen = false;
+    if (shell) shell.classList.remove("open");
+    body.classList.remove("cp-lock");
+    if (openBtn) openBtn.setAttribute("aria-expanded", "false");
+    /* hand focus back where it came from, or to the nav button if it came
+       from nowhere, so it never gets stranded on the hidden input */
+    var back = lastFocus;
+    lastFocus = null;
+    if (restore === false) { if (input) input.blur(); return; }
+    if (!back || back === body || !back.focus || !document.contains(back)) back = openBtn;
+    if (back && back.focus) {
+      try { back.focus({ preventScroll: true }); } catch (err) { try { back.focus(); } catch (e2) {} }
+    } else if (input) {
+      input.blur();
+    }
+  }
+
+  buildIndex();
+  document.addEventListener("keydown", onGlobalKey);
+  if (openBtn) {
+    openBtn.setAttribute("aria-expanded", "false");
+    openBtn.addEventListener("click", function (e) {
+      e.preventDefault();
+      if (isOpen) close(); else open();
+    });
+  }
+})();
+
+
+
+
+/* ---------- press wall: topic filters ---------- */
+(function () {
+  "use strict";
+
+  var reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var touch = matchMedia("(hover: none), (pointer: coarse)").matches;
+
+  var grid = document.getElementById("pressGrid");
+  var bar = document.querySelector(".press-filters");
+  var countEl = document.getElementById("pressCount");
+  var emptyEl = document.getElementById("pressEmpty");
+  if (!grid || !bar) return;
+
+  var cells = Array.prototype.slice.call(grid.querySelectorAll(".press-cell"));
+  var chips = Array.prototype.slice.call(bar.querySelectorAll(".pf-chip"));
+  if (!cells.length || !chips.length) return;
+
+  var TOTAL = cells.length;
+  var DUR = touch ? 280 : 360;
+  var EASE = "cubic-bezier(0.22, 1, 0.36, 1)";
+  var canAnimate = !reduced && typeof grid.animate === "function";
+  var current = "all";
+  var gen = 0;
+
+  function keyOf(chip) {
+    return (chip.getAttribute("data-pf") || "all").toLowerCase();
+  }
+
+  function matches(cell, key) {
+    if (key === "all") return true;
+    var t = " " + (cell.getAttribute("data-pf") || "").toLowerCase() + " ";
+    return t.indexOf(" " + key + " ") > -1;
+  }
+
+  /* live counts on the chips; a chip that matches nothing never ships */
+  for (var q = 0; q < chips.length; q++) {
+    var ck = keyOf(chips[q]);
+    var n = 0;
+    for (var w = 0; w < cells.length; w++) if (matches(cells[w], ck)) n++;
+    var slot = chips[q].querySelector(".pf-n");
+    if (slot) slot.textContent = String(n);
+    if (!n) chips[q].hidden = true;
+  }
+
+  for (var z = 0; z < cells.length; z++) cells[z].setAttribute("data-on", "1");
+  document.documentElement.classList.add("pf-live");
+
+  function say(shown) {
+    if (countEl) {
+      countEl.textContent = shown === TOTAL
+        ? TOTAL + " pieces of coverage"
+        : shown + " of " + TOTAL + " pieces of coverage";
+    }
+    if (emptyEl) emptyEl.hidden = shown !== 0;
+  }
+  say(TOTAL);
+
+  function clear(cell) {
+    if (cell.pfAnim) {
+      try { cell.pfAnim.cancel(); } catch (err) {}
+      cell.pfAnim = null;
+    }
+    var s = cell.style;
+    s.position = ""; s.left = ""; s.top = ""; s.width = ""; s.height = "";
+    s.opacity = ""; s.transform = ""; s.zIndex = ""; s.pointerEvents = "";
+    s.display = cell.getAttribute("data-on") === "0" ? "none" : "";
+  }
+
+  function play(cell, frames, opts, g, done) {
+    var a = null;
+    try { a = cell.animate(frames, opts); } catch (err) { a = null; }
+    if (!a) { if (done) done(); return; }
+    cell.pfAnim = a;
+    a.onfinish = function () {
+      if (cell.pfAnim === a) cell.pfAnim = null;
+      if (g !== gen) return;
+      if (done) { done(); return; }
+      cell.style.transform = "";
+      cell.style.opacity = "";
+    };
+    a.oncancel = function () { if (cell.pfAnim === a) cell.pfAnim = null; };
+  }
+
+  function apply(key, animate) {
+    gen++;
+    var g = gen;
+    var i, cell;
+
+    /* settle every cell to its logical state so the measurements are clean */
+    for (i = 0; i < cells.length; i++) clear(cells[i]);
+
+    var gr = grid.getBoundingClientRect();
+    var before = [];
+    for (i = 0; i < cells.length; i++) {
+      cell = cells[i];
+      if (cell.getAttribute("data-on") === "0") { before.push(null); continue; }
+      var r = cell.getBoundingClientRect();
+      before.push({ x: r.left - gr.left, y: r.top - gr.top, w: r.width, h: r.height });
+    }
+
+    var shown = 0, out = [], into = [], stay = [];
+    for (i = 0; i < cells.length; i++) {
+      cell = cells[i];
+      var on = matches(cell, key);
+      if (on) shown++;
+      cell.setAttribute("data-on", on ? "1" : "0");
+      if (before[i] && !on) out.push({ cell: cell, r: before[i] });
+      else if (!before[i] && on) into.push(cell);
+      else if (before[i] && on) stay.push({ cell: cell, r: before[i] });
+    }
+
+    say(shown);
+    for (i = 0; i < chips.length; i++) {
+      chips[i].setAttribute("aria-pressed", keyOf(chips[i]) === key ? "true" : "false");
+    }
+
+    if (!animate || !canAnimate) {
+      for (i = 0; i < cells.length; i++) {
+        cells[i].style.display = cells[i].getAttribute("data-on") === "1" ? "" : "none";
+      }
+      return;
+    }
+
+    /* the leavers step out of the flow at their old spot so the
+       survivors can slide underneath them. opacity 0 is the resting
+       value, so a dropped animation leaves them invisible, not stranded */
+    for (i = 0; i < out.length; i++) {
+      var os = out[i].cell.style;
+      os.position = "absolute";
+      os.left = out[i].r.x + "px";
+      os.top = out[i].r.y + "px";
+      os.width = out[i].r.w + "px";
+      os.height = out[i].r.h + "px";
+      os.opacity = "0";
+      os.zIndex = "0";
+      os.pointerEvents = "none";
+    }
+    /* the arrivals ride the animation's backwards fill instead of an
+       inline opacity, so a dropped animation leaves them visible */
+    for (i = 0; i < into.length; i++) into[i].style.display = "";
+
+    /* one read after all the writes */
+    var gr2 = grid.getBoundingClientRect();
+    for (i = 0; i < stay.length; i++) {
+      var nr = stay[i].cell.getBoundingClientRect();
+      stay[i].dx = stay[i].r.x - (nr.left - gr2.left);
+      stay[i].dy = stay[i].r.y - (nr.top - gr2.top);
+    }
+
+    for (i = 0; i < stay.length; i++) {
+      if (Math.abs(stay[i].dx) < 0.5 && Math.abs(stay[i].dy) < 0.5) continue;
+      play(stay[i].cell, [
+        { transform: "translate(" + stay[i].dx.toFixed(1) + "px," + stay[i].dy.toFixed(1) + "px)" },
+        { transform: "translate(0px,0px)" }
+      ], { duration: DUR, easing: EASE }, g);
+    }
+
+    for (i = 0; i < into.length; i++) {
+      play(into[i], [
+        { opacity: 0, transform: "translateY(10px) scale(0.985)" },
+        { opacity: 1, transform: "none" }
+      ], { duration: DUR, delay: Math.min(i * 26, 150), easing: EASE, fill: "backwards" }, g);
+    }
+
+    for (i = 0; i < out.length; i++) {
+      (function (leaver) {
+        play(leaver, [
+          { opacity: 1, transform: "scale(1)" },
+          { opacity: 0, transform: "scale(0.96)" }
+        ], { duration: Math.round(DUR * 0.55), easing: "ease-out" }, g, function () {
+          clear(leaver);
+        });
+      })(out[i].cell);
+    }
+
+    /* nothing is allowed to hang. if an animation is throttled, dropped,
+       or never runs at all, this puts every cell in its resting state */
+    setTimeout(function () {
+      if (g !== gen) return;
+      for (var k = 0; k < cells.length; k++) clear(cells[k]);
+    }, DUR + 400);
+  }
+
+  function pick(key) {
+    if (key === current) return;
+    current = key;
+    /* a card that never scrolled into view yet must not filter in invisible */
+    for (var i = 0; i < cells.length; i++) {
+      var card = cells[i].querySelector(".press-card");
+      if (card) card.classList.add("on");
+    }
+    apply(key, true);
+  }
+
+  bar.addEventListener("click", function (e) {
+    var t = e.target;
+    while (t && t !== bar && (!t.classList || !t.classList.contains("pf-chip"))) t = t.parentNode;
+    if (!t || t === bar || !t.classList) return;
+    pick(keyOf(t));
+  });
+
+  bar.addEventListener("keydown", function (e) {
+    if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
+    var live = [];
+    for (var i = 0; i < chips.length; i++) if (!chips[i].hidden) live.push(chips[i]);
+    var at = live.indexOf(document.activeElement);
+    if (at < 0) return;
+    e.preventDefault();
+    var to = (at + (e.key === "ArrowRight" ? 1 : -1) + live.length) % live.length;
+    if (live[to] && live[to].focus) live[to].focus();
+  });
+})();
+
+
+
+
+/* ---------- work cards v2: detail drawers + press cross links ---------- */
+(function () {
+  "use strict";
+
+  var reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var touch = matchMedia("(hover: none), (pointer: coarse)").matches;
+
+  var root = document.documentElement;
+  if (!root || root.hasAttribute("data-wk-cards")) return;
+
+  var cards = document.querySelectorAll(".stack-card");
+  if (!cards.length) return;
+
+  var CHEVRON = '<svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true" focusable="false">' +
+    '<path d="M2.6 4.4 6 7.8l3.4-3.4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+  /* a topic maps to the press links that belong to it, so the count on the
+     pill is read off the page instead of hard coded */
+  var COVERAGE = {
+    kora: { hosts: ["mciver.house.gov", "congressionalappchallenge.us", "canvasrebel.com"], one: "article", many: "articles" },
+    yale: { hosts: ["medicine.yale.edu"], one: "profile", many: "profiles" },
+    frc: { hosts: ["frc2590.org"], one: "profile", many: "profiles" }
+  };
+
+  function coverageCount(hosts) {
+    var links = document.querySelectorAll(".press-card[href]");
+    var n = 0;
+    for (var i = 0; i < links.length; i++) {
+      var href = links[i].getAttribute("href") || "";
+      for (var h = 0; h < hosts.length; h++) {
+        if (href.indexOf(hosts[h]) !== -1) { n++; break; }
+      }
+    }
+    return n;
+  }
+
+  var wired = 0;
+
+  Array.prototype.forEach.call(cards, function (card, i) {
+    var main = card.querySelector(".stack-main");
+    if (!main) return;
+    var bar = main.querySelector(".wk-bar");
+    var drawer = main.querySelector(".wk-drawer");
+    if (!bar || !drawer) return;
+    var inner = drawer.querySelector(".wk-drawer-in");
+    if (!inner) return;
+
+    var titleEl = card.querySelector(".stack-title");
+    var name = titleEl ? titleEl.textContent.trim() : "this project";
+    var id = drawer.id || ("wk-drawer-" + (i + 1));
+    drawer.id = id;
+
+    /* ---- the toggle ---- */
+    var btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "wk-toggle";
+    btn.setAttribute("aria-expanded", "false");
+    btn.setAttribute("aria-controls", id);
+    var label = document.createElement("span");
+    label.textContent = "More details";
+    btn.appendChild(label);
+    btn.insertAdjacentHTML("beforeend", CHEVRON);
+    btn.setAttribute("aria-label", "More details about " + name);
+    bar.insertBefore(btn, bar.firstChild);
+
+    var open = false;
+
+    function paint(next) {
+      open = next;
+      btn.setAttribute("aria-expanded", next ? "true" : "false");
+      label.textContent = next ? "Hide details" : "More details";
+      btn.setAttribute("aria-label", (next ? "Hide details about " : "More details about ") + name);
+      if (next) drawer.classList.add("wk-open");
+      else drawer.classList.remove("wk-open");
+    }
+
+    function setOpen(next) {
+      if (next === open) return;
+      paint(next);
+      if (reduced) {
+        drawer.style.height = next ? "auto" : "0px";
+        return;
+      }
+      var from = drawer.getBoundingClientRect().height;
+      var to = next ? inner.offsetHeight : 0;
+      drawer.style.height = from + "px";
+      /* force a reflow so the browser has two heights to animate between */
+      void drawer.offsetHeight;
+      drawer.style.height = to + "px";
+    }
+
+    drawer.addEventListener("transitionend", function (e) {
+      if (e.target !== drawer || e.propertyName !== "height") return;
+      /* let an open drawer size itself again, so reflow and resize keep working */
+      if (open) drawer.style.height = "auto";
+    });
+
+    btn.addEventListener("click", function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      setOpen(!open);
+    });
+
+    /* ---- the coverage pill ---- */
+    var topic = bar.getAttribute("data-wk-topic");
+    var cfg = topic ? COVERAGE[topic] : null;
+    if (cfg) {
+      var n = coverageCount(cfg.hosts);
+      if (n > 0) {
+        var cov = document.createElement("button");
+        cov.type = "button";
+        cov.className = "wk-cov";
+        var dot = document.createElement("i");
+        dot.setAttribute("aria-hidden", "true");
+        cov.appendChild(dot);
+        cov.appendChild(document.createTextNode(n + " " + (n === 1 ? cfg.one : cfg.many)));
+        cov.setAttribute("aria-label", "Show the " + n + " " + (n === 1 ? cfg.one : cfg.many) + " about " + name + " in the press section");
+        cov.addEventListener("click", function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+          try {
+            document.dispatchEvent(new CustomEvent("press:filter", { bubbles: true, detail: { topic: topic } }));
+          } catch (err) {}
+          var press = document.getElementById("press");
+          if (press && press.scrollIntoView) {
+            press.scrollIntoView({ behavior: (reduced || touch) ? "auto" : "smooth", block: "start" });
+          }
+        });
+        bar.insertBefore(cov, btn.nextSibling);
+      }
+    }
+
+    wired++;
+  });
+
+  /* only collapse once something is actually wired up */
+  if (wired) root.setAttribute("data-wk-cards", "");
+})();
+
+
+/* ============================================================
+   THE CLASSROOM BAND
+   Drag with momentum, snap, a scroll thumb, arrow buttons, and a
+   hand-off into the existing Lumin lightbox at the right index.
+   Self-contained. Every lookup is guarded.
+   ============================================================ */
+(function () {
+  "use strict";
+
+  var rail = document.getElementById("bandRail");
+  if (!rail) return;
+
+  var fill = document.getElementById("bandFill");
+  var prevBtn = document.getElementById("bandPrev");
+  var nextBtn = document.getElementById("bandNext");
+  var shots = Array.prototype.slice.call(rail.querySelectorAll(".band-shot"));
+  if (!shots.length) return;
+
+  var reduced = false;
+  try { reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches; } catch (e) {}
+
+  /* ---------- open the existing lightbox at a given index ---------- */
+  function openAt(i) {
+    var trigger = document.getElementById("luminGallery");
+    if (!trigger) return;
+    trigger.click();                       /* builds and opens at 0 */
+    if (!i) return;
+    var thumbs = document.querySelectorAll(".lb .lb-strip .lb-thumb");
+    if (thumbs.length > i && thumbs[i]) thumbs[i].click();
+  }
+
+  shots.forEach(function (shot, i) {
+    var hit = shot.querySelector(".band-hit");
+    if (!hit) return;
+    hit.addEventListener("click", function () { openAt(i); });
+  });
+
+  /* ---------- scroll thumb + arrow state ---------- */
+  var syncRaf = 0;
+  function sync() {
+    syncRaf = 0;
+    var max = rail.scrollWidth - rail.clientWidth;
+    var frac = rail.scrollWidth > 0 ? rail.clientWidth / rail.scrollWidth : 1;
+    if (frac > 1) frac = 1;
+    var p = max > 1 ? rail.scrollLeft / max : 0;
+    if (p < 0) p = 0;
+    if (p > 1) p = 1;
+    if (fill) {
+      fill.style.width = (frac * 100).toFixed(2) + "%";
+      fill.style.left = (p * (100 - frac * 100)).toFixed(2) + "%";
+    }
+    if (prevBtn) prevBtn.disabled = rail.scrollLeft <= 2;
+    if (nextBtn) nextBtn.disabled = max <= 2 || rail.scrollLeft >= max - 2;
+  }
+  function queueSync() {
+    if (!syncRaf) syncRaf = requestAnimationFrame(sync);
+  }
+
+  rail.addEventListener("scroll", queueSync, { passive: true });
+  window.addEventListener("resize", queueSync, { passive: true });
+  rail.querySelectorAll("img").forEach(function (img) {
+    if (img.complete) return;
+    img.addEventListener("load", queueSync);
+    img.addEventListener("error", queueSync);
+  });
+  sync();
+
+  /* ---------- arrow buttons ---------- */
+  function nudge(dir) {
+    var step = Math.max(200, Math.round(rail.clientWidth * 0.78));
+    if (rail.scrollBy) {
+      rail.scrollBy({ left: dir * step, behavior: reduced ? "auto" : "smooth" });
+    } else {
+      rail.scrollLeft += dir * step;
+    }
+  }
+  if (prevBtn) prevBtn.addEventListener("click", function () { nudge(-1); });
+  if (nextBtn) nextBtn.addEventListener("click", function () { nudge(1); });
+
+  /* ---------- drag to scroll, mouse only ---------- */
+  var fine = false;
+  try { fine = window.matchMedia("(hover: hover) and (pointer: fine)").matches; } catch (e) {}
+  if (!fine || !window.PointerEvent) return;
+
+  var down = false, moved = false;
+  var startX = 0, startLeft = 0, lastX = 0, lastT = 0, vel = 0, glideRaf = 0;
+
+  rail.addEventListener("dragstart", function (e) { e.preventDefault(); });
+
+  rail.addEventListener("pointerdown", function (e) {
+    if (e.pointerType !== "mouse" || e.button !== 0) return;
+    down = true;
+    moved = false;
+    startX = e.clientX;
+    startLeft = rail.scrollLeft;
+    lastX = e.clientX;
+    lastT = (window.performance && performance.now) ? performance.now() : Date.now();
+    vel = 0;
+    if (glideRaf) { cancelAnimationFrame(glideRaf); glideRaf = 0; }
+  });
+
+  window.addEventListener("pointermove", function (e) {
+    if (!down) return;
+    var dx = e.clientX - startX;
+    if (!moved) {
+      if (Math.abs(dx) < 6) return;
+      moved = true;
+      rail.classList.add("dragging");
+    }
+    var now = (window.performance && performance.now) ? performance.now() : Date.now();
+    var dt = now - lastT;
+    if (dt > 0) vel = ((e.clientX - lastX) / dt) * 16;
+    lastX = e.clientX;
+    lastT = now;
+    rail.scrollLeft = startLeft - dx;
+    if (e.cancelable) e.preventDefault();
+  }, { passive: false });
+
+  function glide() {
+    vel *= 0.92;
+    if (Math.abs(vel) < 0.6) { glideRaf = 0; return; }
+    var before = rail.scrollLeft;
+    rail.scrollLeft = before - vel;
+    if (rail.scrollLeft === before) { glideRaf = 0; return; }
+    glideRaf = requestAnimationFrame(glide);
+  }
+
+  function release() {
+    if (!down) return;
+    down = false;
+    rail.classList.remove("dragging");
+    if (moved && !reduced && Math.abs(vel) > 1.2) glideRaf = requestAnimationFrame(glide);
+  }
+  window.addEventListener("pointerup", release);
+  window.addEventListener("pointercancel", release);
+
+  /* a drag that ends over a frame must not also open the lightbox */
+  rail.addEventListener("click", function (e) {
+    if (!moved) return;
+    moved = false;
+    e.preventDefault();
+    e.stopPropagation();
+  }, true);
+})();

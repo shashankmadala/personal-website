@@ -66,7 +66,14 @@
       <a href="#honors">Honors</a>
       <a href="#press">Press</a>
     </nav>
-    <a href="#contact" class="nav-cta" data-magnet>Contact</a>
+    <div class="nav-end">
+      <button class="cp-open" id="cpOpen" type="button" aria-label="Search this site" aria-haspopup="dialog" aria-keyshortcuts="Meta+K Control+K">
+        <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true"><circle cx="6.4" cy="6.4" r="4.6" stroke="currentColor" stroke-width="1.5"/><path d="M10 10L13.4 13.4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        <span class="cp-open-label">Search</span>
+        <kbd class="cp-kbd" id="cpKbd">&#8984;K</kbd>
+      </button>
+      <a href="#contact" class="nav-cta" data-magnet>Contact</a>
+    </div>
   </div>
 </header>
 
@@ -142,18 +149,21 @@
         <h2 class="sec-title">Right now.</h2>
       </div>
       <div class="now-grid">
-        <div class="now-item spot reveal">
+        <a class="now-item spot reveal" href="https://medicine.yale.edu/profile/ssm223/" target="_blank" rel="noopener">
           <span class="mono chip">RESEARCH</span>
           <p>Research intern at the <strong>Yale Child Study Center</strong>, building AI that models autism-related social communication from real parent and child interactions: video, audio, and pose data.</p>
-        </div>
-        <div class="now-item spot reveal d1">
+          <span class="card-go mono">YALE PROFILE<svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M3 9L9 3M4.5 3H9v4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        </a>
+        <a class="now-item spot reveal d1" href="https://trentonjournal.com/robbinsville-high-school-students-team-placed-6th-of-52-countries-in-international-economics-olympiad/" target="_blank" rel="noopener">
           <span class="mono chip">TEAM USA</span>
           <p>Just got back from Shenzhen, where I represented the USA at the <strong>2026 International Economics Olympiad</strong>. Team USA placed 6th of 52 countries in the business case competition.</p>
-        </div>
-        <div class="now-item spot reveal d2">
+          <span class="card-go mono">TRENTON JOURNAL<svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M3 9L9 3M4.5 3H9v4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        </a>
+        <a class="now-item spot reveal d2" href="https://luminlearning.ai/" target="_blank" rel="noopener">
           <span class="mono chip">FOUNDER</span>
           <p>Running <strong>Lumin AI</strong>, a 501(c)(3) nonprofit that teaches AI for free through 50+ chapters in 16+ countries, and setting it up to keep running after I graduate.</p>
-        </div>
+          <span class="card-go mono">LUMINLEARNING.AI<svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M3 9L9 3M4.5 3H9v4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        </a>
       </div>
       <figure class="photo pic pic-band reveal d3">
         <img src="assets/photos/team-usa.jpg" alt="The five members of Team USA holding the American flag under the International Economics Olympiad backdrop in Shenzhen, 2026" loading="lazy" width="1400" height="350" />
@@ -199,7 +209,25 @@
               <li>CNN-based emotion modeling</li>
               <li>Seed funding from a UPenn innovation group</li>
             </ul>
-            <a class="link" href="https://mciver.house.gov/media/press-releases/mciver-announces-kora-app-as-winner-of-nj-10-congressional-app-challenge" target="_blank" rel="noopener">Announcement from Rep. McIver's office<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 9L9 3M4.5 3H9v4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+            <div class="wk-bar" data-wk-topic="kora">
+              <a class="link" href="https://mciver.house.gov/media/press-releases/mciver-announces-kora-app-as-winner-of-nj-10-congressional-app-challenge" target="_blank" rel="noopener">Announcement from Rep. McIver's office<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 9L9 3M4.5 3H9v4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+            </div>
+            <div class="wk-drawer" id="wk-kora">
+              <div class="wk-drawer-in">
+                <div class="wk-rule" aria-hidden="true"></div>
+                <dl class="wk-facts">
+                  <div class="wk-fact"><dt class="mono">MODEL</dt><dd>CNN-based emotion modeling</dd></div>
+                  <div class="wk-fact"><dt class="mono">REACH</dt><dd>700+ users, 25 therapy centers, 12 countries</dd></div>
+                  <div class="wk-fact"><dt class="mono">RECOGNITION</dt><dd>Winner for NJ-10 in the 2025 Congressional App Challenge, showcasing at the U.S. Capitol in 2026</dd></div>
+                  <div class="wk-fact"><dt class="mono">BACKING</dt><dd>Seed funding from a UPenn innovation group, and a spot at Y Combinator Startup School 2026</dd></div>
+                </dl>
+                <div class="wk-links">
+                  <a class="wk-pill" href="https://mciver.house.gov/media/press-releases/mciver-announces-kora-app-as-winner-of-nj-10-congressional-app-challenge" target="_blank" rel="noopener noreferrer">REP. MCIVER ANNOUNCEMENT<svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true" focusable="false"><path d="M3 9L9 3M4.5 3H9v4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+                  <a class="wk-pill" href="https://www.congressionalappchallenge.us/25-nj10/" target="_blank" rel="noopener noreferrer">APP CHALLENGE, NJ-10<svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true" focusable="false"><path d="M3 9L9 3M4.5 3H9v4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+                  <a class="wk-pill" href="https://canvasrebel.com/meet-shashank-madala/" target="_blank" rel="noopener noreferrer">CANVASREBEL INTERVIEW<svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true" focusable="false"><path d="M3 9L9 3M4.5 3H9v4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </article>
@@ -223,7 +251,25 @@
               <li>LuminHacks: a 450+ participant hackathon</li>
               <li>Working with NJ legislators on a proposed AI Youth Advisory Council bill</li>
             </ul>
-            <a class="link" href="https://luminlearning.ai/" target="_blank" rel="noopener">luminlearning.ai<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 9L9 3M4.5 3H9v4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+            <div class="wk-bar">
+              <a class="link" href="https://luminlearning.ai/" target="_blank" rel="noopener">luminlearning.ai<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 9L9 3M4.5 3H9v4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+            </div>
+            <div class="wk-drawer" id="wk-lumin">
+              <div class="wk-drawer-in">
+                <div class="wk-rule" aria-hidden="true"></div>
+                <dl class="wk-facts">
+                  <div class="wk-fact"><dt class="mono">SCALE</dt><dd>15,000+ students taught, 5,200+ certificates issued</dd></div>
+                  <div class="wk-fact"><dt class="mono">FOOTPRINT</dt><dd>50+ chapters, 16+ countries, a 125+ intern team</dd></div>
+                  <div class="wk-fact"><dt class="mono">HACKATHON</dt><dd>LuminHacks, a 450+ participant event</dd></div>
+                  <div class="wk-fact"><dt class="mono">POLICY</dt><dd>Working with NJ legislators on a proposed AI Youth Advisory Council bill</dd></div>
+                </dl>
+                <div class="wk-links">
+                  <a class="wk-pill" href="https://luminlearning.ai/" target="_blank" rel="noopener noreferrer">LUMINLEARNING.AI<svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true" focusable="false"><path d="M3 9L9 3M4.5 3H9v4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+                  <a class="wk-pill" href="https://luminlearning.ai/founders" target="_blank" rel="noopener noreferrer">FOUNDERS<svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true" focusable="false"><path d="M3 9L9 3M4.5 3H9v4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+                  <a class="wk-pill" href="https://www.linkedin.com/company/lumin-ai-321" target="_blank" rel="noopener noreferrer">LINKEDIN<svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true" focusable="false"><path d="M3 9L9 3M4.5 3H9v4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </article>
@@ -242,7 +288,23 @@
               <li>Fusion models reaching AUC 0.80</li>
               <li>Two manuscripts in progress</li>
             </ul>
-            <a class="link" href="https://medicine.yale.edu/profile/ssm223/" target="_blank" rel="noopener">Yale School of Medicine profile<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 9L9 3M4.5 3H9v4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+            <div class="wk-bar" data-wk-topic="yale">
+              <a class="link" href="https://medicine.yale.edu/profile/ssm223/" target="_blank" rel="noopener">Yale School of Medicine profile<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 9L9 3M4.5 3H9v4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+            </div>
+            <div class="wk-drawer" id="wk-yale">
+              <div class="wk-drawer-in">
+                <div class="wk-rule" aria-hidden="true"></div>
+                <dl class="wk-facts">
+                  <div class="wk-fact"><dt class="mono">LAB</dt><dd>Cha Lab, Yale Child Study Center</dd></div>
+                  <div class="wk-fact"><dt class="mono">DATA</dt><dd>120+ hours of video, audio and pose from 40 families</dd></div>
+                  <div class="wk-fact"><dt class="mono">MODULES</dt><dd>Child vs adult detection, synchrony scoring, multimodal fusion</dd></div>
+                  <div class="wk-fact"><dt class="mono">OUTPUT</dt><dd>AUC 0.80 on anxiety risk, two manuscripts in progress, first-author work in prep for MIT URTC 2026</dd></div>
+                </dl>
+                <div class="wk-links">
+                  <a class="wk-pill" href="https://medicine.yale.edu/profile/ssm223/" target="_blank" rel="noopener noreferrer">YALE PROFILE<svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true" focusable="false"><path d="M3 9L9 3M4.5 3H9v4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </article>
@@ -261,6 +323,18 @@
               <li>Blue Ocean: Top 350 of 12,784 (2025)</li>
               <li>Diamond Challenge: 2nd in New Jersey</li>
             </ul>
+            <div class="wk-bar"></div>
+            <div class="wk-drawer" id="wk-safestrides">
+              <div class="wk-drawer-in">
+                <div class="wk-rule" aria-hidden="true"></div>
+                <dl class="wk-facts">
+                  <div class="wk-fact"><dt class="mono">STACK</dt><dd>Raspberry Pi, Coral TPU, TensorFlow Lite</dd></div>
+                  <div class="wk-fact"><dt class="mono">ACCURACY</dt><dd>95% real-time detection</dd></div>
+                  <div class="wk-fact"><dt class="mono">PILOT</dt><dd>200 student vehicles, with the school and the Robbinsville Police Department</dd></div>
+                  <div class="wk-fact"><dt class="mono">COMPETITIONS</dt><dd>Blue Ocean Top 250 of 23,000+ in 2026, Top 350 of 12,784 in 2025, 2nd in New Jersey at Diamond Challenge</dd></div>
+                </dl>
+              </div>
+            </div>
           </div>
         </div>
       </article>
@@ -279,7 +353,23 @@
               <li>Mentored 90+ students in Haiti, Panama, and Kenya</li>
               <li>Raised $12,500 to seed 13 FIRST LEGO League teams</li>
             </ul>
-            <a class="link" href="https://www.frc2590.org/members/shashank-madala/" target="_blank" rel="noopener">Team profile<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 9L9 3M4.5 3H9v4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+            <div class="wk-bar" data-wk-topic="frc">
+              <a class="link" href="https://www.frc2590.org/members/shashank-madala/" target="_blank" rel="noopener">Team profile<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 9L9 3M4.5 3H9v4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+            </div>
+            <div class="wk-drawer" id="wk-frc">
+              <div class="wk-drawer-in">
+                <div class="wk-rule" aria-hidden="true"></div>
+                <dl class="wk-facts">
+                  <div class="wk-fact"><dt class="mono">ROLE</dt><dd>Software lead, third year on the team</dd></div>
+                  <div class="wk-fact"><dt class="mono">BUILT</dt><dd>First PnP pose estimation from fiducial IDs, first object detection pipeline, autonomous routines in Java and WPILib</dd></div>
+                  <div class="wk-fact"><dt class="mono">2024</dt><dd>Curie Division winners, Einstein semifinalists</dd></div>
+                  <div class="wk-fact"><dt class="mono">OUTREACH</dt><dd>90+ students mentored in Haiti, Panama and Kenya, $12,500 raised to seed 13 FIRST LEGO League teams</dd></div>
+                </dl>
+                <div class="wk-links">
+                  <a class="wk-pill" href="https://www.frc2590.org/members/shashank-madala/" target="_blank" rel="noopener noreferrer">FRC 2590 PROFILE<svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true" focusable="false"><path d="M3 9L9 3M4.5 3H9v4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </article>
@@ -298,10 +388,118 @@
               <li>1st, Computer Problem Solving, Central Region</li>
               <li>1st, Data Science &amp; AI, Central Region</li>
             </ul>
+            <div class="wk-bar"></div>
+            <div class="wk-drawer" id="wk-fbla">
+              <div class="wk-drawer-in">
+                <div class="wk-rule" aria-hidden="true"></div>
+                <dl class="wk-facts">
+                  <div class="wk-fact"><dt class="mono">ROLE</dt><dd>Chapter president, and two years on the NJ FBLA State Technology Committee</dd></div>
+                  <div class="wk-fact"><dt class="mono">BUILT</dt><dd>The State Leadership Conference app and website, used by 8,000+ members</dd></div>
+                  <div class="wk-fact"><dt class="mono">GROWTH</dt><dd>45 to 175+ members, state qualifiers from 2 to 23, a new middle school chapter with 70+ students</dd></div>
+                  <div class="wk-fact"><dt class="mono">COMPETING</dt><dd>1st in Computer Problem Solving and 1st in Data Science and AI, Central Region</dd></div>
+                </dl>
+              </div>
+            </div>
           </div>
         </div>
       </article>
 
+    </div>
+  </section>
+
+  <!-- ============ THE CLASSROOM ============ -->
+  <section class="band" id="classroom" aria-labelledby="bandTitle">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <p class="eyebrow">TEACHING</p>
+        <h2 class="sec-title" id="bandTitle">The classroom.</h2>
+        <p class="band-note">Nine frames from one Lumin AI chapter session in India, where the first question is always the same.</p>
+      </div>
+    </div>
+
+    <div class="band-rail reveal d1" id="bandRail" role="region" aria-label="Lumin AI teaching photos, scrollable row of nine">
+
+      <figure class="band-shot">
+        <button class="band-hit" type="button" aria-label="Open photo 1 of 9: the first question of class">
+          <img src="assets/photos/lumin/IMG_8320-2.jpg" alt="A classroom of students with their hands raised, the screen behind them asking how many of you have heard of AI" loading="lazy" decoding="async" width="1500" height="1108" />
+          <span class="band-zoom" aria-hidden="true">OPEN</span>
+        </button>
+        <figcaption class="band-cap mono"><b>01</b><span>THE FIRST QUESTION</span></figcaption>
+      </figure>
+
+      <figure class="band-shot">
+        <button class="band-hit" type="button" aria-label="Open photo 2 of 9: explaining what AI already is">
+          <img src="assets/photos/lumin/IMG_8321-2.jpg" alt="Shashank mid lecture beside a slide explaining AI through Swiggy, YouTube Shorts and Netflix" loading="lazy" decoding="async" width="1500" height="1103" />
+          <span class="band-zoom" aria-hidden="true">OPEN</span>
+        </button>
+        <figcaption class="band-cap mono"><b>02</b><span>SWIGGY, SHORTS, NETFLIX</span></figcaption>
+      </figure>
+
+      <figure class="band-shot">
+        <button class="band-hit" type="button" aria-label="Open photo 3 of 9: defining artificial intelligence">
+          <img src="assets/photos/lumin/IMG_8314-2.jpg" alt="Shashank presenting the definition of artificial intelligence on a stage decorated with balloons" loading="lazy" decoding="async" width="1500" height="1103" />
+          <span class="band-zoom" aria-hidden="true">OPEN</span>
+        </button>
+        <figcaption class="band-cap mono"><b>03</b><span>DEFINING IT</span></figcaption>
+      </figure>
+
+      <figure class="band-shot">
+        <button class="band-hit" type="button" aria-label="Open photo 4 of 9: how AI is used in jobs">
+          <img src="assets/photos/lumin/IMG_8317.jpg" alt="Shashank holding a microphone beside a slide reading how is AI used in jobs, and future" loading="lazy" decoding="async" width="1138" height="1500" />
+          <span class="band-zoom" aria-hidden="true">OPEN</span>
+        </button>
+        <figcaption class="band-cap mono"><b>04</b><span>AI AND JOBS</span></figcaption>
+      </figure>
+
+      <figure class="band-shot">
+        <button class="band-hit" type="button" aria-label="Open photo 5 of 9: a full classroom">
+          <img src="assets/photos/lumin/IMG_8319.jpg" alt="A full classroom of students in white uniforms watching the screen at the front of the room" loading="lazy" decoding="async" width="1150" height="1500" />
+          <span class="band-zoom" aria-hidden="true">OPEN</span>
+        </button>
+        <figcaption class="band-cap mono"><b>05</b><span>FULL ROOM</span></figcaption>
+      </figure>
+
+      <figure class="band-shot">
+        <button class="band-hit" type="button" aria-label="Open photo 6 of 9: the auditorium">
+          <img src="assets/photos/lumin/IMG_8315.jpg" alt="Wide view of the auditorium, rows of seated students facing the stage with Shashank presenting" loading="lazy" decoding="async" width="1500" height="839" />
+          <span class="band-zoom" aria-hidden="true">OPEN</span>
+        </button>
+        <figcaption class="band-cap mono"><b>06</b><span>THE AUDITORIUM</span></figcaption>
+      </figure>
+
+      <figure class="band-shot">
+        <button class="band-hit" type="button" aria-label="Open photo 7 of 9: students listening">
+          <img src="assets/photos/lumin/IMG_8324-2.jpg" alt="Students seated near the front of the room, listening during the session" loading="lazy" decoding="async" width="1500" height="1104" />
+          <span class="band-zoom" aria-hidden="true">OPEN</span>
+        </button>
+        <figcaption class="band-cap mono"><b>07</b><span>FRONT ROW</span></figcaption>
+      </figure>
+
+      <figure class="band-shot">
+        <button class="band-hit" type="button" aria-label="Open photo 8 of 9: a chapter class">
+          <img src="assets/photos/lumin/IMG_8316.jpg" alt="Group photo of a class in blue uniforms with Shashank standing in the aisle" loading="lazy" decoding="async" width="1500" height="988" />
+          <span class="band-zoom" aria-hidden="true">OPEN</span>
+        </button>
+        <figcaption class="band-cap mono"><b>08</b><span>CHAPTER CLASS</span></figcaption>
+      </figure>
+
+      <figure class="band-shot">
+        <button class="band-hit" type="button" aria-label="Open photo 9 of 9: the class photo at the end of the day">
+          <img src="assets/photos/lumin/IMG_8325-2.jpg" alt="Full class group photo with Shashank seated in the middle of the front row" loading="lazy" decoding="async" width="1500" height="685" />
+          <span class="band-zoom" aria-hidden="true">OPEN</span>
+        </button>
+        <figcaption class="band-cap mono"><b>09</b><span>END OF THE DAY</span></figcaption>
+      </figure>
+
+    </div>
+
+    <div class="wrap band-foot">
+      <span class="band-track" aria-hidden="true"><span class="band-fill" id="bandFill"></span></span>
+      <span class="band-hint mono" aria-hidden="true">DRAG TO SCROLL &middot; CLICK TO ENLARGE</span>
+      <span class="band-btns">
+        <button class="band-btn" type="button" id="bandPrev" aria-label="Scroll photos left"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M8.5 3L4.5 7l4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <button class="band-btn" type="button" id="bandNext" aria-label="Scroll photos right"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M5.5 3l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      </span>
     </div>
   </section>
 
@@ -319,10 +517,10 @@
         </div>
         <div class="receipt-rule"></div>
         <ul class="receipt-list mono">
-          <li class="r-row"><span>Team USA, International Economics Olympiad</span><b>INTL</b></li>
+          <li class="r-row r-link"><a class="r-src" href="https://www.newjerseystage.com/articles2/2026/07/23/two-new-jersey-students-among-five-to-represent-usa-at-2026-international-economics-olympiad-in-china/" target="_blank" rel="noopener" aria-label="Team USA, International Economics Olympiad. Read the New Jersey Stage story."></a><span>Team USA, International Economics Olympiad</span><b>INTL</b></li>
           <li class="r-row"><span>USA Mathematical Olympiad qualifier</span><b>NATL</b></li>
           <li class="r-row"><span>USACO Gold Division</span><b>NATL</b></li>
-          <li class="r-row"><span>Congressional App Challenge winner, NJ-10</span><b>NATL</b></li>
+          <li class="r-row r-link"><a class="r-src" href="https://www.congressionalappchallenge.us/25-nj10/" target="_blank" rel="noopener" aria-label="Congressional App Challenge winner, NJ-10. Read the official winner page."></a><span>Congressional App Challenge winner, NJ-10</span><b>NATL</b></li>
           <li class="r-row"><span>Y Combinator Startup School, selected</span><b>NATL</b></li>
           <li class="r-row"><span>Blue Ocean, Top 250 of 23,000+ (2x)</span><b>INTL</b></li>
           <li class="r-row"><span>EconBowl, 4th of 263 teams</span><b>INTL</b></li>
@@ -349,93 +547,137 @@
       <div class="sec-head reveal">
         <p class="eyebrow">PRESS</p>
         <h2 class="sec-title">In the news.</h2>
+        <p class="press-count mono" id="pressCount" aria-live="polite">12 pieces of coverage</p>
       </div>
-      <div class="press-grid">
+      <div class="press-tools reveal">
+        <div class="press-filters" role="group" aria-label="Filter coverage by topic">
+          <button type="button" class="pf-chip" data-pf="all" aria-pressed="true">All<i class="pf-n mono">12</i></button>
+          <button type="button" class="pf-chip" data-pf="ieo" aria-pressed="false">IEO<i class="pf-n mono">6</i></button>
+          <button type="button" class="pf-chip" data-pf="kora" aria-pressed="false">Kora<i class="pf-n mono">4</i></button>
+          <button type="button" class="pf-chip" data-pf="research" aria-pressed="false">Research<i class="pf-n mono">1</i></button>
+          <button type="button" class="pf-chip" data-pf="robotics" aria-pressed="false">Robotics<i class="pf-n mono">1</i></button>
+          <button type="button" class="pf-chip" data-pf="profiles" aria-pressed="false">Profiles<i class="pf-n mono">3</i></button>
+        </div>
+      </div>
 
-        <a class="press-card press-feature spot reveal" href="https://canvasrebel.com/meet-shashank-madala/" target="_blank" rel="noopener">
-          <div class="press-top mono"><span>CANVASREBEL &middot; INTERVIEW</span><span>JAN 2025</span></div>
-          <h3>Meet Shashank Madala: the story behind Kora</h3>
-          <p class="press-peek">"We're not just building features, we're creating tools that families rely on."</p>
-          <span class="press-cta mono">READ THE INTERVIEW<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 9L9 3M4.5 3H9v4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-        </a>
+      <div class="press-grid" id="pressGrid">
 
-        <a class="press-card spot reveal" href="https://indiawest.com/teen-competes-for-team-usa-at-international-economics-olympiad-in-china/" target="_blank" rel="noopener">
-          <div class="press-top mono"><span>INDIA-WEST</span><span>JUL 2026</span></div>
-          <h3>NJ teen competes for Team USA at the International Economics Olympiad in China</h3>
-          <p class="press-peek">"One of the proudest moments of my life."</p>
-          <span class="press-cta mono">READ<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 9L9 3M4.5 3H9v4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-        </a>
+        <div class="press-cell is-feature" data-pf="ieo">
+          <a class="press-card press-feature spot reveal" href="https://trentonjournal.com/robbinsville-high-school-students-team-placed-6th-of-52-countries-in-international-economics-olympiad/" target="_blank" rel="noopener">
+            <div class="press-top mono"><span>TRENTON JOURNAL</span><span>AUG 2026</span></div>
+            <h3>Robbinsville High School students' team placed 6th of 52 countries in International Economics Olympiad</h3>
+            <p class="press-peek">"I would do it again if I could."</p>
+            <span class="press-cta mono">READ THE STORY<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 9L9 3M4.5 3H9v4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </a>
+        </div>
 
-        <a class="press-card spot reveal d1" href="https://www.newjerseystage.com/articles2/2026/07/23/two-new-jersey-students-among-five-to-represent-usa-at-2026-international-economics-olympiad-in-china/" target="_blank" rel="noopener">
-          <div class="press-top mono"><span>NEW JERSEY STAGE</span><span>JUL 2026</span></div>
-          <h3>Two NJ students among five to represent the USA at the 2026 IEO</h3>
-          <p class="press-peek">"One of five students selected to represent the United States."</p>
-          <span class="press-cta mono">READ<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 9L9 3M4.5 3H9v4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-        </a>
+        <div class="press-cell" data-pf="ieo">
+          <a class="press-card spot reveal" href="http://www.lokvani.com/lokvani/article.php?article_id=22827" target="_blank" rel="noopener">
+            <div class="press-top mono"><span>LOKVANI</span><span>AUG 2026</span></div>
+            <h3>Shashank Madala Of NJ Places 6th In The 2026 International Economics Olympiad</h3>
+            <p class="press-peek">"the team placed 6th of 52 countries in the International Business Case Competition"</p>
+            <span class="press-cta mono">READ<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 9L9 3M4.5 3H9v4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </a>
+        </div>
 
-        <a class="press-card spot reveal" href="https://mciver.house.gov/media/press-releases/mciver-announces-kora-app-as-winner-of-nj-10-congressional-app-challenge" target="_blank" rel="noopener">
-          <div class="press-top mono"><span>U.S. HOUSE</span><span>JAN 2026</span></div>
-          <h3>Rep. McIver announces Kora as winner of the NJ-10 Congressional App Challenge</h3>
-          <p class="press-peek">"Seeing the change that occurs when technology unlocks connection."</p>
-          <span class="press-cta mono">READ<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 9L9 3M4.5 3H9v4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-        </a>
+        <div class="press-cell" data-pf="ieo">
+          <a class="press-card spot reveal d1" href="https://theunn.com/teen-represents-team-usa-at-international-economics-olympiad-in-china/" target="_blank" rel="noopener">
+            <div class="press-top mono"><span>THEUNN</span><span>AUG 2026</span></div>
+            <h3>Teen Represents Team USA at International Economics Olympiad in China</h3>
+            <p class="press-peek">"Your background is not a limitation. It is your advantage."</p>
+            <span class="press-cta mono">READ<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 9L9 3M4.5 3H9v4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </a>
+        </div>
 
-        <a class="press-card spot reveal d1" href="https://www.congressionalappchallenge.us/25-nj10/" target="_blank" rel="noopener">
-          <div class="press-top mono"><span>CONGRESSIONAL APP CHALLENGE</span><span>2025</span></div>
-          <h3>Official winner page, New Jersey's 10th District</h3>
-          <p class="press-peek">"An emotion-recognition app helping caregivers understand autistic children."</p>
-          <span class="press-cta mono">READ<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 9L9 3M4.5 3H9v4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-        </a>
+        <div class="press-cell" data-pf="ieo">
+          <a class="press-card spot reveal" href="https://indiawest.com/teen-competes-for-team-usa-at-international-economics-olympiad-in-china/" target="_blank" rel="noopener">
+            <div class="press-top mono"><span>INDIA-WEST</span><span>JUL 2026</span></div>
+            <h3>Teen Competes For Team USA At International Economics Olympiad In China</h3>
+            <p class="press-peek">"The competition was never only about economics."</p>
+            <span class="press-cta mono">READ<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 9L9 3M4.5 3H9v4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </a>
+        </div>
 
-        <a class="press-card spot reveal" href="https://trentonjournal.com/robbinsville-high-school-students-team-placed-6th-of-52-countries-in-international-economics-olympiad/" target="_blank" rel="noopener">
-          <div class="press-top mono"><span>TRENTON JOURNAL</span><span>JUL 2026</span></div>
-          <h3>Robbinsville team places 6th of 52 countries at the International Economics Olympiad</h3>
-          <p class="press-peek">"Placed 6th out of 52 countries in the business case competition."</p>
-          <span class="press-cta mono">READ<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 9L9 3M4.5 3H9v4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-        </a>
+        <div class="press-cell" data-pf="ieo">
+          <a class="press-card spot reveal d1" href="https://www.globalindian.com/youth/three-indian-origin-students-team-usa-international-economics-olympiad/" target="_blank" rel="noopener">
+            <div class="press-top mono"><span>THE GLOBAL INDIAN</span><span>JUL 2026</span></div>
+            <h3>Three Indian-origin students in Team USA's impressive International Economics Olympiad debut</h3>
+            <p class="press-peek">"how much our team trusted and learned from one another"</p>
+            <span class="press-cta mono">READ<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 9L9 3M4.5 3H9v4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </a>
+        </div>
 
-        <a class="press-card spot reveal d1" href="https://theunn.com/teen-represents-team-usa-at-international-economics-olympiad-in-china/" target="_blank" rel="noopener">
-          <div class="press-top mono"><span>THE UNN</span><span>JUL 2026</span></div>
-          <h3>Teen represents Team USA at the International Economics Olympiad in China</h3>
-          <p class="press-peek">"Selected through a national qualifying process."</p>
-          <span class="press-cta mono">READ<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 9L9 3M4.5 3H9v4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-        </a>
+        <div class="press-cell" data-pf="ieo">
+          <a class="press-card spot reveal" href="https://www.newjerseystage.com/articles2/2026/07/23/two-new-jersey-students-among-five-to-represent-usa-at-2026-international-economics-olympiad-in-china/" target="_blank" rel="noopener">
+            <div class="press-top mono"><span>NEW JERSEY STAGE</span><span>JUL 2026</span></div>
+            <h3>Two New Jersey Students Among Five To Represent USA at 2026 International Economics Olympiad in China</h3>
+            <p class="press-peek">"Team USA placed 6th out of 52 national teams"</p>
+            <span class="press-cta mono">READ<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 9L9 3M4.5 3H9v4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </a>
+        </div>
 
-        <a class="press-card spot reveal" href="http://www.lokvani.com/lokvani/article.php?article_id=22827" target="_blank" rel="noopener">
-          <div class="press-top mono"><span>LOKVANI</span><span>AUG 2026</span></div>
-          <h3>Shashank Madala of NJ places 6th at the 2026 International Economics Olympiad</h3>
-          <p class="press-peek">"Competing against students from 52 nations."</p>
-          <span class="press-cta mono">READ<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 9L9 3M4.5 3H9v4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-        </a>
+        <div class="press-cell" data-pf="kora">
+          <a class="press-card spot reveal d1" href="https://www.congressionalappchallenge.us/25-nj10/" target="_blank" rel="noopener">
+            <div class="press-top mono"><span>CONGRESSIONAL APP CHALLENGE</span><span>JAN 2026</span></div>
+            <h3>Kora wins Rep. LaMonica McIver's 2025 Congressional App Challenge in New Jersey's 10th District</h3>
+            <p class="press-peek">"empathy can be designed"</p>
+            <span class="press-cta mono">READ<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 9L9 3M4.5 3H9v4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </a>
+        </div>
 
-        <a class="press-card spot reveal d1" href="https://www.globalindian.com/youth/three-indian-origin-students-team-usa-international-economics-olympiad/" target="_blank" rel="noopener">
-          <div class="press-top mono"><span>GLOBAL INDIAN</span><span>JUL 2026</span></div>
-          <h3>Three Indian-origin students on Team USA at the International Economics Olympiad</h3>
-          <p class="press-peek">"Representing the United States in Shenzhen."</p>
-          <span class="press-cta mono">READ<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 9L9 3M4.5 3H9v4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-        </a>
+        <div class="press-cell" data-pf="kora">
+          <a class="press-card spot reveal" href="https://mciver.house.gov/media/press-releases/mciver-announces-kora-app-as-winner-of-nj-10-congressional-app-challenge" target="_blank" rel="noopener">
+            <div class="press-top mono"><span>OFFICE OF REP. LAMONICA MCIVER</span><span>JAN 2026</span></div>
+            <h3>McIver Announces "Kora" App as Winner of NJ-10 Congressional App Challenge</h3>
+            <p class="press-peek">"a shared value of using technology to improve the lives of their community"</p>
+            <span class="press-cta mono">READ THE RELEASE<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 9L9 3M4.5 3H9v4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </a>
+        </div>
 
-        <a class="press-card spot reveal" href="https://medicine.yale.edu/profile/ssm223/" target="_blank" rel="noopener">
-          <div class="press-top mono"><span>YALE SCHOOL OF MEDICINE</span><span>PROFILE</span></div>
-          <h3>Research profile, Yale Child Study Center</h3>
-          <p class="press-peek">"Child Study Center, Cha Lab."</p>
-          <span class="press-cta mono">READ<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 9L9 3M4.5 3H9v4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-        </a>
+        <div class="press-cell" data-pf="research profiles">
+          <a class="press-card spot reveal d1" href="https://medicine.yale.edu/profile/ssm223/" target="_blank" rel="noopener">
+            <div class="press-top mono"><span>YALE SCHOOL OF MEDICINE</span><span>UPDATED NOV 2025</span></div>
+            <h3>Shashank Madala | Yale School of Medicine</h3>
+            <p class="press-peek">"the co-creator of Kora, an autism-support app used in therapy centers"</p>
+            <span class="press-cta mono">OPEN THE PROFILE<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 9L9 3M4.5 3H9v4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </a>
+        </div>
 
-        <a class="press-card spot reveal d1" href="https://www.frc2590.org/members/shashank-madala/" target="_blank" rel="noopener">
-          <div class="press-top mono"><span>FRC 2590</span><span>PROFILE</span></div>
-          <h3>Team member profile, Robbinsville Robotics</h3>
-          <p class="press-peek">"Curie Division winner at the 2024 FIRST World Championship."</p>
-          <span class="press-cta mono">READ<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 9L9 3M4.5 3H9v4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-        </a>
+        <div class="press-cell" data-pf="kora profiles">
+          <a class="press-card spot reveal" href="https://canvasrebel.com/meet-shashank-madala/" target="_blank" rel="noopener">
+            <div class="press-top mono"><span>CANVASREBEL MAGAZINE</span><span>JAN 2025</span></div>
+            <h3>Meet Shashank Madala</h3>
+            <p class="press-peek">"Kora is more than just an app"</p>
+            <span class="press-cta mono">READ THE INTERVIEW<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 9L9 3M4.5 3H9v4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </a>
+        </div>
 
+        <div class="press-cell" data-pf="kora">
+          <a class="press-card spot reveal d1" href="https://www.tapinto.net/towns/hamilton-slash-robbinsville/sections/giving-back/articles/inspired-by-family-robbinsville-teens-build-app-to-support-autistic-youth-caregivers" target="_blank" rel="noopener">
+            <div class="press-top mono"><span>TAPINTO HAMILTON/ROBBINSVILLE</span><span>NOV 2024</span></div>
+            <h3>Inspired by Family, Robbinsville Teens Build App to Support Autistic Youth, Caregivers</h3>
+            <p class="press-peek">"Kora was inspired by my autistic cousins in India."</p>
+            <span class="press-cta mono">READ<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 9L9 3M4.5 3H9v4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </a>
+        </div>
+
+        <div class="press-cell" data-pf="robotics profiles">
+          <a class="press-card spot reveal" href="https://www.frc2590.org/members/shashank-madala/" target="_blank" rel="noopener">
+            <div class="press-top mono"><span>FRC 2590 NEMESIS</span><span>TEAM PAGE</span></div>
+            <h3>Shashank Madala | FRC 2590 | Robbinsville Robotics</h3>
+            <p class="press-peek">"helping newer programmers get started"</p>
+            <span class="press-cta mono">OPEN THE PROFILE<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 9L9 3M4.5 3H9v4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </a>
+        </div>
 
       </div>
+
+      <p class="press-empty mono" id="pressEmpty" hidden>Nothing under that filter yet.</p>
     </div>
   </section>
 
   <!-- ============ BEYOND ============ -->
-  <section class="beyond">
+  <section class="beyond" id="beyond">
     <div class="wrap">
       <div class="sec-head reveal">
         <p class="eyebrow">ALSO</p>

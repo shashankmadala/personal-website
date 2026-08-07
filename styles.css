@@ -1102,3 +1102,911 @@ body.lb-lock { overflow: hidden; }
 @media (prefers-reduced-motion: reduce) {
   .lb, .lb-img, .gal-badge { transition-duration: 0.01ms !important; }
 }
+
+
+/* ============================================================
+   DESIGNER A
+   1. THE CLASSROOM: a full-bleed editorial band of the nine
+      teaching photos, sitting between WORK and HONORS as a
+      chapter break. Height-driven rail, so mixed landscape and
+      portrait frames share one baseline and nothing is cropped.
+   2. A UI pass: section rules, responsive vertical rhythm,
+      resting card elevation, tabular numerals, real focus rings.
+   ============================================================ */
+
+/* ---------- 2a. vertical rhythm ---------------------------------------
+   Every section was a flat 150px top and bottom. That is too much air on
+   a 375px phone and slightly too little on a 27 inch display. One fluid
+   token replaces the constant so the page breathes with the viewport. */
+:root { --sec: clamp(88px, 10vw, 158px); }
+.now      { padding-block: var(--sec); }
+.stats    { padding-block: 0 var(--sec); }
+.work     { padding-block: var(--sec) 40px; }
+.honors   { padding-block: var(--sec); }
+.press    { padding-block: var(--sec); }
+.beyond   { padding-block: 0 var(--sec); }
+.contact  { padding-block: clamp(118px, 13vw, 180px) clamp(126px, 14vw, 200px); }
+
+/* ---------- 2b. section headers sit on a rule --------------------------
+   The eyebrow and title floated in space with nothing anchoring them.
+   A hairline above each header turns NOW / WORK / HONORS / PRESS / ALSO
+   into visible chapters and gives the page a spine. */
+.sec-head {
+  border-top: 1px solid var(--line);
+  padding-top: 24px;
+  margin-bottom: clamp(38px, 4.4vw, 64px);
+}
+.sec-title { text-wrap: balance; }
+
+/* ---------- 2c. cards catch the light ---------------------------------
+   Panels were flat fills on a flat background. A 1px top highlight plus a
+   resting drop shadow lifts them off the page. The highlight lives on a
+   pseudo-element because the tilt module overwrites inline transitions on
+   the card itself, which would make any hover change snap. */
+.now-item, .beyond-card, .press-card {
+  box-shadow: 0 14px 36px rgba(4, 7, 14, 0.38);
+}
+.now-item::before, .beyond-card::before, .press-card::before,
+.receipt::before, .stack-in::before {
+  content: "";
+  position: absolute; inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07);
+  transition: box-shadow 0.45s var(--ease);
+}
+.now-item:hover::before, .beyond-card:hover::before, .press-card:hover::before {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    inset 0 0 0 1px rgba(92, 157, 255, 0.2);
+}
+.receipt { box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 26px 70px rgba(4, 7, 14, 0.5); }
+.stack-in { box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 -14px 50px rgba(4, 7, 14, 0.5); }
+
+/* ---------- 2d. numerals stop twitching --------------------------------
+   The stat counters animate 0 to 15,000. With proportional figures every
+   frame is a different width and the whole row jitters. Tabular figures
+   fix the column, and the same setting steadies dates and index numbers. */
+.stat .num, .stack-num, .press-top, .receipt-head, .receipt-total,
+.r-row b, .lb-count, .band-cap, .foot-row {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+/* ---------- 2e. the stat rule becomes a measure ------------------------
+   A flat grey hairline over each number said nothing. A blue rule that
+   fades out to the right reads as a bar, which is what a stat wants. */
+.stat {
+  border-top: 0;
+  padding-top: 23px;
+  background-image: linear-gradient(90deg,
+    rgba(92, 157, 255, 0.8), rgba(92, 157, 255, 0.08) 58%, transparent);
+  background-size: 100% 1px;
+  background-repeat: no-repeat;
+  background-position: 0 0;
+}
+
+/* ---------- 2f. measure and wrapping ----------------------------------- */
+.stack-desc { font-size: 16px; line-height: 1.68; max-width: 64ch; text-wrap: pretty; }
+.stack-title, .press-card h3 { text-wrap: balance; }
+.hero-sub, .now-item p, .beyond-card p, .press-peek, .contact-sub { text-wrap: pretty; }
+
+/* ---------- 2g. focus is visible --------------------------------------- */
+:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 3px;
+}
+
+/* ---------- 2h. the buried thumbnail becomes a door --------------------
+   It stays where it belongs, beside the Lumin story, but it is wider now
+   and the count badge no longer waits for a hover to appear. */
+.stack-in.has-pic { grid-template-columns: clamp(224px, 24vw, 292px) minmax(0, 1fr); }
+.photo.pic-margin { transition: border-color 0.3s, box-shadow 0.4s var(--ease); }
+.photo.pic-margin .gal-badge { opacity: 1; transform: none; }
+.gal-trigger:hover { border-color: rgba(92, 157, 255, 0.4); }
+@media (max-width: 960px) {
+  .photo.pic-margin { max-width: 340px; }
+}
+
+
+/* ============================================================
+   1. THE CLASSROOM BAND
+   ============================================================ */
+.band {
+  position: relative;
+  padding: clamp(74px, 8vw, 118px) 0 clamp(68px, 7vw, 104px);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  background:
+    radial-gradient(64% 58% at 50% 0%, rgba(92, 157, 255, 0.07), transparent 62%),
+    linear-gradient(180deg,
+      rgba(17, 22, 35, 0) 0%, rgba(17, 22, 35, 0.55) 20%,
+      rgba(17, 22, 35, 0.55) 80%, rgba(17, 22, 35, 0) 100%);
+}
+.band-note {
+  margin-top: 18px;
+  max-width: 46ch;
+  font-size: 15.5px;
+  color: var(--body);
+  text-wrap: pretty;
+}
+.band .sec-head { margin-bottom: clamp(30px, 3.4vw, 46px); }
+
+/* the rail: full width of the viewport, first frame aligned to the
+   text column, last frame free to run off the right edge */
+.band-rail {
+  --gut: max(28px, calc((100% - var(--wrap)) / 2 + 28px));
+  display: flex;
+  align-items: flex-start;
+  gap: clamp(14px, 1.6vw, 26px);
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 8px var(--gut) 14px;
+  scroll-snap-type: x proximity;
+  scroll-padding-inline: var(--gut);
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  cursor: grab;
+}
+.band-rail::-webkit-scrollbar { width: 0; height: 0; display: none; }
+.band-rail.dragging {
+  cursor: grabbing;
+  scroll-snap-type: none;
+  user-select: none; -webkit-user-select: none;
+}
+
+.band-shot {
+  flex: 0 0 auto;
+  margin: 0;
+  scroll-snap-align: start;
+}
+
+.band-hit {
+  display: block;
+  position: relative;
+  padding: 0; border: 0; background: none;
+  line-height: 0;
+  border-radius: 16px;
+  cursor: zoom-in;
+  -webkit-tap-highlight-color: transparent;
+}
+.band-hit:focus-visible { outline-offset: 5px; }
+
+/* Height drives the box and width follows the file's own ratio, so every
+   frame lands on one baseline with nothing letterboxed and nothing cut.
+   max-width: none keeps the global img rule from clamping the width
+   against a fixed height, which is the combination that distorts. */
+.band-hit img {
+  height: var(--band-h, clamp(250px, 37vw, 486px));
+  width: auto;
+  max-width: none;
+  display: block;
+  border-radius: 16px;
+  object-fit: contain;
+  background: #0b0e15;
+  box-shadow: 0 24px 54px rgba(4, 7, 14, 0.55);
+  transition: transform 0.55s var(--ease), box-shadow 0.5s var(--ease);
+  will-change: transform;
+  -webkit-user-drag: none;
+  user-select: none; -webkit-user-select: none;
+}
+.band-shot:hover .band-hit img,
+.band-hit:focus-visible img {
+  transform: translateY(-6px);
+  box-shadow: 0 30px 68px rgba(4, 7, 14, 0.62);
+}
+.band-rail.dragging .band-hit img { transform: none; }
+
+/* hairline ring, drawn on a pseudo-element because an inset shadow on an
+   <img> paints under the image content and would never be seen */
+.band-hit::after {
+  content: "";
+  position: absolute; inset: 0;
+  border-radius: 16px;
+  pointer-events: none;
+  box-shadow:
+    inset 0 0 0 1px var(--line-2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  transition: box-shadow 0.4s var(--ease), transform 0.55s var(--ease);
+}
+.band-shot:hover .band-hit::after,
+.band-hit:focus-visible::after {
+  box-shadow:
+    inset 0 0 0 1px rgba(92, 157, 255, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  transform: translateY(-6px);
+}
+.band-rail.dragging .band-hit::after { transform: none; }
+
+.band-zoom {
+  position: absolute; right: 14px; bottom: 14px;
+  display: inline-flex; align-items: center; gap: 7px;
+  font-family: var(--mono);
+  font-size: 9.5px; letter-spacing: 0.18em; line-height: 1;
+  color: var(--ink);
+  background: rgba(10, 13, 18, 0.68);
+  -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+  border: 1px solid var(--line-2);
+  border-radius: 999px;
+  padding: 7px 12px;
+  opacity: 0; transform: translateY(7px);
+  transition: opacity 0.35s var(--ease), transform 0.35s var(--ease);
+  pointer-events: none;
+}
+.band-shot:hover .band-zoom,
+.band-hit:focus-visible .band-zoom { opacity: 1; transform: none; }
+@media (hover: none), (pointer: coarse) { .band-zoom { opacity: 1; transform: none; } }
+
+.band-cap {
+  display: flex; align-items: baseline; gap: 10px;
+  padding: 15px 3px 0;
+  font-size: 10px; letter-spacing: 0.2em; line-height: 1.4;
+  color: var(--faint);
+  transition: color 0.3s;
+}
+.band-cap b { color: var(--sky); font-weight: 500; flex: none; }
+.band-shot:hover .band-cap { color: var(--body); }
+
+/* progress and arrows */
+.band-foot {
+  display: flex; align-items: center; gap: clamp(16px, 2.4vw, 30px);
+  margin-top: clamp(24px, 3vw, 38px);
+}
+.band-track {
+  position: relative; flex: 1; min-width: 60px;
+  height: 2px; border-radius: 2px;
+  background: var(--line-2);
+}
+.band-fill {
+  position: absolute; top: 0; left: 0;
+  height: 100%; width: 30%;
+  border-radius: 2px;
+  background: var(--grad);
+}
+.band-hint {
+  flex: none;
+  font-size: 9.5px; letter-spacing: 0.2em;
+  color: var(--faint);
+}
+.band-btns { flex: none; display: flex; gap: 10px; }
+.band-btn {
+  width: 38px; height: 38px; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  border: 1px solid var(--line-2);
+  background: rgba(14, 18, 25, 0.7);
+  color: var(--ink);
+  cursor: pointer;
+  transition: border-color 0.25s, background 0.25s, opacity 0.25s, transform 0.25s var(--ease);
+}
+.band-btn:hover:not(:disabled) {
+  border-color: var(--blue);
+  background: rgba(92, 157, 255, 0.13);
+}
+.band-btn:active:not(:disabled) { transform: scale(0.94); }
+.band-btn:disabled { opacity: 0.25; cursor: default; }
+
+/* ---------- band responsive -------------------------------------------
+   Below 720px a fixed height makes the wide frames roughly one and a half
+   screens across. Under that width the rail switches to width-driven
+   sizing: height goes back to auto, the file's ratio still governs, and
+   a whole frame fits on screen. */
+@media (max-width: 720px) {
+  .band-hit img {
+    height: auto;
+    width: min(78vw, 400px);
+    max-width: none;
+    border-radius: 14px;
+  }
+  .band-hit, .band-hit::after { border-radius: 14px; }
+  .band-rail { align-items: center; }
+  .band-hint { display: none; }
+  .band-btns { display: none; }
+  .band-note { font-size: 14.5px; }
+}
+@media (hover: none), (pointer: coarse) {
+  .band-rail { cursor: default; }
+  .band-btns { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .band-rail { scroll-behavior: auto; }
+  .band-hit img, .band-hit::after { transition-duration: 0.01ms !important; }
+  .band-shot:hover .band-hit img,
+  .band-hit:focus-visible img,
+  .band-shot:hover .band-hit::after,
+  .band-hit:focus-visible::after { transform: none; }
+}
+
+
+/* ===== module 0 ===== */
+
+/* ============================================================
+   MOTION + CLICKABILITY PASS
+   staggered section heads, a section rail, clickable honors
+   rows and NOW cards, one hover signature for everything that
+   can actually be clicked
+   ============================================================ */
+
+/* ---- anchor landings clear the fixed nav ---- */
+#now, #work, #honors, #press, #beyond, #contact { scroll-margin-top: 88px; }
+
+/* ---- 1. section heads: eyebrow letters, then title words ---- */
+.sec-head.stag { opacity: 1; transform: none; transition: none; }
+.sh-ey { display: inline-block; }
+.sec-head.stag .sh-l,
+.sec-head.stag .sh-w {
+  display: inline-block;
+  white-space: pre;
+  opacity: 0;
+  transform: translateY(0.42em);
+  transition: opacity 0.46s var(--ease), transform 0.46s var(--ease);
+}
+.sec-head.stag.in .sh-l,
+.sec-head.stag.in .sh-w { opacity: 1; transform: none; }
+
+/* ---- 2. jump target: the eyebrow lights once on arrival ---- */
+section:target > .wrap > .sec-head .eyebrow,
+section:target > .wrap > .eyebrow {
+  animation: tgt-glow 1.1s var(--ease) both;
+}
+@keyframes tgt-glow {
+  0% { color: var(--blue-2); text-shadow: 0 0 20px rgba(92, 157, 255, 0.55); }
+  55% { color: var(--blue-2); text-shadow: 0 0 10px rgba(92, 157, 255, 0.24); }
+  100% { color: var(--blue); text-shadow: none; }
+}
+
+/* ---- 3. section rail ---- */
+.rail {
+  position: fixed; z-index: 150;
+  right: 14px; top: 50%;
+  transform: translateY(-50%);
+  display: flex; flex-direction: column; align-items: flex-end;
+  gap: 2px;
+  opacity: 0; visibility: hidden; pointer-events: none;
+  transition: opacity 0.5s var(--ease), visibility 0.5s;
+}
+.rail.show { opacity: 1; visibility: visible; pointer-events: auto; }
+.rail-dot {
+  position: relative;
+  display: flex; align-items: center; justify-content: flex-end;
+  width: 26px; height: 20px;
+  border-radius: 6px;
+}
+.rail-pip {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: rgba(226, 232, 244, 0.22);
+  transition: background 0.3s, transform 0.35s var(--ease), box-shadow 0.35s;
+}
+.rail-dot:hover .rail-pip { background: var(--body); transform: scale(1.3); }
+.rail-dot.on .rail-pip {
+  background: var(--blue);
+  transform: scale(1.35);
+  box-shadow: 0 0 0 4px rgba(92, 157, 255, 0.12);
+}
+.rail-lab {
+  position: absolute; right: 18px; top: 50%;
+  transform: translateY(-50%) translateX(5px);
+  white-space: nowrap;
+  font-size: 9.5px; letter-spacing: 0.2em; color: var(--dim);
+  background: rgba(14, 18, 25, 0.94);
+  -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+  border: 1px solid var(--line-2);
+  border-radius: 999px;
+  padding: 4px 10px;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.28s var(--ease), transform 0.28s var(--ease);
+}
+.rail-dot:hover .rail-lab,
+.rail-dot:focus-visible .rail-lab { opacity: 1; transform: translateY(-50%); }
+.rail-dot:focus-visible { outline: 1px solid var(--blue); outline-offset: 2px; }
+@media (max-width: 1199px) { .rail { display: none; } }
+@media (hover: none), (pointer: coarse) { .rail { display: none; } }
+
+/* ---- 4. nav: active section ---- */
+.nav-links a { position: relative; }
+.nav-links a::after {
+  content: "";
+  position: absolute; left: 0; right: 0; bottom: -6px;
+  height: 1px;
+  background: var(--grad);
+  transform: scaleX(0); transform-origin: 0 50%;
+  transition: transform 0.4s var(--ease);
+}
+.nav-links a:hover::after,
+.nav-links a.is-active::after { transform: scaleX(1); }
+.nav-links a.is-active { color: var(--ink); }
+
+/* ---- 5. honors ledger: rows that have a real source ---- */
+.receipt-list .r-row {
+  border-radius: 5px;
+  transition: opacity 0.5s var(--ease), transform 0.5s var(--ease),
+              background 0.25s, color 0.25s, box-shadow 0.25s;
+}
+.r-link { position: relative; cursor: pointer; }
+.r-src { position: absolute; inset: -2px -4px; z-index: 1; border-radius: 6px; }
+.r-link::after { transition: opacity 0.25s, border-color 0.25s; }
+.r-link b { transition: color 0.25s; }
+.r-link b::after {
+  content: "\2197";
+  display: inline-block;
+  margin-left: 6px;
+  opacity: 0.45;
+  transition: opacity 0.25s, transform 0.25s var(--ease);
+}
+.r-link:hover { background: rgba(92, 157, 255, 0.055); box-shadow: 0 0 0 7px rgba(92, 157, 255, 0.055); }
+.r-link:hover b::after { opacity: 1; transform: translate(1px, -1px); }
+.r-link:hover::after { opacity: 0.75; border-bottom-color: var(--blue); }
+.r-link:hover b { color: var(--blue-2); }
+.r-src:focus-visible { outline: 1px solid var(--blue); outline-offset: 2px; }
+
+/* ---- 6. NOW cards are links now ---- */
+.now-item[href] {
+  display: flex; flex-direction: column;
+  cursor: pointer;
+}
+.now-item[href] > p { flex: 1 1 auto; }
+.card-go {
+  margin-top: 20px; padding-top: 16px;
+  border-top: 1px solid var(--line);
+  display: flex; align-items: center; flex-wrap: wrap; gap: 8px;
+  font-size: 10px; letter-spacing: 0.22em;
+  color: var(--faint);
+  transition: color 0.3s, gap 0.3s;
+}
+.card-go svg { flex: none; }
+.now-item[href]:hover .card-go,
+.now-item[href]:focus-visible .card-go { color: var(--blue); gap: 12px; }
+
+/* ---- 7. one hover signature for what is actually clickable ---- */
+.now-item[href]:hover,
+.press-card:hover { border-color: rgba(92, 157, 255, 0.3); }
+.beyond-card:hover { border-color: var(--line-2); }
+.now-item[href]:focus-visible,
+.press-card:focus-visible,
+.beyond-card:focus-visible { outline: 1px solid var(--blue); outline-offset: 3px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .sec-head.stag .sh-l,
+  .sec-head.stag .sh-w { opacity: 1 !important; transform: none !important; }
+  .rail { transition: none; }
+}
+
+
+/* ===== module 1 ===== */
+
+
+/* ============================================================
+   command palette
+   nav affordance, overlay, result list, jump highlight
+   ============================================================ */
+
+/* --- nav affordance --- */
+.nav-end {
+  justify-self: end;
+  display: flex; align-items: center; gap: 10px;
+}
+.cp-open {
+  display: inline-flex; align-items: center; gap: 9px;
+  font-family: var(--sans); font-size: 13.5px; line-height: 1;
+  color: var(--dim);
+  background: rgba(14, 18, 25, 0.5);
+  border: 1px solid var(--line-2);
+  border-radius: 10px;
+  padding: 8px 10px 8px 12px;
+  cursor: pointer;
+  -webkit-appearance: none; appearance: none;
+  transition: color 0.25s, border-color 0.25s, background 0.25s;
+}
+.cp-open:hover { color: var(--ink); border-color: var(--blue); }
+.cp-open:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+.cp-open svg { flex: none; }
+.cp-kbd {
+  font-family: var(--mono); font-size: 10px; letter-spacing: 0.06em;
+  color: var(--faint);
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 6px;
+  padding: 3px 6px;
+}
+@media (max-width: 780px) {
+  .cp-open-label, .cp-kbd { display: none; }
+  .cp-open { padding: 9px; }
+}
+@media (max-width: 640px) {
+  .nav-inner { grid-template-columns: 1fr auto; }
+  .nav-end { gap: 8px; }
+}
+
+/* --- overlay --- */
+.cp {
+  position: fixed; inset: 0; z-index: 600;
+  display: flex; align-items: flex-start; justify-content: center;
+  padding: clamp(52px, 11vh, 128px) 20px 24px;
+  opacity: 0; visibility: hidden;
+  /* visibility flips on the same tick it opens, so the input is focusable
+     right away, and is held back only on the way out */
+  transition: opacity 0.26s var(--ease), visibility 0s linear 0.26s;
+}
+.cp.open {
+  opacity: 1; visibility: visible;
+  transition: opacity 0.26s var(--ease), visibility 0s linear 0s;
+}
+.cp-scrim {
+  position: absolute; inset: 0;
+  background: rgba(6, 8, 13, 0.72);
+  -webkit-backdrop-filter: blur(14px) saturate(0.85);
+  backdrop-filter: blur(14px) saturate(0.85);
+}
+.cp-panel {
+  position: relative;
+  width: 100%; max-width: 620px; max-height: 100%; min-height: 0;
+  display: flex; flex-direction: column;
+  background: linear-gradient(180deg, rgba(17, 22, 35, 0.98), rgba(13, 17, 25, 0.98));
+  border: 1px solid var(--line-2);
+  border-radius: 16px;
+  box-shadow: 0 40px 100px rgba(3, 5, 10, 0.7), 0 0 0 1px rgba(92, 157, 255, 0.05);
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(-10px) scale(0.986);
+  transition: opacity 0.3s var(--ease), transform 0.3s var(--ease);
+}
+.cp.open .cp-panel { opacity: 1; transform: none; }
+
+/* --- field --- */
+.cp-field {
+  flex: none;
+  display: flex; align-items: center; gap: 11px;
+  padding: 15px 15px 15px 17px;
+  border-bottom: 1px solid var(--line);
+}
+.cp-mag { color: var(--blue); flex: none; }
+.cp-input {
+  flex: 1; min-width: 0;
+  background: none; border: 0; outline: none;
+  color: var(--ink);
+  font-family: var(--sans); font-size: 16px; line-height: 1.4;
+}
+.cp-input::placeholder { color: var(--faint); }
+.cp-esc {
+  flex: none; cursor: pointer;
+  background: none; color: var(--faint);
+  border: 1px solid var(--line-2); border-radius: 7px;
+  padding: 4px 8px;
+  font-size: 9.5px; letter-spacing: 0.16em; line-height: 1.4;
+  transition: color 0.25s, border-color 0.25s;
+}
+.cp-esc:hover { color: var(--ink); border-color: var(--blue); }
+.cp-esc:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+
+/* --- results --- */
+.cp-list {
+  position: relative;
+  flex: 1; min-height: 0;
+  overflow-y: auto; overscroll-behavior: contain;
+  padding: 0 0 10px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(226, 232, 244, 0.18) transparent;
+}
+.cp-list::-webkit-scrollbar { width: 8px; }
+.cp-list::-webkit-scrollbar-thumb { background: rgba(226, 232, 244, 0.14); border-radius: 4px; }
+.cp-list::-webkit-scrollbar-track { background: transparent; }
+.cp-group {
+  position: sticky; top: 0; z-index: 2;
+  padding: 13px 18px 6px;
+  font-family: var(--mono);
+  font-size: 9.5px; letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--blue);
+  background: linear-gradient(180deg, rgba(15, 20, 31, 0.99) 72%, rgba(15, 20, 31, 0));
+}
+.cp-row {
+  display: grid;
+  grid-template-columns: 46px minmax(0, 1fr) auto;
+  align-items: center; gap: 12px;
+  padding: 9px 18px;
+  border-left: 2px solid transparent;
+  cursor: pointer;
+}
+.cp-row.on { background: rgba(92, 157, 255, 0.09); border-left-color: var(--blue); }
+.cp-kind {
+  font-size: 9px; letter-spacing: 0.14em; color: var(--faint);
+  white-space: nowrap; overflow: hidden; text-overflow: clip;
+}
+.cp-row.on .cp-kind { color: var(--sky); }
+.cp-mid { min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.cp-t {
+  font-size: 14.5px; line-height: 1.35; color: var(--body);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.cp-row.on .cp-t { color: var(--ink); }
+.cp-s {
+  font-size: 10.5px; line-height: 1.45; letter-spacing: 0.06em; color: var(--faint);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.cp-hit { background: none; color: var(--sky); font-weight: 600; }
+.cp-go { font-size: 12px; color: transparent; }
+.cp-row.on .cp-go { color: var(--blue); }
+.cp-empty {
+  padding: 30px 18px; font-size: 14px; color: var(--dim);
+}
+
+/* --- hint bar --- */
+.cp-hint {
+  flex: none;
+  display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+  padding: 11px 16px;
+  border-top: 1px solid var(--line);
+  background: rgba(9, 12, 18, 0.55);
+  font-size: 9.5px; letter-spacing: 0.14em; color: var(--faint);
+}
+.cp-hk { display: inline-flex; align-items: center; gap: 6px; }
+.cp-hint kbd {
+  font-family: var(--mono); font-size: 9.5px; line-height: 1.3;
+  color: var(--dim);
+  border: 1px solid var(--line-2); border-radius: 5px;
+  background: rgba(255, 255, 255, 0.03);
+  padding: 2px 5px;
+}
+.cp-hn { margin-left: auto; color: var(--dim); }
+
+/* --- page state while the palette owns the screen --- */
+body.cp-lock { overflow: hidden; padding-right: var(--cp-sbw, 0px); }
+body.cp-lock .nav { padding-right: var(--cp-sbw, 0px); }
+
+/* --- jump target: soft blue ring that fades --- */
+.cp-measure .stack-card { position: static !important; }
+.cp-flash {
+  outline: 2px solid rgba(92, 157, 255, 0.62);
+  outline-offset: 3px;
+  transition: outline-color 0.55s var(--ease);
+}
+.cp-flash-out { outline-color: rgba(92, 157, 255, 0); }
+.r-row.cp-flash { border-radius: 8px; outline-offset: 2px; }
+/* the jump target is focused for screen readers, so suppress the ring it
+   would otherwise keep once the flash is done */
+[tabindex="-1"]:focus:not(.cp-flash) { outline: none; }
+
+@media (max-width: 640px) {
+  .cp { padding: 54px 12px 14px; }
+  .cp-row { grid-template-columns: 42px minmax(0, 1fr) auto; gap: 10px; padding: 10px 14px; }
+  .cp-group { padding: 12px 14px 5px; }
+  .cp-field { padding: 13px 13px 13px 15px; }
+  .cp-hint { gap: 12px; padding: 10px 13px; font-size: 9px; }
+  .cp-t { font-size: 14px; }
+}
+
+
+/* ===== module 2 ===== */
+
+
+/* ============================================================
+   PRESS WALL v2
+   filter chips with live counts, a count line under the title,
+   and cells that carry the FLIP so card tilt keeps its transform
+   ============================================================ */
+
+/* count line sits directly under "In the news." */
+.press .sec-head { margin-bottom: 34px; }
+.press-count {
+  margin-top: 14px;
+  font-family: var(--mono);
+  font-size: 10.5px; letter-spacing: 0.2em;
+  color: var(--faint);
+}
+
+/* ---- filter chips ----
+   hidden until the script that drives them is alive, so a no-JS page
+   never shows a control that cannot do anything */
+.press-tools { display: none; margin-bottom: 26px; }
+.pf-live .press-tools { display: block; }
+.press-filters { display: flex; flex-wrap: wrap; gap: 8px; }
+.pf-chip {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--sans);
+  font-size: 13px; font-weight: 500; line-height: 1;
+  color: var(--dim);
+  background: transparent;
+  border: 1px solid var(--line-2);
+  border-radius: 999px;
+  padding: 9px 15px;
+  cursor: pointer;
+  -webkit-appearance: none; appearance: none;
+  transition: color 0.25s, border-color 0.25s, background 0.3s, box-shadow 0.3s;
+}
+.pf-chip:hover { color: var(--ink); border-color: rgba(92, 157, 255, 0.45); }
+.pf-chip:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; }
+.pf-n {
+  font-style: normal;
+  font-size: 10.5px; letter-spacing: 0.08em;
+  color: var(--faint);
+  font-variant-numeric: tabular-nums;
+  transition: color 0.25s;
+}
+.pf-chip[aria-pressed="true"] {
+  background: linear-gradient(120deg, #3255e0, #2e6ee6 55%, #2f9bea);
+  border-color: transparent;
+  color: #f5f8ff;
+  box-shadow: 0 6px 22px rgba(46, 110, 230, 0.3);
+}
+.pf-chip[aria-pressed="true"] .pf-n { color: rgba(245, 248, 255, 0.72); }
+.pf-chip[hidden] { display: none; }
+
+/* ---- grid cells ---- */
+.press-grid { position: relative; }
+.press-cell { display: flex; min-width: 0; }
+.press-cell > .press-card { flex: 1 1 auto; min-width: 0; }
+.press-cell.is-feature { grid-column: 1 / -1; }
+
+/* long outlet names wrap instead of squeezing the date */
+.press-top { flex-wrap: wrap; }
+.press-top span:last-child { margin-left: auto; white-space: nowrap; }
+
+.press-empty {
+  margin-top: 4px;
+  font-size: 11.5px; letter-spacing: 0.16em;
+  color: var(--faint);
+}
+.press-empty[hidden] { display: none; }
+
+@media (max-width: 640px) {
+  .pf-chip { font-size: 12.5px; padding: 8px 13px; gap: 7px; }
+  .press-filters { gap: 7px; }
+}
+
+
+/* ===== module 3 ===== */
+
+
+/* ============================================================
+   WORK CARDS v2
+   Each work card gets an inline detail drawer and a row of
+   cross links. Collapsed height is unchanged on the four cards
+   that already ended in a link row: the toggle takes over that
+   line, and .tags hands its bottom margin to the new bar.
+   ============================================================ */
+
+/* the bar now owns the space the tags margin used to hold */
+.stack-main .tags { margin-bottom: 0; }
+
+.wk-bar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px 14px;
+  margin-top: 22px;
+}
+.wk-bar .link { margin-left: auto; }
+
+.wk-toggle,
+.wk-cov {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 11px;
+  line-height: 1.2;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  border-radius: 999px;
+  padding: 5px 14px;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+  transition: color 0.25s, border-color 0.25s, background 0.25s;
+}
+.wk-toggle {
+  color: var(--ink);
+  background: rgba(92, 157, 255, 0.06);
+  border: 1px solid var(--line-2);
+}
+.wk-toggle:hover { border-color: rgba(92, 157, 255, 0.45); background: rgba(92, 157, 255, 0.11); }
+.wk-toggle[aria-expanded="true"] { color: var(--blue-2); border-color: rgba(92, 157, 255, 0.4); }
+.wk-toggle svg { flex: none; color: var(--blue); transition: transform 0.35s var(--ease); }
+.wk-toggle[aria-expanded="true"] svg { transform: rotate(180deg); }
+
+.wk-cov {
+  color: var(--dim);
+  background: none;
+  border: 1px solid var(--line);
+}
+.wk-cov:hover { color: var(--ink); border-color: rgba(92, 157, 255, 0.45); }
+.wk-cov i {
+  flex: none;
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--sky);
+  font-style: normal;
+}
+
+.wk-toggle:focus-visible,
+.wk-cov:focus-visible,
+.wk-pill:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 3px;
+}
+
+/* ---- the drawer ---- */
+.wk-drawer { overflow: hidden; }
+
+/* collapsed only once the script is running, so the detail stays
+   readable if the script never gets there */
+[data-wk-cards] .wk-drawer {
+  height: 0;
+  opacity: 0;
+  visibility: hidden;
+  transition: height 0.45s var(--ease), opacity 0.3s linear, visibility 0s linear 0.45s;
+}
+[data-wk-cards] .wk-drawer.wk-open {
+  opacity: 1;
+  visibility: visible;
+  transition: height 0.45s var(--ease), opacity 0.3s linear, visibility 0s;
+}
+
+/* a stuck card taller than the window hides its own bottom, so the drawer
+   is capped to what is left of the viewport and scrolls inside if it has to */
+.wk-drawer-in {
+  padding: 18px 0 2px;
+  max-height: max(180px, min(420px, calc(100vh - 545px)));
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(226, 232, 244, 0.18) transparent;
+}
+.wk-rule { height: 1px; background: var(--line); margin: 0 0 18px; }
+
+.wk-facts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px 30px;
+}
+.wk-fact dt {
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: var(--blue);
+}
+.wk-fact dd {
+  margin-top: 5px;
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--body);
+  overflow-wrap: anywhere;
+}
+
+.wk-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin-top: 20px;
+}
+.wk-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  color: var(--dim);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 6px 13px;
+  transition: color 0.25s, border-color 0.25s, background 0.25s;
+}
+.wk-pill:hover { color: var(--ink); border-color: rgba(92, 157, 255, 0.45); background: rgba(92, 157, 255, 0.07); }
+.wk-pill svg { flex: none; color: var(--blue); }
+
+/* below 960 the cards go static, so the drawer can be its full height */
+@media (max-width: 960px) {
+  .wk-drawer-in { max-height: none; overflow: visible; }
+}
+@media (max-width: 700px) {
+  .wk-facts { grid-template-columns: 1fr; gap: 14px; }
+  .wk-bar { gap: 8px 10px; }
+  .wk-bar .link { margin-left: 0; }
+  /* keep the toggle and the coverage pill on one line at 375 */
+  .wk-toggle, .wk-cov { font-size: 10px; letter-spacing: 0.08em; padding: 5px 11px; gap: 7px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-wk-cards] .wk-drawer,
+  [data-wk-cards] .wk-drawer.wk-open { transition-delay: 0s !important; }
+  .wk-toggle svg { transition: none; }
+}
