@@ -1091,7 +1091,7 @@
       for (i = 0; i < PRESS.length; i++) outLine(PRESS[i]);
       return;
     }
-    if (head === "photos") { outLine("three pictures are spread through this page: team usa in shenzhen, a lumin class, and closing day."); return; }
+    if (head === "photos") { outLine("nine classroom photos sit in the carousel, plus the team usa shot up top. click any to open it."); return; }
     if (head === "contact") {
       outLine("email: " + EMAIL);
       outLine("linkedin: " + LINKEDIN);
@@ -1762,12 +1762,6 @@
       add("Photos", "Team USA with the flag, Shenzhen", capOf(band), "PHOTO",
         "team usa flag ieo shenzhen china olympiad picture", false,
         function () { jump(band, band); });
-    }
-    var sign = document.querySelector(".photo.pic-sign");
-    if (sign) {
-      add("Photos", "Closing day at the Olympiad", capOf(sign), "PHOTO",
-        "shenzhen closing thank you ieo picture", false,
-        function () { jump(sign, sign); });
     }
 
     /* --- contact --- */
