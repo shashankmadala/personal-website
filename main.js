@@ -5370,3 +5370,829 @@
     }
   }, { timeout: 4000 });
 })();
+
+
+/* ============================================================
+   POP PASS
+   One module, three jobs, all of them optional.
+
+   1. THE HERO CREDENTIAL STRIP. It is held back until the title has
+      finished typing so it lands after the sub and the buttons rather
+      than on top of them. That state is read off the DOM, never off
+      another module, and a 3.6s timer releases it regardless, so a
+      typewriter that never finishes can never leave it hidden.
+
+   2. RULES THAT DRAW. One IntersectionObserver adds .pop-in to every
+      section tick and every stat measure as it enters. Without motion,
+      or without IntersectionObserver, [data-pop-draw] never lands and
+      the stylesheet leaves both at their finished size.
+
+   3. THE WORK METRICS. Each project panel opens with three numbers.
+      They count up when that panel becomes the active one, which is
+      observed as a class change on the panel so this never touches the
+      switcher. The final values are the markup, so reduced motion and
+      no script both read correctly with nothing to do.
+   ============================================================ */
+
+(function () {
+  "use strict";
+
+  var root = document.documentElement;
+  if (!root || root.hasAttribute("data-pop")) return;
+  root.setAttribute("data-pop", "");
+
+  var reduced = false, touch = false;
+  try { reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches; } catch (e) {}
+  try { touch = window.matchMedia("(hover: none), (pointer: coarse)").matches; } catch (e) {}
+
+  var IO = window.IntersectionObserver;
+  var MO = window.MutationObserver;
+  var raf = window.requestAnimationFrame
+    ? function (fn) { return window.requestAnimationFrame(fn); }
+    : null;
+
+  function has(el, cls) {
+    return !!(el && el.classList && el.classList.contains(cls));
+  }
+
+  /* ---------- 1. the hero credential strip ---------- */
+
+  (function () {
+    var strip = document.getElementById("heroProof");
+    if (!strip) return;
+
+    var shown = false;
+    function show() {
+      if (shown) return;
+      shown = true;
+      strip.classList.add("is-in");
+    }
+
+    var hero = document.querySelector(".hero");
+    if (reduced || !hero) { show(); return; }
+    if (has(hero, "typed")) { show(); return; }
+
+    if (typeof MO === "function") {
+      var mo = new MO(function () {
+        if (!has(hero, "typed")) return;
+        show();
+        try { mo.disconnect(); } catch (e) {}
+      });
+      try { mo.observe(hero, { attributes: true, attributeFilter: ["class"] }); }
+      catch (e) { show(); return; }
+    }
+    /* the strip is content, so it appears whether or not anything types */
+    setTimeout(show, 3600);
+  })();
+
+  /* ---------- 2. rules that draw themselves ---------- */
+
+  if (!reduced && typeof IO === "function") {
+    root.setAttribute("data-pop-draw", "");
+    var lines = document.querySelectorAll(".sec-head, .stat");
+    if (lines.length) {
+      var lio = new IO(function (entries) {
+        for (var i = 0; i < entries.length; i++) {
+          if (!entries[i].isIntersecting) continue;
+          entries[i].target.classList.add("pop-in");
+          try { lio.unobserve(entries[i].target); } catch (e) {}
+        }
+      }, { rootMargin: "0px 0px -10% 0px", threshold: 0.01 });
+      for (var li = 0; li < lines.length; li++) lio.observe(lines[li]);
+
+      /* a rule at scaleX(0) is an invisible rule, so nothing here is
+         allowed to depend on the observer alone. Five seconds in,
+         anything sitting in the viewport without its class gets it. */
+      setTimeout(function () {
+        var h = window.innerHeight || document.documentElement.clientHeight || 0;
+        for (var j = 0; j < lines.length; j++) {
+          var el = lines[j];
+          if (!el.classList || el.classList.contains("pop-in")) continue;
+          var r = el.getBoundingClientRect();
+          if (r.bottom > 0 && r.top < h) {
+            el.classList.add("pop-in");
+            try { lio.unobserve(el); } catch (e) {}
+          }
+        }
+      }, 5000);
+    }
+  }
+
+  /* ---------- 3. the work metrics ---------- */
+
+  (function () {
+    var cells = document.querySelectorAll(".wkm-n");
+    if (!cells.length) return;
+    /* the markup already holds the finished numbers */
+    if (reduced || !raf || typeof IO !== "function") return;
+
+    var tokens = [], i;
+    for (i = 0; i < cells.length; i++) tokens.push(0);
+
+    function fmt(v, dec) {
+      var s = dec > 0 ? v.toFixed(dec) : String(Math.round(v));
+      var p = s.split(".");
+      p[0] = p[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      return p.join(".");
+    }
+
+    function run(idx, delay) {
+      var el = cells[idx];
+      var target = parseFloat(el.getAttribute("data-pv"));
+      if (!isFinite(target)) return;
+      var dec = parseInt(el.getAttribute("data-pd") || "0", 10);
+      if (!isFinite(dec) || dec < 0 || dec > 3) dec = 0;
+
+      var me = ++tokens[idx];
+      var dur = 720;
+      var t0 = 0;
+      el.textContent = fmt(0, dec);
+
+      raf(function step(now) {
+        if (tokens[idx] !== me) return;
+        if (!t0) t0 = now;
+        var p = (now - t0 - delay) / dur;
+        if (p < 0) { raf(step); return; }
+        if (p > 1) p = 1;
+        el.textContent = fmt(target * (1 - Math.pow(1 - p, 3)), dec);
+        if (p < 1) raf(step);
+        else el.textContent = fmt(target, dec);
+      });
+    }
+
+    function panelOf(el) {
+      var n = el;
+      while (n && n !== document.body) {
+        if (has(n, "wkx-panel")) return n;
+        n = n.parentNode;
+      }
+      return null;
+    }
+
+    var panels = [], groups = [];
+    for (i = 0; i < cells.length; i++) {
+      var p = panelOf(cells[i]);
+      if (!p) continue;
+      var k = panels.indexOf(p);
+      if (k < 0) { k = panels.length; panels.push(p); groups.push([]); }
+      groups[k].push(i);
+    }
+    if (!panels.length) return;
+
+    var seen = false;
+    var last = -1;
+
+    /* a phone reads all three numbers in one glance, so the stagger
+       that reads as a sweep on a wide card just reads as a lag there */
+    var stagger = touch ? 45 : 70;
+
+    function play(k) {
+      if (!seen || k < 0 || k >= groups.length) return;
+      var g = groups[k];
+      for (var j = 0; j < g.length; j++) run(g[j], j * stagger);
+    }
+
+    /* no switcher: the panels are a plain stacked column, so each one
+       counts up on its own as it reaches the viewport */
+    if (!root.hasAttribute("data-wkx-on")) {
+      var pio = new IO(function (entries) {
+        for (var e = 0; e < entries.length; e++) {
+          if (!entries[e].isIntersecting) continue;
+          seen = true;
+          play(panels.indexOf(entries[e].target));
+          try { pio.unobserve(entries[e].target); } catch (e2) {}
+        }
+      }, { threshold: 0.2 });
+      for (i = 0; i < panels.length; i++) pio.observe(panels[i]);
+      return;
+    }
+
+    /* with the switcher: wait for the stage to arrive, then follow it */
+    var stage = document.getElementById("wkxStage") || panels[0].parentNode;
+    if (!stage) return;
+
+    var sio = new IO(function (entries) {
+      for (var e = 0; e < entries.length; e++) {
+        if (!entries[e].isIntersecting) continue;
+        seen = true;
+        try { sio.disconnect(); } catch (e2) {}
+        for (var k = 0; k < panels.length; k++) {
+          if (!has(panels[k], "is-active")) continue;
+          last = k;
+          play(k);
+          break;
+        }
+        return;
+      }
+    }, { threshold: 0.12 });
+    sio.observe(stage);
+
+    if (typeof MO !== "function") return;
+    var pmo = new MO(function (recs) {
+      for (var r = 0; r < recs.length; r++) {
+        var t = recs[r].target;
+        if (!has(t, "is-active")) continue;
+        var k = panels.indexOf(t);
+        if (k < 0 || k === last) continue;
+        last = k;
+        play(k);
+      }
+    });
+    for (i = 0; i < panels.length; i++) {
+      try { pmo.observe(panels[i], { attributes: true, attributeFilter: ["class"] }); } catch (e) {}
+    }
+  })();
+})();
+
+
+/* ============================================================
+   TYPOGRAPHY: WHICH SANS ACTUALLY DREW THE PAGE
+   --sans is "-apple-system, BlinkMacSystemFont, SF Pro Text, Inter,
+   Segoe UI, sans-serif". On an Apple platform the first entries answer
+   and SF Pro Text draws. Everywhere else nothing above Inter resolves,
+   so the self hosted Inter draws. The two faces do not want the same
+   tracking at label sizes: Inter carries more sidebearing at 10px, so
+   the uppercase label tiers want a hair less of it.
+
+   This measures which one won and writes one attribute, which lets the
+   CSS shift --face-ls. It measures again after document.fonts settles,
+   because before the Inter woff2 lands the first measurement would be of
+   the generic fallback and would answer wrong.
+
+   No network, no layout thrash beyond two offscreen spans, no state.
+   ============================================================ */
+(function () {
+  "use strict";
+
+  var root = document.documentElement;
+  if (!root || !root.setAttribute) return;
+
+  /* module contract. Nothing here animates or responds to the pointer, so
+     neither gate changes what this does; the small-screen tracking step is
+     a media query in the stylesheet, where it belongs. */
+  var reduced = window.matchMedia ? matchMedia("(prefers-reduced-motion: reduce)").matches : false;
+  var touch = window.matchMedia ? matchMedia("(hover: none), (pointer: coarse)").matches : false;
+  if (reduced === undefined || touch === undefined) return;
+
+  /* caps, figures and a middle dot: the exact shapes the label tiers use */
+  var SAMPLE = "HANDGLOVES ROBBINSVILLE 0123456789";
+
+  function widthIn(family) {
+    if (!document.body) return 0;
+    var s = document.createElement("span");
+    if (!s) return 0;
+    s.textContent = SAMPLE;
+    s.setAttribute("aria-hidden", "true");
+    s.style.cssText =
+      "position:absolute;left:-9999px;top:0;white-space:pre;" +
+      "font-size:72px;font-weight:600;letter-spacing:0;font-variant-numeric:normal;" +
+      "font-family:" + family;
+    document.body.appendChild(s);
+    var w = s.getBoundingClientRect ? s.getBoundingClientRect().width : 0;
+    if (s.parentNode) s.parentNode.removeChild(s);
+    return w;
+  }
+
+  function decide() {
+    if (!document.body) return;
+    var cs = window.getComputedStyle ? getComputedStyle(root) : null;
+    if (!cs) return;
+    var stack = (cs.getPropertyValue("--sans") || "").trim();
+    if (!stack) return;
+
+    var real = widthIn(stack);
+    var inter = widthIn('"Inter", sans-serif');
+    if (!real || !inter) return;
+
+    /* Inter is listed after every Apple entry, so identical widths mean
+       Inter is the face doing the drawing. Any difference means something
+       ahead of it in the stack answered. */
+    root.setAttribute("data-face", Math.abs(real - inter) < 0.5 ? "inter" : "system");
+  }
+
+  function run() {
+    decide();
+    var fonts = document.fonts;
+    if (fonts && fonts.ready && typeof fonts.ready.then === "function") {
+      fonts.ready.then(decide, function () {});
+    }
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", run, { once: true });
+  } else {
+    run();
+  }
+})();
+
+
+
+
+/* ============================================================
+   THE CLASSROOM CAROUSEL
+   Nine teaching frames, one at a time, the neighbours peeking.
+   Native scroll snap does the moving; this only decides where
+   to land, keeps the dots and the count honest, runs a gentle
+   autoplay that anything can stop, and hands a click to the
+   nine photo lightbox the page already builds.
+   Self contained. Every lookup is guarded.
+   ============================================================ */
+(function () {
+  "use strict";
+
+  var root = document.documentElement;
+  if (!root || root.hasAttribute("data-cr-carousel")) return;
+
+  var cr = document.getElementById("crClass");
+  var track = document.getElementById("crTrack");
+  if (!cr || !track) return;
+
+  var slides = Array.prototype.slice.call(track.querySelectorAll(".cr-slide"));
+  var n = slides.length;
+  if (n < 2) return;
+
+  root.setAttribute("data-cr-carousel", "");
+
+  var reduced = false, touch = false;
+  try { reduced = matchMedia("(prefers-reduced-motion: reduce)").matches; } catch (e) {}
+  try { touch = matchMedia("(hover: none), (pointer: coarse)").matches; } catch (e) {}
+
+  var prevBtn = document.getElementById("crPrev");
+  var nextBtn = document.getElementById("crNext");
+  var dotsBox = document.getElementById("crDots");
+  var countEl = document.getElementById("crCount");
+  var playBtn = document.getElementById("crPlay");
+  var playTxt = playBtn ? playBtn.querySelector(".cr-play-t") : null;
+  var countNum = countEl ? countEl.querySelector("b") : null;
+  var dots = dotsBox ? Array.prototype.slice.call(dotsBox.querySelectorAll(".cr-dot")) : [];
+
+  var idx = -1;
+  var i;
+
+  function two(v) { return (v < 10 ? "0" : "") + v; }
+
+  /* ---------- which frame is the one being read ---------- */
+  function paint(k) {
+    if (k < 0) k = 0;
+    if (k > n - 1) k = n - 1;
+    if (k === idx) return;
+    idx = k;
+    var j;
+    for (j = 0; j < n; j++) slides[j].classList.toggle("is-on", j === k);
+    for (j = 0; j < dots.length; j++) {
+      dots[j].classList.toggle("on", j === k);
+      if (j === k) dots[j].setAttribute("aria-current", "true");
+      else dots[j].removeAttribute("aria-current");
+    }
+    if (countNum) countNum.textContent = two(k + 1);
+  }
+
+  /* ---------- geometry ---------- */
+  function landing(k) {
+    var s = slides[k];
+    if (!s) return 0;
+    var left = s.offsetLeft + (s.offsetWidth / 2) - (track.clientWidth / 2);
+    var max = track.scrollWidth - track.clientWidth;
+    if (max < 0) max = 0;
+    if (left < 0) left = 0;
+    if (left > max) left = max;
+    return left;
+  }
+
+  function nearest() {
+    var mid = track.scrollLeft + track.clientWidth / 2;
+    var best = 0, bd = Infinity, j, d;
+    for (j = 0; j < n; j++) {
+      d = Math.abs(slides[j].offsetLeft + slides[j].offsetWidth / 2 - mid);
+      if (d < bd) { bd = d; best = j; }
+    }
+    return best;
+  }
+
+  function scrollTo(left, smooth) {
+    if (track.scrollTo) {
+      try {
+        track.scrollTo({ left: left, behavior: (smooth && !reduced) ? "smooth" : "auto" });
+        return;
+      } catch (e) {}
+    }
+    track.scrollLeft = left;
+  }
+
+  function goTo(k, smooth) {
+    if (k < 0) k = 0;
+    if (k > n - 1) k = n - 1;
+    scrollTo(landing(k), smooth);
+    paint(k);
+  }
+
+  /* one step, looping at both ends. The wrap is an instant move rather
+     than a long slide back across all nine. */
+  function step(dir) {
+    var t = idx + dir, wrapped = false;
+    if (t < 0) { t = n - 1; wrapped = true; }
+    if (t > n - 1) { t = 0; wrapped = true; }
+    goTo(t, !wrapped);
+  }
+
+  var raf = 0;
+  track.addEventListener("scroll", function () {
+    if (raf) return;
+    raf = requestAnimationFrame(function () { raf = 0; paint(nearest()); });
+  }, { passive: true });
+
+  /* ---------- autoplay ---------- */
+  var DELAY = 5400;
+  var wanted = !reduced && !touch;
+  var seen = false, hovering = false, focused = false, timer = 0;
+
+  function canRun() {
+    return wanted && seen && !hovering && !focused && !reduced && !document.hidden;
+  }
+  function arm() {
+    if (timer) { clearTimeout(timer); timer = 0; }
+    if (!canRun()) return;
+    timer = setTimeout(function () {
+      timer = 0;
+      if (!canRun()) return;
+      step(1);
+      arm();
+    }, DELAY);
+  }
+  function say() {
+    if (!playBtn) return;
+    playBtn.classList.toggle("is-playing", wanted);
+    playBtn.setAttribute("aria-label", wanted ? "Pause the slideshow" : "Play the slideshow");
+    if (playTxt) playTxt.textContent = wanted ? "PAUSE" : "PLAY";
+  }
+  /* any deliberate move is the reader taking over, so the slideshow stops
+     rather than pulling the frame out from under them a moment later */
+  function halt() {
+    if (!wanted) return;
+    wanted = false;
+    say();
+    arm();
+  }
+
+  /* ---------- controls ---------- */
+  if (prevBtn) prevBtn.addEventListener("click", function () { halt(); step(-1); });
+  if (nextBtn) nextBtn.addEventListener("click", function () { halt(); step(1); });
+
+  for (i = 0; i < dots.length; i++) {
+    (function (k) {
+      dots[k].addEventListener("click", function () {
+        halt();
+        goTo(k, Math.abs(k - idx) <= 3);
+      });
+    })(i);
+  }
+
+  if (playBtn) {
+    if (reduced) playBtn.hidden = true;
+    playBtn.addEventListener("click", function () {
+      wanted = !wanted;
+      say();
+      arm();
+    });
+  }
+
+  /* ---------- the frames: into the gallery the page already has ---------- */
+  function openAt(k) {
+    var trigger = document.getElementById("luminGallery");
+    if (!trigger || typeof trigger.click !== "function") return;
+    trigger.click();                     /* builds and opens at frame one */
+    if (!k) return;
+    var thumbs = document.querySelectorAll(".lb .lb-strip .lb-thumb");
+    if (thumbs.length > k && thumbs[k]) thumbs[k].click();
+  }
+
+  for (i = 0; i < n; i++) {
+    (function (k) {
+      var hit = slides[k].querySelector(".cr-hit");
+      if (!hit) return;
+      hit.addEventListener("click", function () { halt(); openAt(k); });
+      /* tabbing along the frames brings each one to the middle */
+      hit.addEventListener("focus", function () { if (k !== idx) goTo(k, true); });
+    })(i);
+  }
+
+  /* ---------- keyboard, whenever the focus is inside the carousel ---------- */
+  cr.addEventListener("keydown", function (e) {
+    if (e.metaKey || e.ctrlKey || e.altKey || e.shiftKey) return;
+    var k = e.key;
+    if (k === "ArrowRight") { e.preventDefault(); halt(); step(1); }
+    else if (k === "ArrowLeft") { e.preventDefault(); halt(); step(-1); }
+    else if (k === "Home") { e.preventDefault(); halt(); goTo(0, false); }
+    else if (k === "End") { e.preventDefault(); halt(); goTo(n - 1, false); }
+  });
+
+  /* ---------- what pauses the slideshow ---------- */
+  if (!touch) {
+    cr.addEventListener("mouseenter", function () { hovering = true; arm(); });
+    cr.addEventListener("mouseleave", function () { hovering = false; arm(); });
+  }
+  cr.addEventListener("focusin", function () { focused = true; arm(); });
+  cr.addEventListener("focusout", function () { focused = false; arm(); });
+  document.addEventListener("visibilitychange", arm);
+  track.addEventListener("touchstart", halt, { passive: true });
+  /* a sideways trackpad swipe is a deliberate move; a vertical one is the
+     reader scrolling the page and must not count */
+  track.addEventListener("wheel", function (e) {
+    if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) halt();
+  }, { passive: true });
+
+  /* ---------- all nine stay in the document, and all nine get fetched ----------
+     Lazy loading inside a horizontal scroller can leave a neighbour blank
+     for a beat, so once the carousel is on screen the whole set is asked
+     for at once. Nothing is ever added or removed. */
+  var fetched = false;
+  function fetchAll() {
+    if (fetched) return;
+    fetched = true;
+    var imgs = track.querySelectorAll("img");
+    for (var j = 0; j < imgs.length; j++) {
+      try { imgs[j].loading = "eager"; } catch (e) {}
+    }
+  }
+
+  if (typeof window.IntersectionObserver === "function") {
+    var io = new IntersectionObserver(function (entries) {
+      for (var j = 0; j < entries.length; j++) seen = entries[j].isIntersecting;
+      if (seen) fetchAll();
+      arm();
+    }, { threshold: 0.2 });
+    io.observe(cr);
+  } else {
+    seen = true;
+    fetchAll();
+  }
+
+  /* ---------- keep the current frame centred through a resize ---------- */
+  var rz = 0;
+  function onResize() {
+    clearTimeout(rz);
+    rz = setTimeout(function () {
+      var left = landing(idx < 0 ? 0 : idx);
+      if (Math.abs(track.scrollLeft - left) > 2) scrollTo(left, false);
+    }, 160);
+  }
+  window.addEventListener("resize", onResize, { passive: true });
+  window.addEventListener("orientationchange", onResize, { passive: true });
+
+  window.addEventListener("pagehide", function () {
+    clearTimeout(timer);
+    clearTimeout(rz);
+  });
+
+  /* ---------- go ---------- */
+  cr.classList.add("is-live");
+  paint(0);
+  paint(nearest());                      /* in case the browser restored a scroll */
+  say();
+})();
+
+
+
+
+/* ============================================================
+   THE WAVY TIMELINE
+   The old straight rail is gone from the markup, so the module
+   above it finds no #tlRail and returns before it does anything.
+   This one builds the replacement: a cubic path with vertical
+   tangents at every node, generated from the measured centre of
+   each dot, so the maths cannot drift from the layout. Arc
+   length is monotonic in y here, which is what makes a bisection
+   on y give the exact length at which the pen reaches a node.
+   Scroll drives stroke-dashoffset on a rAF, the path is rebuilt
+   on a debounced resize, and the drawn, lit state is the CSS
+   default so reduced motion is a finished timeline, not a dim
+   one.
+   ============================================================ */
+(function () {
+  "use strict";
+
+  var reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var touch = matchMedia("(hover: none), (pointer: coarse)").matches;
+
+  var sec = document.getElementById("timeline");
+  var wrap = document.getElementById("tlwWrap");
+  var svg = document.getElementById("tlwSvg");
+  var base = document.getElementById("tlwBase");
+  var draw = document.getElementById("tlwDraw");
+  var pen = document.getElementById("tlwPen");
+  var glow = document.getElementById("tlwGlow");
+  var list = document.getElementById("tlwList");
+  if (!sec || !wrap || !svg || !base || !draw || !pen || !glow || !list) return;
+  if (typeof draw.getTotalLength !== "function") return;
+  if (typeof draw.getPointAtLength !== "function") return;
+
+  var items = Array.prototype.slice.call(list.querySelectorAll(".tlw-item"));
+  if (items.length < 2) return;
+
+  var dots = [];
+  for (var q = 0; q < items.length; q++) {
+    var dq = items[q].querySelector(".tlw-dot");
+    if (!dq) return;
+    dots.push(dq);
+  }
+
+  var HEAD = 0.66;                /* where on screen the pen sits */
+  var K = touch ? 0.3 : 0.16;     /* follow rate: tighter under momentum scroll */
+  var LEAD = 26;                  /* the line arrives from above and leaves below */
+
+  var ready = false;
+  var L = 0;                      /* total path length in px */
+  var stops = [];                 /* each node's position along the path, 0 to 1 */
+  var yTop = 0, yEnd = 0;         /* first and last node, in wrapper coordinates */
+  var drawn = 0, target = 0, lit = -1, tip = false;
+  var raf = 0, live = false, tmr = 0;
+
+  function clamp01(v) { return v < 0 ? 0 : (v > 1 ? 1 : v); }
+  function r1(v) { return Math.round(v * 10) / 10; }
+
+  /* every read first, then the writes. the node coordinates come from the
+     dots themselves rather than from a copy of the CSS, so a change to the
+     amplitude, the column width or the breakpoint is picked up for free */
+  function build() {
+    var box = wrap.getBoundingClientRect();
+    var W = box.width, H = box.height;
+    if (W < 2 || H < 2) { ready = false; return; }
+
+    var pts = [], i, r;
+    for (i = 0; i < dots.length; i++) {
+      r = dots[i].getBoundingClientRect();
+      pts.push({ x: r.left - box.left + r.width / 2, y: r.top - box.top + r.height / 2 });
+    }
+    /* the bisection below needs y strictly increasing; a collapsed layout is
+       nudged apart rather than allowed to produce a path with no line */
+    for (i = 1; i < pts.length; i++) {
+      if (pts[i].y <= pts[i - 1].y + 1) pts[i].y = pts[i - 1].y + 1;
+    }
+
+    /* control points sit directly above and below each node, which makes the
+       tangent vertical there: the curve passes through the node cleanly and
+       the crossings land between items instead of on them */
+    var d = "M" + r1(pts[0].x) + " " + r1(pts[0].y - LEAD) +
+            "L" + r1(pts[0].x) + " " + r1(pts[0].y);
+    for (i = 1; i < pts.length; i++) {
+      var a = pts[i - 1], b = pts[i], k = (b.y - a.y) * 0.5;
+      d += "C" + r1(a.x) + " " + r1(a.y + k) +
+           " " + r1(b.x) + " " + r1(b.y - k) +
+           " " + r1(b.x) + " " + r1(b.y);
+    }
+    var last = pts[pts.length - 1];
+    d += "L" + r1(last.x) + " " + r1(last.y + LEAD);
+
+    /* one user unit is one CSS pixel, so the stroke is never scaled */
+    svg.setAttribute("viewBox", "0 0 " + r1(W) + " " + r1(H));
+    svg.setAttribute("width", r1(W));
+    svg.setAttribute("height", r1(H));
+    base.setAttribute("d", d);
+    draw.setAttribute("d", d);
+
+    var total = 0;
+    try { total = draw.getTotalLength(); } catch (e) { total = 0; }
+    if (!total || !isFinite(total)) { ready = false; return; }
+    L = total;
+
+    var next = [], lo = 0, hi, mid, it, p;
+    for (i = 0; i < pts.length; i++) {
+      hi = L; mid = lo;
+      for (it = 0; it < 24; it++) {
+        mid = (lo + hi) / 2;
+        p = draw.getPointAtLength(mid);
+        if (p.y < pts[i].y) lo = mid; else hi = mid;
+      }
+      mid = (lo + hi) / 2;
+      next.push(clamp01(mid / L));
+      lo = mid;
+    }
+
+    stops = next;
+    yTop = pts[0].y;
+    yEnd = last.y;
+    draw.style.strokeDasharray = r1(L);
+    ready = true;
+    wrap.classList.add("is-ready");
+  }
+
+  /* the line starts at the first node and finishes at the last, so the
+     progress is measured across that span and not the whole wrapper */
+  function want() {
+    if (!ready) return target;
+    var box = wrap.getBoundingClientRect();
+    var span = yEnd - yTop;
+    if (span < 1) return target;
+    return clamp01((window.innerHeight * HEAD - (box.top + yTop)) / span);
+  }
+
+  /* writes only */
+  function paint() {
+    if (!ready) return;
+    draw.style.strokeDashoffset = r1(L * (1 - drawn));
+
+    var drawing = live && drawn > 0.004 && drawn < 0.997;
+    if (drawing !== tip) {
+      tip = drawing;
+      wrap.classList.toggle("is-drawing", drawing);
+    }
+    if (drawing) {
+      var p = draw.getPointAtLength(L * drawn);
+      var cx = r1(p.x), cy = r1(p.y);
+      pen.setAttribute("cx", cx); pen.setAttribute("cy", cy);
+      glow.setAttribute("cx", cx); glow.setAttribute("cy", cy);
+    }
+
+    var n = -1, i;
+    if (drawn > 0) {
+      for (i = 0; i < stops.length; i++) {
+        if (drawn >= stops[i] - 0.002) n = i;
+      }
+    }
+    if (n === lit) return;
+    if (n > lit) { for (i = lit + 1; i <= n; i++) items[i].classList.add("on"); }
+    else { for (i = lit; i > n; i--) items[i].classList.remove("on"); }
+    lit = n;
+  }
+
+  function loop() {
+    raf = 0;
+    target = want();
+    drawn += (target - drawn) * K;
+    if (Math.abs(target - drawn) < 0.002) drawn = target;
+    paint();
+    if (live) raf = requestAnimationFrame(loop);
+  }
+
+  /* a jump that skips the section entirely (an anchor link, a restored
+     scroll position) never crosses the observer, so on entry the value is
+     taken as it is rather than eased up from whatever the last visit left */
+  function resume() {
+    build();
+    if (!live) { target = want(); drawn = target; }
+    live = true;
+    paint();
+    if (!raf) raf = requestAnimationFrame(loop);
+  }
+
+  /* off screen there is nothing to animate toward: land on the final value */
+  function settle() {
+    live = false;
+    if (raf) { cancelAnimationFrame(raf); raf = 0; }
+    if (!ready) build();
+    target = want();
+    drawn = target;
+    paint();
+  }
+
+  function fix() {
+    build();
+    if (reduced) { target = 1; drawn = 1; paint(); }
+    else if (!live) settle();
+  }
+
+  /* debounced, because a drag resize would otherwise rebuild the path and
+     re-bisect every node on every frame of the drag. the timer does the
+     deferring on its own: routing this through rAF as well would stall the
+     geometry in a background tab, where rAF never fires */
+  function rebuild() {
+    if (tmr) clearTimeout(tmr);
+    tmr = setTimeout(function () { tmr = 0; fix(); }, 140);
+  }
+
+  if (reduced) {
+    build();
+    target = 1; drawn = 1;
+    paint();
+    for (var z = 0; z < items.length; z++) items[z].classList.add("on");
+    lit = items.length - 1;
+  } else {
+    wrap.classList.add("is-live");
+    build();
+    settle();
+
+    if (typeof IntersectionObserver === "function") {
+      var io = new IntersectionObserver(function (entries) {
+        for (var i = 0; i < entries.length; i++) {
+          if (entries[i].isIntersecting) resume();
+          else settle();
+        }
+      }, { rootMargin: "25% 0px 25% 0px", threshold: 0 });
+      io.observe(sec);
+    } else {
+      /* no observer: one frame per scroll tick, no idle loop */
+      window.addEventListener("scroll", function () {
+        if (!raf) raf = requestAnimationFrame(function () {
+          raf = 0; target = want(); drawn = target; paint();
+        });
+      }, { passive: true });
+    }
+  }
+
+  window.addEventListener("resize", rebuild, { passive: true });
+  window.addEventListener("load", rebuild);
+  if (typeof ResizeObserver === "function") new ResizeObserver(rebuild).observe(list);
+  if (document.fonts && document.fonts.ready && document.fonts.ready.then) {
+    document.fonts.ready.then(rebuild).catch(function () {});
+  }
+})();

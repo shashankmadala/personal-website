@@ -373,7 +373,7 @@ img { max-width: 100%; display: block; }
 .term-body .t-cmd { color: var(--ink); }
 .term-body .t-out { color: var(--dim); }
 .term-body .t-hl { color: var(--blue-2); }
-.term-body .t-ok { color: #6fd39a; }
+.term-body .t-ok { color: #4cc3ff; }
 .term-caret {
   display: inline-block; width: 8px; height: 15px;
   background: var(--blue); vertical-align: -2px;
@@ -4364,4 +4364,1071 @@ main { overflow-x: clip; }
   font-display: swap;
   src: url("assets/fonts/inter-var-latin-ext.woff2") format("woff2");
   unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+
+/* ============================================================
+   POP PASS
+   Four additions. No new files, no new requests, tokens only, so the
+   light theme follows for free.
+
+   1. HERO CREDENTIAL STRIP. The three floating chips are decorative and
+      vanish below 1180px, and the marquee moves, so above the fold a
+      phone had nothing it could actually read. Four institutions on one
+      hairline, carrying the same gradient tick the section headers use.
+   2. WORK METRICS. Each project now opens with three numbers instead of
+      burying them mid paragraph. They count up when their panel becomes
+      the active one.
+   3. RULES THAT DRAW THEMSELVES. The section tick and the blue measure
+      over each stat grow in as they enter rather than being there
+      already. Both are gated behind [data-pop-draw], which only lands
+      when script runs and motion is allowed.
+   4. DEPTH UNDER THE STATS. The flattest band on the page gets one very
+      soft wash so four numbers stop floating on nothing.
+   ============================================================ */
+
+/* ---------- 1. hero credential strip ---------- */
+.hp-strip {
+  position: relative;
+  list-style: none;
+  width: 100%;
+  max-width: 840px;
+  margin: 46px auto 0;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  border-top: 1px solid var(--line);
+  text-align: left;
+}
+.hp-strip::before {
+  content: "";
+  position: absolute; top: -1px; left: 0;
+  width: 56px; height: 1px;
+  background: var(--grad);
+}
+.hp-strip li { position: relative; padding: 17px 16px 0 0; }
+.hp-strip li + li { padding-left: 18px; }
+.hp-strip li + li::after {
+  content: "";
+  position: absolute; left: 0; top: 18px; bottom: 3px;
+  width: 1px; background: var(--line);
+}
+.hp-n {
+  display: block;
+  font-family: var(--display);
+  font-size: clamp(12.5px, 1.05vw, 13.5px);
+  font-weight: 600;
+  line-height: 1.32;
+  letter-spacing: -0.008em;
+  color: var(--ink);
+  text-wrap: balance;
+}
+.hp-f {
+  display: block;
+  margin-top: 7px;
+  font-size: 9.5px;
+  letter-spacing: 0.18em;
+  line-height: 1.6;
+  color: var(--dim);
+}
+
+/* entry: held until the hero has finished typing, released by script.
+   Without script [data-pop] never lands and the strip is simply there.
+   Keyframes, not transitions: the attribute lands from script, and a
+   transition on the resting state would animate the strip out before it
+   ever animated in. */
+[data-pop] .hp-strip { opacity: 0; }
+[data-pop] .hp-strip li { opacity: 0; }
+[data-pop] .hp-strip.is-in { animation: hpFade 0.6s var(--ease) forwards; }
+[data-pop] .hp-strip.is-in li { animation: hpRise 0.75s var(--ease) forwards; }
+[data-pop] .hp-strip.is-in li:nth-child(2) { animation-delay: 0.08s; }
+[data-pop] .hp-strip.is-in li:nth-child(3) { animation-delay: 0.16s; }
+[data-pop] .hp-strip.is-in li:nth-child(4) { animation-delay: 0.24s; }
+@keyframes hpFade { to { opacity: 1; } }
+@keyframes hpRise {
+  from { opacity: 0; transform: translateY(9px); }
+  to { opacity: 1; transform: none; }
+}
+
+@media (max-width: 760px) {
+  .hp-strip {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-width: 470px;
+    margin-top: 38px;
+    column-gap: 18px;
+  }
+  .hp-strip li { padding: 14px 0 0; }
+  .hp-strip li + li { padding-left: 0; }
+  .hp-strip li + li::after { display: none; }
+  .hp-strip li:nth-child(n + 3) { margin-top: 14px; border-top: 1px solid var(--line); }
+}
+
+/* ---------- 2. work metrics ---------- */
+.wkm {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  max-width: 620px;
+  margin: 4px 0 22px;
+  border-top: 1px solid var(--line);
+}
+.wkm li { position: relative; padding: 16px 14px 0 0; }
+.wkm li + li { padding-left: 16px; }
+.wkm li + li::after {
+  content: "";
+  position: absolute; left: 0; top: 17px; bottom: 4px;
+  width: 1px; background: var(--line);
+}
+.wkm-v {
+  display: block;
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: clamp(1rem, 4.4vw, 1.85rem);
+  line-height: 1;
+  letter-spacing: -0.025em;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+}
+.wkm-n {
+  font-weight: inherit;
+  background: var(--grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.wkm-s, .wkm-p {
+  font-style: normal;
+  font-weight: 500;
+  font-size: 0.56em;
+  color: var(--sky);
+}
+.wkm-k {
+  display: block;
+  margin-top: 10px;
+  font-size: 9.5px;
+  letter-spacing: 0.18em;
+  line-height: 1.55;
+  color: var(--dim);
+}
+@media (max-width: 620px) {
+  .wkm { margin-bottom: 18px; }
+  .wkm li { padding-right: 8px; }
+  .wkm li + li { padding-left: 11px; }
+  .wkm-k { font-size: 9px; letter-spacing: 0.11em; }
+}
+
+/* ---------- 3. rules that draw themselves ----------
+   Keyframes throughout. A transition would fire once on the way into the
+   resting state, when script sets the attribute, and .stat already
+   carries the .reveal transition that a more specific one would cancel. */
+[data-pop-draw] .sec-head::after {
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+}
+[data-pop-draw] .sec-head.pop-in::after {
+  animation: popTick 0.9s var(--ease) 0.08s forwards;
+}
+@keyframes popTick {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+[data-pop-draw] .stat { background-size: 0% 1px; }
+[data-pop-draw] .stat.pop-in { animation: popBar 1.05s var(--ease) forwards; }
+@keyframes popBar {
+  from { background-size: 0% 1px; }
+  to { background-size: 100% 1px; }
+}
+
+/* ---------- 4. depth under the stats ---------- */
+.stats { position: relative; isolation: isolate; }
+.stats::before {
+  content: "";
+  position: absolute;
+  inset: -14% 0 -6%;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(44% 52% at 20% 42%, rgba(92, 157, 255, 0.1), transparent 72%),
+    radial-gradient(38% 46% at 84% 60%, rgba(56, 225, 232, 0.06), transparent 74%);
+}
+[data-theme="light"] .stats::before { opacity: 0.5; }
+
+@media (prefers-reduced-motion: reduce) {
+  [data-pop] .hp-strip,
+  [data-pop] .hp-strip li { opacity: 1; transform: none; animation: none; }
+  [data-pop-draw] .sec-head::after { transform: none; }
+  [data-pop-draw] .sec-head.pop-in::after { animation: none; }
+  [data-pop-draw] .stat { background-size: 100% 1px; }
+  [data-pop-draw] .stat.pop-in { animation: none; }
+}
+
+
+/* ============================================================
+   TYPOGRAPHY PASS
+   The page was set with a monospace label layer: .mono appeared on 151
+   elements and var(--mono) on 22 rules, so every eyebrow, chip, caption,
+   outlet name, scope tag, counter, keycap and footer line was IBM Plex
+   Mono. That single choice is what made a minimal layout read as a
+   terminal skin.
+
+   Monospace now survives in exactly one place: the hero terminal, where
+   the character grid is the point (a prompt, typed commands, wrapped
+   output, and the shortcut sheet's list of commands you can type into
+   it). Everywhere else the label layer moves to the same system sans the
+   H1 uses, and keeps its small-caps read through weight and tracking
+   instead of through a typewriter face.
+
+   THE SCALE
+   Display, var(--display), optical tracking tightens as size grows:
+     hero          clamp(2.9rem, 7.6vw, 6.2rem)  700  -0.032em  1.04
+     statement     clamp(1.9rem, 4.4vw, 3.6rem)  600  -0.028em  1.16
+     section       clamp(2.1rem, 4.4vw, 3.2rem)  600  -0.028em  1.06
+     card          clamp(1.8rem, 3.8vw, 2.8rem)  600  -0.024em  1.08
+     sub-head      1.12rem to 1.45rem            600  -0.016em  1.24
+     small head    15px to 17px                  600  -0.011em  1.30
+   Body, var(--sans):
+     lede          17px to 20px                  400  -0.011em  1.58
+     prose         15px to 16.5px                400  -0.003em  1.70
+     card copy     15.5px                        400  -0.002em  1.60
+     meta copy     13.5px                        400   0        1.55
+   Labels, var(--sans), uppercase, tabular figures, three tiers only:
+     L1 eyebrow    11px    600   0.14em
+     L2 meta       10.5px  600   0.12em
+     L3 micro      10px    600   0.10em
+   Mono, var(--mono), kept:
+     terminal      13.5px  400   0.00em  1.85
+     term chrome   10.5px to 12px
+
+   WHY THE TRACKING HALVED. The old labels ran 0.18em to 0.24em because
+   monospace already carries wide sidebearings and needed the extra air to
+   stop reading as code. Uppercase system sans at 600 holds a small-caps
+   read at roughly half that, and the weight does the rest of the work.
+
+   CONTRAST. Every label below 12px is normal-size text under WCAG, so it
+   needs 4.5:1. --faint measures 4.79:1 on the dark page but only 4.45:1
+   on --panel-2, which is where several of these labels sit, so the quiet
+   label colour is now --label (= --dim): 5.67:1 to 6.11:1 dark, 5.56:1 to
+   5.95:1 light. Accent labels stay --blue (6.64:1 to 7.16:1 dark, 5.14:1
+   to 5.51:1 light) and --sky (9.08:1+ dark, 4.76:1+ light). --faint is
+   left only on the marquee, which is aria-hidden decoration on the page
+   background, where it measures 4.79:1 dark and 4.89:1 light.
+   ============================================================ */
+
+/* ---- 1. tokens ---- */
+:root {
+  --label: var(--dim);          /* quiet label ink, AA in both themes */
+  --face-ls: 0em;               /* set by the face-detect module */
+  --face-dense: 0em;            /* small-screen tightening */
+
+  --lab-w: 600;
+  --lab-1: 11px;
+  --lab-2: 10.5px;
+  --lab-3: 10px;
+  --lab-1-ls: calc(0.14em + var(--face-ls) + var(--face-dense));
+  --lab-2-ls: calc(0.12em + var(--face-ls) + var(--face-dense));
+  --lab-3-ls: calc(0.10em + var(--face-ls) + var(--face-dense));
+}
+/* Inter sits a hair looser than SF Pro at label sizes, so when Inter is
+   the face that actually drew the page the tracking comes back a touch. */
+:root[data-face="inter"] { --face-ls: -0.006em; }
+/* phones render these labels physically smaller and the layout is
+   cramped, the same reason the photo captions already tightened at 700px */
+@media (hover: none), (pointer: coarse) {
+  :root { --face-dense: -0.008em; }
+}
+
+body {
+  -moz-osx-font-smoothing: grayscale;
+  font-optical-sizing: auto;
+  font-synthesis-weight: none;
+}
+
+/* ---- 2. .mono stops meaning monospace ----
+   The class is on 151 elements and is written by nine more places in
+   main.js, so it is redefined rather than removed: it now means "label
+   layer", which is what every one of those elements actually is. The
+   handful that are genuinely a computing surface take the family back
+   below, at higher specificity. ---- */
+.mono {
+  font-family: var(--sans);
+  font-weight: var(--lab-w);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+/* ---- 3. where monospace still earns its place ----
+   The terminal is a screen: a prompt, typed commands, and wrapped output
+   that has to align column to column. .ks-cmds are the literal strings
+   you type into it. Nothing else on the page is a character grid. ---- */
+.term .mono,
+.term-title,
+.term-status,
+.term-body,
+.term-cli-input,
+.ks-cmds li {
+  font-family: var(--mono);
+  font-variant-numeric: normal;
+  font-feature-settings: normal;
+}
+.term .mono, .term-body, .term-cli-input { font-weight: 400; }
+.term-title {
+  font-size: 12px; font-weight: 400; letter-spacing: 0.02em;
+  color: var(--label);          /* was --faint: 4.66:1 on the terminal */
+}
+.term-status { font-size: 10.5px; font-weight: 500; letter-spacing: 0.16em; }
+.term-body { font-size: 13.5px; line-height: 1.85; letter-spacing: 0; }
+.ks-cmds li { font-weight: 400; letter-spacing: 0.01em; }
+
+/* ---- 4. the three label tiers ---- */
+
+/* L1: section eyebrows */
+.eyebrow,
+.eyebrow-pill,
+.ab-card-h,
+.wkx-idx {
+  font-family: var(--sans);
+  font-size: var(--lab-1);
+  font-weight: var(--lab-w);
+  letter-spacing: var(--lab-1-ls);
+  font-variant-numeric: tabular-nums;
+}
+.eyebrow { color: var(--blue); }
+.eyebrow-pill { color: var(--label); }
+.ab-card-h, .wkx-idx { color: var(--blue); }
+
+/* L2: metadata, counts, CTAs, pills */
+.chip,
+.press-top,
+.press-cta,
+.press-count,
+.tl-date,
+.hb-tally,
+.hb-foot,
+.card-go,
+.band-hint,
+.ct-open,
+.ct-meta,
+.wkx-tip,
+.stack-num,
+.wkx-tab-n,
+.lb-title,
+.lb-count,
+.wk-pill,
+.wk-toggle,
+.wk-cov,
+.wkx-cov,
+.wkx-next,
+.fc-copy,
+.fc-share,
+.cp-esc,
+.ks-x,
+.ks-hint-go,
+.marquee-track {
+  font-family: var(--sans);
+  font-size: var(--lab-2);
+  font-weight: var(--lab-w);
+  letter-spacing: var(--lab-2-ls);
+  font-variant-numeric: tabular-nums;
+}
+
+/* L3: micro labels, captions, scope tags */
+.photo figcaption,
+.photo.pic figcaption,
+.band-cap,
+.band-zoom,
+.gal-badge,
+.foot-row,
+.wkx-tab-r,
+.hb-org,
+.hb-grid .hb-top b,
+.float-chip b,
+.hb-link,
+.ab-link,
+.wk-fact dt,
+.ab-fact dt,
+.cp-kind,
+.cp-s,
+.cp-group,
+.cp-hint,
+.ks-gt,
+.ks-sub,
+.ks-foot,
+.rail-lab {
+  font-family: var(--sans);
+  font-size: var(--lab-3);
+  font-weight: var(--lab-w);
+  letter-spacing: var(--lab-3-ls);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---- 5. label ink. Everything quiet lands on --label. ---- */
+.press-count,
+.press-cta,
+.hb-tally,
+.photo figcaption,
+.photo.pic figcaption,
+.band-cap,
+.band-hint,
+.ct-meta,
+.foot-row,
+.wkx-tip,
+.wkx-tab-n,
+.wkx-tab-r,
+.stack-num,
+.hb-org,
+.hb-foot,
+.hb-n,
+.pf-n,
+.lb-count,
+.card-go,
+.wk-pill,
+.hb-link,
+.ab-link,
+.cp-kind,
+.cp-s,
+.cp-hint,
+.cp-kbd,
+.ks-sub,
+.ks-sep,
+.ks-foot,
+.ks-x,
+.cp-esc,
+.ks-hint-go,
+.ab-fact dt,
+.foot-me a,
+.rail-lab { color: var(--label); }
+
+.eyebrow, .ab-card-h, .wkx-idx, .press-top, .tl-date,
+.cp-group, .ks-gt, .wk-fact dt, .hb-grid .hb-top b { color: var(--blue); }
+.photo figcaption b, .photo.pic figcaption b, .band-cap b, .ct-meta b { color: var(--sky); font-weight: var(--lab-w); }
+.lb-title { color: var(--sky); }
+.marquee-track { color: var(--faint); font-weight: 500; }
+
+/* ---- 6. the mono-classed things that were never labels ---- */
+
+/* the hero role line: typed, gradient filled, and sitting under an H1 the
+   page is built around. It belongs to the H1, not to the terminal. */
+.hero-role {
+  font-family: var(--display);
+  font-weight: 500;
+  font-size: clamp(0.98rem, 1.55vw, 1.14rem);
+  letter-spacing: -0.006em;
+}
+
+/* the preloader types the name with a caret, exactly like the H1 does, so
+   it is set in the same face. The caret narrows from a 8px block to a
+   text cursor to match. */
+.loader-name {
+  font-family: var(--display);
+  font-size: 15px; font-weight: 500; letter-spacing: -0.004em;
+  color: var(--body);
+}
+.loader-caret { width: 2px; height: 16px; margin-left: 4px; }
+
+/* floating hero chips: the bold word is the label, the rest is a sentence */
+.float-chip {
+  font-family: var(--sans);
+  font-size: 11.5px; font-weight: 400; letter-spacing: 0;
+  line-height: 1.45;
+  color: var(--label);
+}
+.float-chip b { font-size: var(--lab-3); letter-spacing: var(--lab-3-ls); }
+
+/* tag pills are sentence case prose in a pill, never a label */
+.tags li {
+  font-family: var(--sans);
+  font-size: 12px; font-weight: 450; letter-spacing: 0;
+  line-height: 1.45;
+}
+
+/* the empty-filter line is a sentence, so it stops being tracked caps */
+.press-empty {
+  font-family: var(--sans);
+  font-size: 13.5px; font-weight: 400; letter-spacing: 0;
+  color: var(--label);
+}
+
+/* the footer link rows read as links, not as stamps */
+.foot-nav {
+  font-family: var(--sans);
+  font-size: var(--lab-2);
+  font-weight: 500;
+  letter-spacing: var(--lab-2-ls);
+}
+
+/* an email address is read, not aligned */
+.fc-addr {
+  font-family: var(--sans);
+  font-size: 13.5px; font-weight: 500; letter-spacing: -0.002em;
+}
+
+/* keycaps: macOS draws its own in the system face, not in a typewriter */
+.cp-kbd,
+.ks-k,
+.cp-hint kbd,
+.ks-sep {
+  font-family: var(--sans);
+  font-weight: var(--lab-w);
+  font-size: var(--lab-2);
+  letter-spacing: 0.02em;
+  font-variant-numeric: tabular-nums;
+}
+.ks-sep { font-weight: 400; }
+
+/* the counts inside the filter chips sit in sentence-case pills, so they
+   take the chip's spacing and only keep the tabular figures */
+.hb-n,
+.pf-n {
+  font-family: var(--sans);
+  font-size: 11px; font-weight: var(--lab-w); letter-spacing: 0.01em;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+/* the palette result title is prose */
+.cp-t { letter-spacing: -0.002em; }
+.cp-go { font-family: var(--sans); letter-spacing: 0; }
+.wkx-next-l { letter-spacing: var(--lab-2-ls); color: var(--label); }
+.fc-label { letter-spacing: var(--lab-2-ls); }
+
+/* ---- 7. the display ladder: one optical tracking curve ---- */
+.hero-title { letter-spacing: -0.032em; line-height: 1.04; }
+.statement-text { letter-spacing: -0.028em; line-height: 1.16; }
+.sec-title { letter-spacing: -0.028em; line-height: 1.06; text-wrap: balance; }
+.contact-big { letter-spacing: -0.032em; line-height: 1.02; }
+.stack-title { letter-spacing: -0.024em; line-height: 1.08; }
+.press-card h3, .tl-title { letter-spacing: -0.016em; line-height: 1.24; }
+.press-feature h3 { letter-spacing: -0.022em; }
+.hb-name { letter-spacing: -0.006em; line-height: 1.45; }
+.ks-title, .wkx-tab-t, .faq-q h3 { letter-spacing: -0.011em; line-height: 1.3; }
+.nav-name { letter-spacing: -0.012em; }
+
+/* ---- 8. body copy: one leading per role ---- */
+.hero-sub { letter-spacing: -0.006em; line-height: 1.58; }
+.ab-prose p { letter-spacing: -0.003em; }
+.ab-prose p.ab-lede { letter-spacing: -0.011em; }
+.stack-desc, .band-note, .tl-note, .contact-sub {
+  letter-spacing: -0.002em; line-height: 1.6; text-wrap: pretty;
+}
+.now-item p, .beyond-card p, .press-peek { letter-spacing: -0.002em; line-height: 1.6; }
+.hb-note, .wk-fact dd, .ab-fact dd, .stat p, .tl-say, .ks-row dt {
+  letter-spacing: 0; line-height: 1.55; text-wrap: pretty;
+}
+.lb-cap { letter-spacing: -0.002em; line-height: 1.5; }
+.btn { letter-spacing: -0.004em; font-weight: 500; }
+.nav-links a, .cp-open { letter-spacing: -0.004em; }
+.pf-chip, .hb-chip { letter-spacing: -0.002em; }
+
+/* ---- 9. figures. Counters that animate must not reflow, and every
+     number that sits in a row with other numbers must line up. ---- */
+.stat .num,
+.stat .num > span,
+.stat .num em,
+.hb-tally,
+.tl-date,
+.press-count,
+.ct-meta,
+.foot-row,
+.lb-count,
+.wkx-idx,
+.stack-num,
+.wkx-tab-n,
+.band-cap,
+.hb-grid .hb-top b {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+.stat .num { letter-spacing: -0.022em; }
+.stat .num em { font-weight: 500; letter-spacing: 0; }
+
+/* ---- 10. small-screen tightening ---- */
+@media (max-width: 700px) {
+  .photo.pic figcaption { font-size: 9.5px; letter-spacing: var(--lab-3-ls); }
+  .ct-meta { font-size: 9.5px; letter-spacing: var(--lab-3-ls); }
+  .ct-open { font-size: var(--lab-3); letter-spacing: var(--lab-3-ls); }
+  .band-cap { font-size: 9.5px; }
+}
+@media (max-width: 640px) {
+  .hb-tally, .foot-row { font-size: var(--lab-3); letter-spacing: var(--lab-3-ls); }
+  .pf-chip { letter-spacing: -0.002em; }
+  .term-body { font-size: 12px; }
+}
+
+
+/* ===== module 3 ===== */
+
+/* ============================================================
+   THE CLASSROOM CAROUSEL
+   One frame at a time with the neighbours peeking. Slide width
+   is derived from each file's real ratio against a shared stage
+   height, so a 2.19 panorama and a 0.76 portrait both show
+   whole: no cover box, no fixed frame, no cropped faces.
+   The dim, the captions and the control bar only switch on once
+   the module marks the carousel live, so with no JavaScript
+   this stays a plain, readable, natively scrollable filmstrip.
+   ============================================================ */
+.cr {
+  /* the stage: the tallest a frame may stand, and the widest it may run */
+  --crH: clamp(360px, 34vw, 520px);
+  --crW: min(78vw, 880px);
+  --crGap: clamp(16px, 2vw, 34px);
+  --crLead: 1.354;   /* frame 01 ratio, sets the run-in on the left  */
+  --crTail: 2.190;   /* frame 09 ratio, sets the run-out on the right */
+  position: relative;
+}
+
+.cr-view {
+  max-width: min(100%, 1240px);
+  margin: 0 auto;
+}
+
+.cr-track {
+  position: relative;                 /* the offset parent the module measures against */
+  display: flex;
+  align-items: flex-end;              /* every caption lands on one baseline */
+  gap: var(--crGap);
+  padding: 22px 0 16px;
+  /* enough lead-in and lead-out for the first and the last frame to reach
+     the middle, worked out from their own widths so scrollLeft 0 and
+     scrollLeft max are exactly the two end snap points */
+  padding-inline-start: calc(50% - min(var(--crW), calc(var(--crH) * var(--crLead))) / 2);
+  padding-inline-end: calc(50% - min(var(--crW), calc(var(--crH) * var(--crTail))) / 2);
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: auto;
+  overscroll-behavior-inline: contain;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.cr-track::-webkit-scrollbar { width: 0; height: 0; display: none; }
+
+.cr-slide {
+  flex: 0 0 auto;
+  /* the file's own ratio against the stage height, capped by the stage width */
+  width: min(var(--crW), calc(var(--crH) * var(--r, 1.4)));
+  scroll-snap-align: center;
+  scroll-snap-stop: always;
+}
+.cr-fig { margin: 0; }
+
+.cr-hit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: var(--crH);                 /* a reserved stage, so nothing jumps */
+  margin: 0; padding: 0; border: 0;
+  background: none;
+  font: inherit; color: inherit;
+  cursor: zoom-in;
+  -webkit-tap-highlight-color: transparent;
+}
+.cr-hit:focus-visible { outline-offset: 6px; border-radius: 20px; }
+
+.cr-shot {
+  position: relative;
+  display: block;
+  width: 100%;
+  line-height: 0;
+  transition: opacity 0.6s var(--ease), transform 0.6s var(--ease);
+}
+/* width 100% with height auto is the file's true ratio, and the box was
+   sized from that same ratio, so the photo is never squeezed or cropped */
+.cr-shot img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-width: none;
+  border-radius: 16px;
+  background: #0b0e15;
+  box-shadow: 0 22px 52px rgba(4, 7, 14, 0.52);
+  -webkit-user-drag: none;
+  user-select: none; -webkit-user-select: none;
+}
+/* the hairline sits on a pseudo-element: an inset shadow on an <img>
+   paints under the image content and would never be seen */
+.cr-shot::after {
+  content: "";
+  position: absolute; inset: 0;
+  border-radius: 16px;
+  pointer-events: none;
+  box-shadow:
+    inset 0 0 0 1px var(--line-2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  transition: box-shadow 0.45s var(--ease);
+}
+
+.cr-open {
+  position: absolute; right: 14px; bottom: 14px;
+  display: inline-flex; align-items: center; gap: 7px;
+  font-family: var(--mono);
+  font-size: 9.5px; letter-spacing: 0.18em; line-height: 1;
+  color: var(--ink);
+  background: rgba(10, 13, 18, 0.68);
+  -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+  border: 1px solid var(--line-2);
+  border-radius: 999px;
+  padding: 7px 12px;
+  opacity: 0; transform: translateY(7px);
+  transition: opacity 0.35s var(--ease), transform 0.35s var(--ease);
+  pointer-events: none;
+}
+
+.cr-cap {
+  display: flex; align-items: baseline; gap: 10px;
+  padding: 16px 3px 0;
+  font-family: var(--mono);
+  font-size: 10px; letter-spacing: 0.2em; line-height: 1.4;
+  color: var(--body);
+  transition: opacity 0.5s var(--ease), color 0.3s;
+}
+.cr-cap b { color: var(--sky); font-weight: 500; flex: none; }
+
+/* ---------- live state: one frame reads, the rest step back ---------- */
+.cr.is-live .cr-shot { opacity: 0.4; transform: scale(0.93); }
+.cr.is-live .cr-cap { opacity: 0; }
+.cr.is-live .cr-hit:hover .cr-shot { opacity: 0.75; }
+.cr.is-live .cr-slide.is-on .cr-shot { opacity: 1; transform: none; }
+.cr.is-live .cr-slide.is-on .cr-cap { opacity: 1; }
+.cr.is-live .cr-slide.is-on .cr-shot::after {
+  box-shadow:
+    inset 0 0 0 1px rgba(92, 157, 255, 0.42),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+.cr.is-live .cr-slide.is-on .cr-hit:hover .cr-shot { opacity: 1; transform: scale(1.012); }
+.cr.is-live .cr-slide.is-on .cr-hit:hover .cr-open,
+.cr.is-live .cr-slide.is-on .cr-hit:focus-visible .cr-open { opacity: 1; transform: none; }
+
+/* ---------- the control bar ---------- */
+.cr-bar { display: none; }
+.cr.is-live .cr-bar {
+  display: flex; align-items: center;
+  gap: clamp(14px, 2vw, 26px);
+  margin-top: clamp(20px, 2.4vw, 32px);
+}
+.cr-nav { flex: none; display: flex; gap: 10px; }
+.cr-btn {
+  width: 38px; height: 38px; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  border: 1px solid var(--line-2);
+  background: rgba(14, 18, 25, 0.7);
+  color: var(--ink);
+  cursor: pointer;
+  transition: border-color 0.25s, background 0.25s, transform 0.25s var(--ease);
+}
+.cr-btn:hover { border-color: var(--blue); background: rgba(92, 157, 255, 0.13); }
+.cr-btn:active { transform: scale(0.94); }
+
+.cr-dots {
+  flex: 1 1 auto;
+  display: flex; align-items: center; justify-content: center;
+  gap: 2px;
+  min-width: 0;
+}
+.cr-dot {
+  position: relative;
+  width: 24px; height: 26px;
+  padding: 0; border: 0; background: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.cr-dot::after {
+  content: "";
+  position: absolute; left: 50%; top: 50%;
+  width: 8px; height: 8px; margin: -4px 0 0 -4px;
+  border-radius: 999px;
+  background: var(--line-2);
+  transition: width 0.45s var(--ease), margin-left 0.45s var(--ease), background 0.35s;
+}
+.cr-dot:hover::after { background: var(--dim); }
+.cr-dot.on::after { width: 22px; margin-left: -11px; background: var(--grad); }
+.cr-dot:focus-visible { outline-offset: 0; border-radius: 9px; }
+
+.cr-side { flex: none; display: flex; align-items: center; gap: 14px; }
+.cr-count {
+  margin: 0;
+  font-size: 10px; letter-spacing: 0.2em;
+  color: var(--faint);
+  font-variant-numeric: tabular-nums;
+}
+.cr-count b { color: var(--sky); font-weight: 500; }
+.cr-play {
+  display: inline-flex; align-items: center; gap: 9px;
+  padding: 9px 14px;
+  border: 1px solid var(--line-2);
+  border-radius: 999px;
+  background: rgba(14, 18, 25, 0.7);
+  color: var(--body);
+  font-family: var(--mono);
+  font-size: 9.5px; letter-spacing: 0.2em; line-height: 1;
+  cursor: pointer;
+  transition: border-color 0.25s, background 0.25s, color 0.25s;
+}
+.cr-play:hover { border-color: var(--blue); background: rgba(92, 157, 255, 0.13); color: var(--ink); }
+.cr-play svg { flex: none; color: var(--blue); }
+.cr-play[hidden] { display: none; }
+.cr-play .cr-i-pause { display: none; }
+.cr-play.is-playing .cr-i-play { display: none; }
+.cr-play.is-playing .cr-i-pause { display: block; }
+
+/* the peek fades out at the edges rather than being cut by them */
+@media (min-width: 901px) {
+  .cr-view {
+    -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 88px, #000 calc(100% - 88px), transparent 100%);
+    mask-image: linear-gradient(90deg, transparent 0, #000 88px, #000 calc(100% - 88px), transparent 100%);
+  }
+}
+
+@media (min-width: 721px) and (max-width: 1023px) {
+  .cr { --crH: clamp(320px, 40vw, 400px); --crW: min(82vw, 720px); }
+}
+
+/* Phones get width-driven sizing. The stage height is derived from the
+   tallest ratio in the set, which makes every slide exactly one stage
+   wide, and the reserved height comes off so a panorama is not stranded
+   in a tall empty box. Bottom alignment still lines the captions up. */
+@media (max-width: 720px) {
+  .cr {
+    --crW: min(84vw, 420px);
+    --crH: calc(var(--crW) / 0.7587);
+    --crGap: 14px;
+  }
+  /* block axis only: the inline padding is the lead-in and lead-out that
+     lets the first and the last frame reach the middle */
+  .cr-track { padding-block: 16px 12px; }
+  .cr-hit { height: auto; }
+  .cr-shot img, .cr-shot::after, .cr-hit:focus-visible { border-radius: 14px; }
+  .cr.is-live .cr-bar { flex-wrap: wrap; justify-content: center; row-gap: 14px; }
+  .cr-nav { display: none; }
+  .cr-dots { order: 2; width: 100%; flex: 0 0 auto; }
+  .cr-side { order: 1; }
+  .cr-open { right: 10px; bottom: 10px; }
+  .cr-cap { padding-top: 13px; }
+}
+
+@media (hover: none), (pointer: coarse) {
+  .cr-hit { cursor: pointer; }
+  .cr.is-live .cr-slide.is-on .cr-open { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cr-shot, .cr-cap, .cr-shot::after, .cr-dot::after, .cr-open {
+    transition-duration: 0.01ms !important;
+  }
+  .cr.is-live .cr-shot { transform: none; opacity: 0.55; }
+  .cr.is-live .cr-slide.is-on .cr-shot { opacity: 1; }
+  .cr.is-live .cr-slide.is-on .cr-hit:hover .cr-shot { transform: none; }
+}
+
+/* ---------- light theme ---------- */
+[data-theme="light"] .cr-shot img {
+  background: #e9eef6;
+  box-shadow: 0 18px 44px rgba(15, 23, 42, 0.14);
+}
+[data-theme="light"] .cr-shot::after { box-shadow: inset 0 0 0 1px var(--line-2); }
+[data-theme="light"] .cr.is-live .cr-slide.is-on .cr-shot::after {
+  box-shadow: inset 0 0 0 1px rgba(37, 99, 212, 0.42);
+}
+[data-theme="light"] .cr.is-live .cr-shot { opacity: 0.5; }
+[data-theme="light"] .cr.is-live .cr-slide.is-on .cr-shot { opacity: 1; }
+[data-theme="light"] .cr-open { color: var(--ink); background: rgba(255, 255, 255, 0.86); }
+[data-theme="light"] .cr-btn,
+[data-theme="light"] .cr-play { background: rgba(255, 255, 255, 0.9); }
+
+
+/* ===== module 1 ===== */
+
+
+/* ============================================================
+   THE WAVY TIMELINE
+   The rail is gone. In its place a curve that snakes down the
+   page, generated in JS from the measured centre of every node,
+   so a node always sits exactly on the line. Content takes
+   whichever side of the curve has room. Layout here only ever
+   states where a node goes; the script reads that back and
+   fits the path to it, never the other way round.
+   Appended last, so equal-specificity ties resolve here.
+   ============================================================ */
+
+/* Why the text stops at the axis and not at the node: between two nodes the
+   curve sweeps the whole band, so a column that ran out to the node would be
+   crossed by the line on its way to the other side. Ending every column at
+   the axis makes that impossible. A node sits at the vertical centre of its
+   own text, so the curve is only ever back at the axis at a height that
+   falls in the margin between two blocks, never on a line of type. */
+.tlw {
+  --tlw-x: 50%;                          /* the axis the wave swings around */
+  --tlw-a: clamp(28px, 4.8vw, 72px);     /* swing, each way */
+  --tlw-air: 12px;                       /* column edge to axis */
+  position: relative;
+}
+
+/* before the script measures (and if it never runs) a plain hairline
+   stands in, so the section is never a floating list with no spine */
+.tlw::before {
+  content: "";
+  position: absolute;
+  top: 0; bottom: 0;
+  left: var(--tlw-x);
+  width: 1px; margin-left: -0.5px;
+  background: var(--line-2);
+  pointer-events: none;
+}
+.tlw.is-ready::before { display: none; }
+
+/* the script sizes this to the wrapper in real pixels, so one user unit is
+   one CSS pixel and the stroke is never scaled. it stays clipped to that box,
+   which is what guarantees the curve can never widen the page */
+.tlw-svg {
+  position: absolute;
+  left: 0; top: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.tlw-s1 { stop-color: #6d7ff2; }
+.tlw-s2 { stop-color: #5c9dff; }
+.tlw-s3 { stop-color: #4cc3ff; }
+.tlw-s4 { stop-color: #38e1e8; }
+
+.tlw-base { stroke: var(--line-2); stroke-width: 1.2; }
+.tlw-draw { stroke: url(#tlwGrad); stroke-width: 1.9; stroke-linecap: round; }
+
+/* the pen: it only exists while the line is being drawn, so it never
+   parks on top of the first or the last node */
+.tlw-pen,
+.tlw-glow {
+  fill: var(--sky);
+  opacity: 0;
+  transition: opacity 0.35s var(--ease);
+}
+.tlw.is-drawing .tlw-pen { opacity: 1; }
+.tlw.is-drawing .tlw-glow { opacity: 0.2; }
+
+.tlw-list { list-style: none; margin: 0; padding: 0; }
+
+.tlw-item { position: relative; }
+.tlw-item + .tlw-item { margin-top: clamp(30px, 3.8vw, 58px); }
+
+/* odd nodes swing right of the axis, so their text takes the left;
+   even nodes do the opposite. both columns are the same width */
+.tlw-in {
+  width: calc(50% - var(--tlw-air));
+  text-align: right;
+}
+.tlw-item:nth-child(even) .tlw-in {
+  margin-left: calc(50% + var(--tlw-air));
+  text-align: left;
+}
+
+/* box-sizing is border-box page-wide, so 11px is the outer size and the
+   translate puts the true centre on the coordinate the script reads */
+.tlw-dot {
+  position: absolute;
+  top: 50%;
+  left: calc(var(--tlw-x) + var(--tlw-a));
+  width: 11px; height: 11px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: var(--blue);
+  border: 1px solid var(--blue-2);
+  box-shadow: 0 0 0 4px rgba(92, 157, 255, 0.12);
+  transition: background 0.45s var(--ease), border-color 0.45s var(--ease), box-shadow 0.45s var(--ease);
+}
+.tlw-item:nth-child(even) .tlw-dot { left: calc(var(--tlw-x) - var(--tlw-a)); }
+
+.tlw-dot::after {
+  content: "";
+  position: absolute; inset: -3px;
+  border-radius: 50%;
+  border: 1px solid var(--blue);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.tlw-date {
+  font-size: 10.5px; letter-spacing: 0.2em;
+  color: var(--blue);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+  transition: color 0.45s var(--ease);
+}
+.tlw-title {
+  margin-top: 7px;
+  font-family: var(--display); font-weight: 600;
+  font-size: clamp(1.12rem, 1.8vw, 1.36rem);
+  line-height: 1.22; letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+.tlw-say {
+  margin-top: 9px;
+  max-width: 44ch;
+  margin-left: auto;
+  font-size: 14.5px;
+  color: var(--body);
+  text-wrap: pretty;
+}
+.tlw-item:nth-child(even) .tlw-say { margin-left: 0; margin-right: auto; }
+
+/* ---- the scrub state: everything waits for the pen ----
+   the lit, fully drawn version is the default, so reduced motion and a
+   dead script both land on a finished timeline instead of a dim one */
+.tlw.is-live .tlw-in {
+  opacity: 0.3;
+  transform: translateY(10px);
+  transition: opacity 0.7s var(--ease), transform 0.7s var(--ease);
+}
+.tlw.is-live .tlw-item.on .tlw-in { opacity: 1; transform: none; }
+.tlw.is-live .tlw-date { color: var(--faint); }
+.tlw.is-live .tlw-item.on .tlw-date { color: var(--blue); }
+.tlw.is-live .tlw-dot {
+  background: var(--panel-2);
+  border-color: var(--line-2);
+  box-shadow: none;
+}
+.tlw.is-live .tlw-item.on .tlw-dot {
+  background: var(--blue);
+  border-color: var(--blue-2);
+  box-shadow: 0 0 0 4px rgba(92, 157, 255, 0.12), 0 0 16px rgba(92, 157, 255, 0.4);
+}
+.tlw.is-live .tlw-item.on .tlw-dot::after { animation: tlw-ping 0.85s var(--ease) 1; }
+@keyframes tlw-ping {
+  from { transform: scale(0.5); opacity: 0.7; }
+  to { transform: scale(2.4); opacity: 0; }
+}
+
+/* ---- phone: the axis moves to the left edge and the swing drops to 8px.
+   a full wave does not fit in 375px, so what is left is a gentle one that
+   still reads as a curve and cannot reach the edge of the column ---- */
+@media (max-width: 720px) {
+  .tlw { --tlw-x: 15px; --tlw-a: 8px; --tlw-air: 0px; }
+  .tlw-in,
+  .tlw-item:nth-child(even) .tlw-in {
+    width: 100%;
+    margin-left: 0;
+    padding-left: 42px;
+    text-align: left;
+  }
+  .tlw-say,
+  .tlw-item:nth-child(even) .tlw-say { max-width: none; margin-left: 0; margin-right: 0; }
+  .tlw-item + .tlw-item { margin-top: 28px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tlw-dot::after { display: none; }
+  .tlw-in { transition: none; }
+}
+
+/* ---- light mode: the same curve, the darker gradient ---- */
+[data-theme="light"] .tlw-s1 { stop-color: #3f4fd8; }
+[data-theme="light"] .tlw-s2 { stop-color: #1f5ec9; }
+[data-theme="light"] .tlw-s3 { stop-color: #0a6fae; }
+[data-theme="light"] .tlw-s4 { stop-color: #0a7f96; }
+[data-theme="light"] .tlw-pen,
+[data-theme="light"] .tlw-glow { fill: #0d72b8; }
+[data-theme="light"] .tlw.is-live .tlw-item.on .tlw-dot {
+  box-shadow: 0 0 0 4px rgba(37, 99, 212, 0.14), 0 0 14px rgba(37, 99, 212, 0.3);
 }
