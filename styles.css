@@ -4862,3 +4862,199 @@ body {
 .contact-else .ce-lab { color: var(--faint); }
 .contact-else a { color: var(--dim); transition: color 0.25s; }
 .contact-else a:hover { color: var(--blue); }
+
+
+
+
+/* ============================================================
+   DIRECTOR'S CUT: REDUCTION + THREE SET PIECES
+   Part one deletes duplicated objects and quiet chrome so the
+   gradient only lands where it earns its place. Part two spends
+   the cleared room on the page's three best raw materials: the
+   press quotes, the four proof numbers, and the active work
+   panel. Appended last, so equal-specificity ties resolve here.
+   ============================================================ */
+
+/* ---- R1. The gradient tick opened eight sections plus the hero
+   strip: nine repeats of the same 56px flourish. The hairline
+   alone carries chapter structure now; the gradient survives in
+   the statement keys, the numerals, the timeline stroke, the
+   selected-state fills and the contact headline. The popTick
+   draw animation targets a pseudo that no longer generates,
+   which is a silent no-op. */
+.sec-head::after,
+.sec-head.sec-head-center::after,
+.hp-strip::before { content: none; }
+
+/* ---- R2. Chips stop being plates. The label tier already sets
+   them 600 weight, 10.5px, tracked uppercase: they read as
+   metadata without a box inside an already-bordered card,
+   thirteen times over. Color alone marks the role now. */
+.chip {
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  background: none;
+}
+[data-theme="light"] .chip,
+[data-theme="light"] .chip-blue { background: none; }
+
+/* ---- R3. The per-section radial washes ran 4.5% to 10% alpha:
+   individually below threshold on this background, collectively
+   a different tint per chapter. One dark field; the hero and
+   contact glows stay as the two lighting moments, and the
+   full-bleed classroom band keeps its deliberate tint. */
+.now, .work, .honors, .press { background: none; }
+.stats::before { content: none; }
+
+/* ---- R4. A selected filter is a state, not a light source. The
+   gradient fill stays as the one sanctioned selected state; the
+   22px halo goes, in both themes. */
+.pf-chip[aria-checked="true"],
+.hb-chip[aria-checked="true"],
+.wkx-tab[aria-selected="true"],
+[data-theme="light"] .pf-chip[aria-checked="true"],
+[data-theme="light"] .hb-chip[aria-checked="true"],
+[data-theme="light"] .wkx-tab[aria-selected="true"] { box-shadow: none; }
+
+/* ---- R5. With the tag pills gone the description hands straight
+   to the rule; the rule takes the air the tags used to hold. */
+.wkx-rule { margin-top: 24px; }
+
+/* ---- R6. The classroom band closes on its own rule again now
+   that the tail row is gone, and returns to the shared rhythm. */
+.band {
+  border-bottom: 1px solid var(--line);
+  padding-block: var(--sec);
+}
+
+/* ---- S1. The press feature leads with its quote. The quotes are
+   the only voices on this page that are not Shashank's own, and
+   they were hidden behind a hover while the headline repeated
+   facts the page already states in stats, honors and about. Flex
+   order recomposes the card; the DOM the filter and the command
+   palette read is untouched. */
+.press-cell.is-feature .press-card {
+  min-height: 0;
+  padding: clamp(30px, 3.6vw, 44px);
+}
+.press-cell.is-feature .press-card .press-top { order: -2; margin-bottom: 22px; }
+.press-cell.is-feature .press-card .press-peek {
+  order: -1;
+  max-height: none;
+  opacity: 1;
+  transform: none;
+  margin-top: 0;
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: clamp(1.5rem, 2.8vw, 2.1rem);
+  line-height: 1.22;
+  letter-spacing: -0.022em;
+  color: var(--ink);
+  max-width: 24ch;
+  text-wrap: balance;
+}
+.press-cell.is-feature .press-card h3 {
+  order: 0;
+  margin-top: 16px;
+  max-width: 62ch;
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: -0.003em;
+  color: var(--body);
+  text-wrap: pretty;
+}
+
+/* the three feature-tier cards take the same grammar one size
+   down, so the tier reads as one editorial system; the eight
+   rows below stay compact for scanning */
+.press-cell.is-feat .press-card .press-top { order: -2; margin-bottom: 18px; }
+.press-cell.is-feat .press-card .press-peek {
+  order: -1;
+  max-height: none;
+  opacity: 1;
+  transform: none;
+  margin-top: 0;
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: clamp(1.06rem, 1.5vw, 1.26rem);
+  line-height: 1.34;
+  letter-spacing: -0.014em;
+  color: var(--ink);
+  text-wrap: balance;
+}
+.press-cell.is-feat .press-card h3 {
+  order: 0;
+  margin-top: 12px;
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: -0.002em;
+  color: var(--body);
+  text-wrap: pretty;
+}
+
+/* ---- S2. Stats as monuments. The four numbers are the page's
+   whole argument and were set barely larger than a card title.
+   The cap is measured: 15,000+ stays inside its column at every
+   width, and below 640px each number owns a full line. */
+.stat { padding-top: 26px; }
+.stat .num {
+  font-size: clamp(2.7rem, 4.8vw, 4.2rem);
+  letter-spacing: -0.034em;
+}
+.stat p { margin-top: 13px; }
+@media (max-width: 640px) {
+  .stats-grid { grid-template-columns: 1fr; gap: 30px; }
+  .stat .num { font-size: clamp(3.2rem, 14vw, 4.1rem); }
+  .stat p { max-width: none; }
+}
+
+/* ---- S3. The active work panel takes the lead-card surface:
+   byte for byte the recipe .hb-lead already uses, so the page
+   keeps one vocabulary for "this is the one that matters". */
+.wkx-in {
+  background:
+    var(--grad) top left / 100% 2px no-repeat,
+    linear-gradient(180deg, rgba(92, 157, 255, 0.055), rgba(255, 255, 255, 0) 42%),
+    linear-gradient(180deg, var(--panel-2), var(--panel));
+}
+[data-theme="light"] .wkx-in {
+  background:
+    var(--grad) top left / 100% 2px no-repeat,
+    linear-gradient(180deg, rgba(37, 99, 212, 0.045), rgba(255, 255, 255, 0) 42%),
+    var(--panel);
+}
+
+/* ---- S4. The ghost index numeral. With the redundant text index
+   row gone, the 01 that already lives in each panel steps out of
+   the header row and becomes the chapter mark: faint fill, 1px
+   stroke, no pointer events. It stays inside .wkx-top, so the
+   panel entry stagger still fades it in with the header row, and
+   an engine without text-stroke falls back to the 5% fill. */
+.wkx-panel .stack-num {
+  position: absolute;
+  top: 14px;
+  right: 26px;
+  z-index: 0;
+  font-family: var(--display);
+  font-size: clamp(64px, 7vw, 96px);
+  font-weight: 700;
+  line-height: 0.9;
+  letter-spacing: -0.045em;
+  color: rgba(92, 157, 255, 0.05);
+  -webkit-text-stroke: 1px rgba(92, 157, 255, 0.2);
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+[data-theme="light"] .wkx-panel .stack-num {
+  color: rgba(37, 99, 212, 0.04);
+  -webkit-text-stroke-color: rgba(37, 99, 212, 0.18);
+}
+@media (max-width: 860px) {
+  .wkx-panel .stack-num { display: none; }
+}
