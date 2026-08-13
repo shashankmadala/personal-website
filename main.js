@@ -238,7 +238,7 @@
   var statement = document.getElementById("statementText");
   var stWords = [];
   if (statement) {
-    var KEY = { "AI": 1, "understand": 1, "emotion,": 1, "connection,": 1, "countries.": 1 };
+    var KEY = { "AI": 1, "understand": 1, "cues,": 1, "interaction,": 1, "countries.": 1 };
     var words = statement.textContent.trim().split(/\s+/);
     statement.innerHTML = words.map(function (w) {
       return "<span class='w" + (KEY[w] ? " key" : "") + "'>" + w + "</span>";
@@ -1269,12 +1269,12 @@
     var prev = document.createElement("button");
     prev.className = "lb-nav lb-prev";
     prev.setAttribute("aria-label", "Previous photo");
-    prev.innerHTML = "&#8249;";
+    prev.innerHTML = '<svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M8.5 3L4.5 7l4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
     prev.addEventListener("click", function () { go(idx - 1); });
     var next = document.createElement("button");
     next.className = "lb-nav lb-next";
     next.setAttribute("aria-label", "Next photo");
-    next.innerHTML = "&#8250;";
+    next.innerHTML = '<svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M5.5 3l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
     next.addEventListener("click", function () { go(idx + 1); });
     stage.appendChild(prev);
     stage.appendChild(next);
@@ -1395,74 +1395,9 @@
   if (root.hasAttribute("data-motion-pass")) return;
   root.setAttribute("data-motion-pass", "");
 
-  /* ---------- 1) section heads: letters, then words ---------- */
-  (function () {
-    if (reduced) return;
-    var heads = document.querySelectorAll(".sec-head");
-    if (!heads.length) return;
-
-    function letters(el, start, step) {
-      var text = el.textContent.trim();
-      if (!text) return;
-      var box = document.createElement("span");
-      box.className = "sh-ey";
-      for (var i = 0; i < text.length; i++) {
-        var s = document.createElement("span");
-        s.className = "sh-l";
-        s.textContent = text.charAt(i);
-        s.style.transitionDelay = (start + i * step) + "ms";
-        box.appendChild(s);
-      }
-      el.textContent = "";
-      el.appendChild(box);
-    }
-
-    function words(el, start, step) {
-      var parts = el.textContent.trim().split(/(\s+)/);
-      if (!parts.length) return;
-      var frag = document.createDocumentFragment();
-      var n = 0;
-      for (var i = 0; i < parts.length; i++) {
-        if (!parts[i]) continue;
-        if (/^\s+$/.test(parts[i])) {
-          frag.appendChild(document.createTextNode(parts[i]));
-          continue;
-        }
-        var s = document.createElement("span");
-        s.className = "sh-w";
-        s.textContent = parts[i];
-        s.style.transitionDelay = (start + n * step) + "ms";
-        n++;
-        frag.appendChild(s);
-      }
-      el.textContent = "";
-      el.appendChild(frag);
-    }
-
-    var io = null;
-    if (typeof IntersectionObserver === "function") {
-      io = new IntersectionObserver(function (entries) {
-        for (var i = 0; i < entries.length; i++) {
-          if (entries[i].isIntersecting) {
-            entries[i].target.classList.add("in");
-            io.unobserve(entries[i].target);
-          }
-        }
-      }, { threshold: 0.25, rootMargin: "0px 0px -8% 0px" });
-    }
-
-    Array.prototype.forEach.call(heads, function (head) {
-      if (!head || head.querySelector(".sh-l") || head.querySelector(".sh-w")) return;
-      var ey = head.querySelector(".eyebrow");
-      var ti = head.querySelector(".sec-title");
-      if (!ey && !ti) return;
-      if (ey) letters(ey, 0, 18);
-      if (ti) words(ti, 120, 55);
-      head.classList.add("stag");
-      if (io) io.observe(head);
-      else head.classList.add("in");
-    });
-  })();
+  /* ---------- 1) section heads ----------
+     Retired. One title reveal now: the masked .wr/.wi word reveal owned
+     by the choreography module. Heads simply ride the .reveal fade. */
 
   /* ---------- 2) section rail + nav active state ---------- */
   (function () {
@@ -2279,7 +2214,7 @@
 
     say(shown);
     for (i = 0; i < chips.length; i++) {
-      chips[i].setAttribute("aria-pressed", keyOf(chips[i]) === key ? "true" : "false");
+      chips[i].setAttribute("aria-checked", keyOf(chips[i]) === key ? "true" : "false");
     }
 
     if (!animate || !canAnimate) {
@@ -2382,290 +2317,10 @@
 
 
 
-/* ---------- work cards v2: detail drawers + press cross links ---------- */
-(function () {
-  "use strict";
-
-  var reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
-  var touch = matchMedia("(hover: none), (pointer: coarse)").matches;
-
-  var root = document.documentElement;
-  if (!root || root.hasAttribute("data-wk-cards")) return;
-
-  var cards = document.querySelectorAll(".stack-card");
-  if (!cards.length) return;
-
-  var CHEVRON = '<svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true" focusable="false">' +
-    '<path d="M2.6 4.4 6 7.8l3.4-3.4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-
-  /* a topic maps to the press links that belong to it, so the count on the
-     pill is read off the page instead of hard coded */
-  var COVERAGE = {
-    kora: { hosts: ["mciver.house.gov", "congressionalappchallenge.us", "canvasrebel.com"], one: "article", many: "articles" },
-    yale: { hosts: ["medicine.yale.edu"], one: "profile", many: "profiles" },
-    frc: { hosts: ["frc2590.org"], one: "profile", many: "profiles" }
-  };
-
-  function coverageCount(hosts) {
-    var links = document.querySelectorAll(".press-card[href]");
-    var n = 0;
-    for (var i = 0; i < links.length; i++) {
-      var href = links[i].getAttribute("href") || "";
-      for (var h = 0; h < hosts.length; h++) {
-        if (href.indexOf(hosts[h]) !== -1) { n++; break; }
-      }
-    }
-    return n;
-  }
-
-  var wired = 0;
-
-  Array.prototype.forEach.call(cards, function (card, i) {
-    var main = card.querySelector(".stack-main");
-    if (!main) return;
-    var bar = main.querySelector(".wk-bar");
-    var drawer = main.querySelector(".wk-drawer");
-    if (!bar || !drawer) return;
-    var inner = drawer.querySelector(".wk-drawer-in");
-    if (!inner) return;
-
-    var titleEl = card.querySelector(".stack-title");
-    var name = titleEl ? titleEl.textContent.trim() : "this project";
-    var id = drawer.id || ("wk-drawer-" + (i + 1));
-    drawer.id = id;
-
-    /* ---- the toggle ---- */
-    var btn = document.createElement("button");
-    btn.type = "button";
-    btn.className = "wk-toggle";
-    btn.setAttribute("aria-expanded", "false");
-    btn.setAttribute("aria-controls", id);
-    var label = document.createElement("span");
-    label.textContent = "More details";
-    btn.appendChild(label);
-    btn.insertAdjacentHTML("beforeend", CHEVRON);
-    btn.setAttribute("aria-label", "More details about " + name);
-    bar.insertBefore(btn, bar.firstChild);
-
-    var open = false;
-
-    function paint(next) {
-      open = next;
-      btn.setAttribute("aria-expanded", next ? "true" : "false");
-      label.textContent = next ? "Hide details" : "More details";
-      btn.setAttribute("aria-label", (next ? "Hide details about " : "More details about ") + name);
-      if (next) drawer.classList.add("wk-open");
-      else drawer.classList.remove("wk-open");
-    }
-
-    function setOpen(next) {
-      if (next === open) return;
-      paint(next);
-      if (reduced) {
-        drawer.style.height = next ? "auto" : "0px";
-        return;
-      }
-      var from = drawer.getBoundingClientRect().height;
-      var to = next ? inner.offsetHeight : 0;
-      drawer.style.height = from + "px";
-      /* force a reflow so the browser has two heights to animate between */
-      void drawer.offsetHeight;
-      drawer.style.height = to + "px";
-    }
-
-    drawer.addEventListener("transitionend", function (e) {
-      if (e.target !== drawer || e.propertyName !== "height") return;
-      /* let an open drawer size itself again, so reflow and resize keep working */
-      if (open) drawer.style.height = "auto";
-    });
-
-    btn.addEventListener("click", function (e) {
-      e.preventDefault();
-      e.stopPropagation();
-      setOpen(!open);
-    });
-
-    /* ---- the coverage pill ---- */
-    var topic = bar.getAttribute("data-wk-topic");
-    var cfg = topic ? COVERAGE[topic] : null;
-    if (cfg) {
-      var n = coverageCount(cfg.hosts);
-      if (n > 0) {
-        var cov = document.createElement("button");
-        cov.type = "button";
-        cov.className = "wk-cov";
-        var dot = document.createElement("i");
-        dot.setAttribute("aria-hidden", "true");
-        cov.appendChild(dot);
-        cov.appendChild(document.createTextNode(n + " " + (n === 1 ? cfg.one : cfg.many)));
-        cov.setAttribute("aria-label", "Show the " + n + " " + (n === 1 ? cfg.one : cfg.many) + " about " + name + " in the press section");
-        cov.addEventListener("click", function (e) {
-          e.preventDefault();
-          e.stopPropagation();
-          try {
-            document.dispatchEvent(new CustomEvent("press:filter", { bubbles: true, detail: { topic: topic } }));
-          } catch (err) {}
-          var press = document.getElementById("press");
-          if (press && press.scrollIntoView) {
-            press.scrollIntoView({ behavior: (reduced || touch) ? "auto" : "smooth", block: "start" });
-          }
-        });
-        bar.insertBefore(cov, btn.nextSibling);
-      }
-    }
-
-    wired++;
-  });
-
-  /* only collapse once something is actually wired up */
-  if (wired) root.setAttribute("data-wk-cards", "");
-})();
+/* work cards v2 module retired: the drawer markup it drove no longer exists */
 
 
-/* ============================================================
-   THE CLASSROOM BAND
-   Drag with momentum, snap, a scroll thumb, arrow buttons, and a
-   hand-off into the existing Lumin lightbox at the right index.
-   Self-contained. Every lookup is guarded.
-   ============================================================ */
-(function () {
-  "use strict";
-
-  var rail = document.getElementById("bandRail");
-  if (!rail) return;
-
-  var fill = document.getElementById("bandFill");
-  var prevBtn = document.getElementById("bandPrev");
-  var nextBtn = document.getElementById("bandNext");
-  var shots = Array.prototype.slice.call(rail.querySelectorAll(".band-shot"));
-  if (!shots.length) return;
-
-  var reduced = false;
-  try { reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches; } catch (e) {}
-
-  /* ---------- open the existing lightbox at a given index ---------- */
-  function openAt(i) {
-    var trigger = document.getElementById("luminGallery");
-    if (!trigger) return;
-    trigger.click();                       /* builds and opens at 0 */
-    if (!i) return;
-    var thumbs = document.querySelectorAll(".lb .lb-strip .lb-thumb");
-    if (thumbs.length > i && thumbs[i]) thumbs[i].click();
-  }
-
-  shots.forEach(function (shot, i) {
-    var hit = shot.querySelector(".band-hit");
-    if (!hit) return;
-    hit.addEventListener("click", function () { openAt(i); });
-  });
-
-  /* ---------- scroll thumb + arrow state ---------- */
-  var syncRaf = 0;
-  function sync() {
-    syncRaf = 0;
-    var max = rail.scrollWidth - rail.clientWidth;
-    var frac = rail.scrollWidth > 0 ? rail.clientWidth / rail.scrollWidth : 1;
-    if (frac > 1) frac = 1;
-    var p = max > 1 ? rail.scrollLeft / max : 0;
-    if (p < 0) p = 0;
-    if (p > 1) p = 1;
-    if (fill) {
-      fill.style.width = (frac * 100).toFixed(2) + "%";
-      fill.style.left = (p * (100 - frac * 100)).toFixed(2) + "%";
-    }
-    if (prevBtn) prevBtn.disabled = rail.scrollLeft <= 2;
-    if (nextBtn) nextBtn.disabled = max <= 2 || rail.scrollLeft >= max - 2;
-  }
-  function queueSync() {
-    if (!syncRaf) syncRaf = requestAnimationFrame(sync);
-  }
-
-  rail.addEventListener("scroll", queueSync, { passive: true });
-  window.addEventListener("resize", queueSync, { passive: true });
-  rail.querySelectorAll("img").forEach(function (img) {
-    if (img.complete) return;
-    img.addEventListener("load", queueSync);
-    img.addEventListener("error", queueSync);
-  });
-  sync();
-
-  /* ---------- arrow buttons ---------- */
-  function nudge(dir) {
-    var step = Math.max(200, Math.round(rail.clientWidth * 0.78));
-    if (rail.scrollBy) {
-      rail.scrollBy({ left: dir * step, behavior: reduced ? "auto" : "smooth" });
-    } else {
-      rail.scrollLeft += dir * step;
-    }
-  }
-  if (prevBtn) prevBtn.addEventListener("click", function () { nudge(-1); });
-  if (nextBtn) nextBtn.addEventListener("click", function () { nudge(1); });
-
-  /* ---------- drag to scroll, mouse only ---------- */
-  var fine = false;
-  try { fine = window.matchMedia("(hover: hover) and (pointer: fine)").matches; } catch (e) {}
-  if (!fine || !window.PointerEvent) return;
-
-  var down = false, moved = false;
-  var startX = 0, startLeft = 0, lastX = 0, lastT = 0, vel = 0, glideRaf = 0;
-
-  rail.addEventListener("dragstart", function (e) { e.preventDefault(); });
-
-  rail.addEventListener("pointerdown", function (e) {
-    if (e.pointerType !== "mouse" || e.button !== 0) return;
-    down = true;
-    moved = false;
-    startX = e.clientX;
-    startLeft = rail.scrollLeft;
-    lastX = e.clientX;
-    lastT = (window.performance && performance.now) ? performance.now() : Date.now();
-    vel = 0;
-    if (glideRaf) { cancelAnimationFrame(glideRaf); glideRaf = 0; }
-  });
-
-  window.addEventListener("pointermove", function (e) {
-    if (!down) return;
-    var dx = e.clientX - startX;
-    if (!moved) {
-      if (Math.abs(dx) < 6) return;
-      moved = true;
-      rail.classList.add("dragging");
-    }
-    var now = (window.performance && performance.now) ? performance.now() : Date.now();
-    var dt = now - lastT;
-    if (dt > 0) vel = ((e.clientX - lastX) / dt) * 16;
-    lastX = e.clientX;
-    lastT = now;
-    rail.scrollLeft = startLeft - dx;
-    if (e.cancelable) e.preventDefault();
-  }, { passive: false });
-
-  function glide() {
-    vel *= 0.92;
-    if (Math.abs(vel) < 0.6) { glideRaf = 0; return; }
-    var before = rail.scrollLeft;
-    rail.scrollLeft = before - vel;
-    if (rail.scrollLeft === before) { glideRaf = 0; return; }
-    glideRaf = requestAnimationFrame(glide);
-  }
-
-  function release() {
-    if (!down) return;
-    down = false;
-    rail.classList.remove("dragging");
-    if (moved && !reduced && Math.abs(vel) > 1.2) glideRaf = requestAnimationFrame(glide);
-  }
-  window.addEventListener("pointerup", release);
-  window.addEventListener("pointercancel", release);
-
-  /* a drag that ends over a frame must not also open the lightbox */
-  rail.addEventListener("click", function (e) {
-    if (!moved) return;
-    moved = false;
-    e.preventDefault();
-    e.stopPropagation();
-  }, true);
-})();
+/* classroom band drag module retired: the rail it drove no longer exists */
 
 
 /* ============================================================
@@ -3813,120 +3468,10 @@
   /* ---------------------------------------------------------
      2. THE CLASSROOM
      --------------------------------------------------------- */
-  var mosaic = (function () {
-    var rail = document.getElementById("bandRail");
-    if (!rail) return null;
-    var shots = Array.prototype.slice.call(rail.querySelectorAll(".band-shot"));
-    if (shots.length < 3) return null;
-
-    claim(rail);
-    rail.classList.add("ps-mosaic");
-
-    var frames = [];
-    for (var i = 0; i < shots.length; i++) {
-      var hit = shots[i].querySelector(".band-hit");
-      if (!hit) continue;
-      frames.push({
-        shot: shots[i],
-        hit: hit,
-        cap: shots[i].querySelector(".band-cap"),
-        dir: 0, top: 0, last: -1
-      });
-    }
-    if (frames.length < 3) return null;
-
-    var wide = false, dx = 0;
-
-    function measure() {
-      /* below 721 the mosaic is a horizontal rail with overflow-y hidden,
-         so sideways travel and a downward rise would both be clipped. The
-         phone gets the same choreography with scale and opacity only. */
-      wide = winW >= 721 && !touch;
-      var k;
-      /* a frame carrying a transform would measure its moved box, so the
-         state comes off before the reads and goes back on in the same
-         frame, before any paint */
-      for (k = 0; k < frames.length; k++) {
-        frames[k].hit.style.transform = "none";
-        frames[k].hit.style.filter = "none";
-        if (frames[k].cap) frames[k].cap.style.transform = "none";
-        frames[k].last = -1;
-      }
-      var rr = rail.getBoundingClientRect();
-      var pad = parseFloat(window.getComputedStyle(rail).paddingLeft);
-      if (!(pad >= 0)) pad = 24;
-      /* HARD BOUND: the sideways travel is never wider than the gutter it
-         lives in, so a frame can never reach the viewport edge and the
-         document can never gain horizontal scroll */
-      dx = wide ? Math.max(0, Math.min(52, pad - 14)) : 0;
-      var mid = rr.left + rr.width / 2;
-      var half = (rr.width / 2) || 1;
-      for (k = 0; k < frames.length; k++) {
-        var r = frames[k].hit.getBoundingClientRect();
-        frames[k].dir = clamp((((r.left + r.width / 2) - mid) / half) * 1.7, -1, 1);
-      }
-    }
-
-    function read() {
-      for (var k = 0; k < frames.length; k++) {
-        frames[k].top = frames[k].shot.getBoundingClientRect().top;
-      }
-    }
-
-    function write() {
-      var from = winH * 0.94;
-      var span = winH * (wide ? 0.52 : 0.42);
-      if (span < 1) span = 1;
-      for (var k = 0; k < frames.length; k++) {
-        var f = frames[k];
-        /* on the rail every frame shares one top, so the stagger there is
-           read off the index instead of the layout */
-        var raw = clamp((from - f.top + (wide ? 0 : k * 26)) / span, 0, 1);
-        var e = ease(raw);
-        if (e === f.last) continue;
-        f.last = e;
-        var hs = f.hit.style;
-        if (e >= 1) {
-          hs.transform = "none";
-          hs.filter = "none";
-          hs.opacity = "1";
-          hs.willChange = "";
-          if (f.cap) { f.cap.style.transform = "none"; f.cap.style.opacity = "1"; }
-          continue;
-        }
-        var inv = 1 - e;
-        var x = wide ? f.dir * dx * inv : 0;
-        var y = wide ? 46 * inv : 0;
-        var rot = wide ? f.dir * 2.4 * inv : 0;
-        var sc = wide ? (0.9 + 0.1 * e) : (0.95 + 0.05 * e);
-        hs.transform = "translate3d(" + x.toFixed(1) + "px," + y.toFixed(1) + "px,0) rotate(" + rot.toFixed(2) + "deg) scale(" + sc.toFixed(4) + ")";
-        hs.filter = (!wide || e > 0.66) ? "none" : "blur(" + (3 * (1 - e / 0.66)).toFixed(2) + "px)";
-        hs.opacity = (0.15 + 0.85 * e).toFixed(3);
-        hs.willChange = "transform, opacity, filter";
-        if (f.cap) {
-          f.cap.style.transform = "translate3d(" + x.toFixed(1) + "px," + y.toFixed(1) + "px,0)";
-          f.cap.style.opacity = e.toFixed(3);
-        }
-      }
-    }
-
-    function reset() {
-      for (var k = 0; k < frames.length; k++) {
-        var f = frames[k];
-        f.hit.style.transform = "none";
-        f.hit.style.filter = "none";
-        f.hit.style.opacity = "1";
-        f.hit.style.willChange = "";
-        if (f.cap) { f.cap.style.transform = "none"; f.cap.style.opacity = "1"; }
-      }
-    }
-
-    return { measure: measure, read: read, write: write, reset: reset };
-  })();
-
+  /* the classroom half of this module is retired: the mosaic rail it
+     scrubbed no longer exists. The board keeps its pin. */
   var pieces = [];
   if (board) pieces.push(board);
-  if (mosaic) pieces.push(mosaic);
   if (!pieces.length) return;
 
   /* ---------------------------------------------------------
@@ -3979,14 +3524,6 @@
   window.addEventListener("resize", onResize, { passive: true });
   window.addEventListener("orientationchange", onResize, { passive: true });
 
-  /* the mosaic's column balance only settles once the nine files have
-     their real heights, so re-derive the vectors as they arrive */
-  var imgs = document.querySelectorAll("#bandRail img");
-  for (var q = 0; q < imgs.length; q++) {
-    if (imgs[q].complete) continue;
-    imgs[q].addEventListener("load", onResize);
-    imgs[q].addEventListener("error", onResize);
-  }
   window.addEventListener("load", onResize);
 
   frame();                                   /* first state before paint */
@@ -4278,29 +3815,7 @@
     t.setAttribute("data-split", "1");
   });
 
-  /* ---------- 3. classroom photos fly in ---------- */
-  var shots = document.querySelectorAll(".band-shot");
-  if (shots.length && !reduced) {
-    Array.prototype.forEach.call(shots, function (s, i) {
-      s.classList.add("ch");
-      var dir = i % 3;
-      var x = dir === 0 ? -60 : dir === 2 ? 60 : 0;
-      var rot = dir === 0 ? -3 : dir === 2 ? 3 : 0;
-      s.style.transform = "translate3d(" + x + "px, 60px, 0) scale(0.93) rotate(" + rot + "deg)";
-      s.style.transitionDelay = (i % 3) * 0.09 + "s";
-    });
-
-    var shotIO = new IntersectionObserver(function (entries) {
-      entries.forEach(function (e) {
-        if (!e.isIntersecting) return;
-        e.target.classList.add("ch-in");
-        e.target.style.transform = "";
-        shotIO.unobserve(e.target);
-        setTimeout(function () { e.target.style.willChange = "auto"; }, 1400);
-      });
-    }, { threshold: 0.12, rootMargin: "0px 0px -8% 0px" });
-    Array.prototype.forEach.call(shots, function (s) { shotIO.observe(s); });
-  }
+  /* section 3 retired: the classroom band it flew in no longer exists */
 
   /* ---------- 4. depth drift on the ambient washes ---------- */
   if (!reduced && !touch) {
@@ -4690,7 +4205,7 @@
   for (i = 0; i < panels.length; i++) {
     (function (n) {
       var topic = panels[n].getAttribute("data-wkx-topic");
-      var bar = panels[n].querySelector(".wkx-bar");
+      var bar = panels[n].querySelector(".wk-links");
       if (!topic || !bar) return;
       var chip = chipFor(topic);
       if (!chip) return;
