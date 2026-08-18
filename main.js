@@ -238,7 +238,7 @@
   var statement = document.getElementById("statementText");
   var stWords = [];
   if (statement) {
-    var KEY = { "AI": 1, "understand": 1, "cues,": 1, "interaction,": 1, "countries.": 1 };
+    var KEY = { "AI": 1, "understand": 1, "cues,": 1, "kids,": 1, "countries.": 1 };
     var words = statement.textContent.trim().split(/\s+/);
     statement.innerHTML = words.map(function (w) {
       return "<span class='w" + (KEY[w] ? " key" : "") + "'>" + w + "</span>";
@@ -1383,12 +1383,12 @@
    The scanned recognitions open in the same .lb overlay the photo
    gallery uses — same classes, same body lock, same keys — built as
    its own instance so either module can exist without the other.
-   The triggers are the ledger rows that carry data-doc; they are
-   real buttons, so no role or key wiring is needed here. */
+   The triggers are the wall's zoom buttons around each scan, so
+   no role or key wiring is needed here. */
 (function () {
   "use strict";
 
-  var triggers = document.querySelectorAll(".recog-row[data-doc]");
+  var triggers = document.querySelectorAll(".recog-zoom[data-doc]");
   if (!triggers.length) return;
 
   var reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -1833,14 +1833,14 @@
     /* --- recognition: the ledger, plus the scanned documents --- */
     var recog = document.getElementById("recognition");
     if (recog) {
-      var rN = recog.querySelectorAll(".recog-row").length;
+      var rN = recog.querySelectorAll(".recog-doc, .recog-row").length;
       add("Recognition", "Official recognition", rN + " citations, resolutions, and letters", "CIVIC",
         "recognition letters citations resolutions proclamation commendation congratulations legislature governor sherrill senator andy kim murphy singleton singh sarlo turner brennan schepisi mccoy space fantasia inganamort mercer county benson",
         false,
         function () { jump(recog, recog.querySelector(".recog-list") || recog); });
-      var firstDoc = recog.querySelector(".recog-row[data-doc]");
+      var firstDoc = recog.querySelector(".recog-zoom[data-doc]");
       if (firstDoc) {
-        var dN = recog.querySelectorAll(".recog-row[data-doc]").length;
+        var dN = recog.querySelectorAll(".recog-zoom[data-doc]").length;
         add("Recognition", "Read the documents", dN + " scans · opens the viewer", "DOCS",
           "recognition documents scans read view resolution proclamation citation paper letterhead", false,
           function () { setTimeout(function () { firstDoc.click(); }, 60); });
