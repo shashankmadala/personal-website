@@ -1667,6 +1667,16 @@
       })(rows[i]);
     }
 
+    /* --- recognition: one entry for the whole ledger --- */
+    var recog = document.getElementById("recognition");
+    if (recog) {
+      var rN = recog.querySelectorAll(".recog-row").length;
+      add("Recognition", "The mail after Shenzhen", rN + " citations, resolutions, and letters", "CIVIC",
+        "recognition letters citations resolutions proclamation commendation congratulations governor sherrill senator andy kim murphy sarlo turner brennan schepisi singleton mccoy mercer county team usa",
+        false,
+        function () { jump(recog, recog.querySelector(".recog-list") || recog); });
+    }
+
     /* --- press: every article on the wall, never hardcoded --- */
     var pcards = document.querySelectorAll(".press-grid .press-card");
     for (i = 0; i < pcards.length; i++) {
