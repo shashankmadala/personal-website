@@ -1397,7 +1397,9 @@
     { f: "nj-joint-resolution", c: "Joint legislative resolution of the New Jersey Senate and General Assembly, sponsored by Asw. Murphy, Sen. Singleton, and Asm. Singh." },
     { f: "mercer-proclamation", c: "Joint proclamation from Mercer County Executive Dan Benson and the Board of County Commissioners." },
     { f: "nj-24th-citation", c: "Senate and General Assembly citation from the 24th District: Sen. Parker Space, Asw. Dawn Fantasia, and Asm. Michael Inganamort." },
-    { f: "nj-brennan-citation", c: "General Assembly citation from Asw. Katie Brennan, 32nd Legislative District." }
+    { f: "nj-brennan-citation", c: "General Assembly citation from Asw. Katie Brennan, 32nd Legislative District." },
+    { f: "nj-sarlo-letter", c: "Letter of congratulations from Sen. Paul A. Sarlo, Deputy Majority Leader of the New Jersey Senate." },
+    { f: "nb-cahill-letter", c: "Letter of congratulations from Mayor Jim Cahill of New Brunswick." }
   ];
   var SRC = function (n) { return "assets/docs/" + n + ".jpg"; };
 
