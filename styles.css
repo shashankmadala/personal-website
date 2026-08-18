@@ -5060,16 +5060,18 @@ body {
 }
 
 /* ============================================================
-   RECOGNITION: the mail ledger
+   RECOGNITION: the ledger
    A coda to the honors board, and deliberately its opposite:
    the board is cards and filters, this is ten quiet lines of
    type. Each recognition is one ledger row: a faint index
    numeral, the name that signed it in ink, their office in dim,
    and what they sent in small mono caps on the right margin.
-   No cards, no links, no hover, because none of it is clickable;
-   hairlines and tokens only, so the light theme flips for free.
-   Rides on the honors section's bottom padding the way .stats
-   and .beyond ride their predecessors.
+   Rows whose document is scanned are real <button>s and open
+   the paper in the same .lb overlay the photo gallery uses; the
+   blue arrow is the only tell. Everything else is hairlines and
+   tokens, so the light theme flips for free. Rides on the honors
+   section's bottom padding the way .stats and .beyond ride
+   their predecessors.
    ============================================================ */
 
 .recog { padding-block: 0 var(--sec); }
@@ -5087,14 +5089,30 @@ body {
   border-bottom: 1px solid var(--line);
 }
 
+.recog-cell { border-top: 1px solid var(--line); }
+
 .recog-row {
+  width: 100%;
   display: grid;
   grid-template-columns: 52px minmax(0, 1fr) auto;
   column-gap: 18px;
   align-items: baseline;
   padding: 15px 2px 17px;
-  border-top: 1px solid var(--line);
 }
+
+/* the four rows that open their document are buttons; strip the
+   UA chrome and keep the ledger's own typography */
+button.recog-row {
+  font: inherit;
+  text-align: left;
+  color: inherit;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  -webkit-appearance: none; appearance: none;
+  -webkit-tap-highlight-color: transparent;
+}
+button.recog-row:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; border-radius: 8px; }
 
 .recog-row::before {
   counter-increment: recog;
@@ -5130,6 +5148,14 @@ body {
   text-align: right;
   white-space: nowrap;
 }
+.recog-what svg {
+  margin-left: 8px;
+  vertical-align: -1px;
+  color: var(--blue);
+  transition: transform 0.3s var(--ease);
+}
+button.recog-row:hover .recog-what { color: var(--blue); }
+button.recog-row:hover .recog-what svg { transform: translate(1.5px, -1.5px); }
 
 @media (max-width: 720px) {
   .recog-row {

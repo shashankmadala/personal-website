@@ -1379,6 +1379,169 @@
 })();
 
 
+/* ---------- recognition document viewer ----------
+   The scanned recognitions open in the same .lb overlay the photo
+   gallery uses — same classes, same body lock, same keys — built as
+   its own instance so either module can exist without the other.
+   The triggers are the ledger rows that carry data-doc; they are
+   real buttons, so no role or key wiring is needed here. */
+(function () {
+  "use strict";
+
+  var triggers = document.querySelectorAll(".recog-row[data-doc]");
+  if (!triggers.length) return;
+
+  var reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  var DOCS = [
+    { f: "nj-joint-resolution", c: "Joint legislative resolution of the New Jersey Senate and General Assembly, sponsored by Asw. Murphy, Sen. Singleton, and Asm. Singh." },
+    { f: "mercer-proclamation", c: "Joint proclamation from Mercer County Executive Dan Benson and the Board of County Commissioners." },
+    { f: "nj-24th-citation", c: "Senate and General Assembly citation from the 24th District: Sen. Parker Space, Asw. Dawn Fantasia, and Asm. Michael Inganamort." },
+    { f: "nj-brennan-citation", c: "General Assembly citation from Asw. Katie Brennan, 32nd Legislative District." }
+  ];
+  var SRC = function (n) { return "assets/docs/" + n + ".jpg"; };
+
+  var idx = 0, built = false, lb, imgEl, capEl, countEl, strip, lastFocus;
+
+  function build() {
+    lb = document.createElement("div");
+    lb.className = "lb";
+    lb.setAttribute("role", "dialog");
+    lb.setAttribute("aria-modal", "true");
+    lb.setAttribute("aria-label", "Official recognition documents");
+
+    var bar = document.createElement("div");
+    bar.className = "lb-bar";
+    bar.innerHTML =
+      '<span class="lb-title mono">RECOGNITION &middot; ON PAPER</span>' +
+      '<span class="lb-count mono"></span>';
+    var closeBtn = document.createElement("button");
+    closeBtn.className = "lb-close";
+    closeBtn.setAttribute("aria-label", "Close document viewer");
+    closeBtn.innerHTML = "&times;";
+    closeBtn.addEventListener("click", close);
+    bar.appendChild(closeBtn);
+    countEl = bar.querySelector(".lb-count");
+
+    var stage = document.createElement("div");
+    stage.className = "lb-stage";
+    imgEl = document.createElement("img");
+    imgEl.className = "lb-img";
+    imgEl.alt = "";
+    stage.appendChild(imgEl);
+
+    var prev = document.createElement("button");
+    prev.className = "lb-nav lb-prev";
+    prev.setAttribute("aria-label", "Previous document");
+    prev.innerHTML = '<svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M8.5 3L4.5 7l4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    prev.addEventListener("click", function () { go(idx - 1); });
+    var next = document.createElement("button");
+    next.className = "lb-nav lb-next";
+    next.setAttribute("aria-label", "Next document");
+    next.innerHTML = '<svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M5.5 3l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    next.addEventListener("click", function () { go(idx + 1); });
+    stage.appendChild(prev);
+    stage.appendChild(next);
+
+    capEl = document.createElement("p");
+    capEl.className = "lb-cap";
+
+    strip = document.createElement("div");
+    strip.className = "lb-strip";
+    DOCS.forEach(function (d, i) {
+      var t = document.createElement("button");
+      t.className = "lb-thumb";
+      t.setAttribute("aria-label", "Document " + (i + 1));
+      var ti = document.createElement("img");
+      ti.src = SRC(d.f);
+      ti.alt = "";
+      ti.loading = "lazy";
+      t.appendChild(ti);
+      t.addEventListener("click", function () { go(i); });
+      strip.appendChild(t);
+    });
+
+    lb.appendChild(bar);
+    lb.appendChild(stage);
+    lb.appendChild(capEl);
+    lb.appendChild(strip);
+
+    lb.addEventListener("click", function (e) {
+      if (e.target === lb || e.target === stage) close();
+    });
+
+    /* swipe */
+    var sx = 0, sy = 0;
+    stage.addEventListener("touchstart", function (e) {
+      sx = e.touches[0].clientX; sy = e.touches[0].clientY;
+    }, { passive: true });
+    stage.addEventListener("touchend", function (e) {
+      var dx = e.changedTouches[0].clientX - sx;
+      var dy = e.changedTouches[0].clientY - sy;
+      if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy)) go(idx + (dx < 0 ? 1 : -1));
+    }, { passive: true });
+
+    document.body.appendChild(lb);
+    built = true;
+  }
+
+  function go(n) {
+    idx = (n + DOCS.length) % DOCS.length;
+    var d = DOCS[idx];
+    imgEl.classList.remove("ready");
+    var pre = new Image();
+    pre.onload = function () {
+      imgEl.src = pre.src;
+      imgEl.alt = d.c;
+      imgEl.classList.add("ready");
+    };
+    pre.src = SRC(d.f);
+    if (pre.complete) pre.onload();
+    capEl.textContent = d.c;
+    countEl.textContent = (idx + 1) + " / " + DOCS.length;
+    Array.prototype.forEach.call(strip.children, function (t, i) {
+      t.classList.toggle("on", i === idx);
+    });
+    var active = strip.children[idx];
+    if (active && active.scrollIntoView) {
+      active.scrollIntoView({ block: "nearest", inline: "center", behavior: reduced ? "auto" : "smooth" });
+    }
+  }
+
+  function open(start) {
+    if (!built) build();
+    lastFocus = document.activeElement;
+    go(start || 0);
+    lb.classList.add("open");
+    document.body.classList.add("lb-lock");
+    var c = lb.querySelector(".lb-close");
+    if (c) c.focus();
+    document.addEventListener("keydown", onKey);
+  }
+
+  function close() {
+    if (!lb) return;
+    lb.classList.remove("open");
+    document.body.classList.remove("lb-lock");
+    document.removeEventListener("keydown", onKey);
+    if (lastFocus && lastFocus.focus) lastFocus.focus();
+  }
+
+  function onKey(e) {
+    if (e.key === "Escape") close();
+    else if (e.key === "ArrowRight") go(idx + 1);
+    else if (e.key === "ArrowLeft") go(idx - 1);
+  }
+
+  Array.prototype.forEach.call(triggers, function (t) {
+    t.addEventListener("click", function () {
+      var n = parseInt(t.getAttribute("data-doc"), 10);
+      open(isNaN(n) ? 0 : n);
+    });
+  });
+})();
+
+
 
 /* ============================================================
    motion + clickability pass
@@ -1667,14 +1830,21 @@
       })(rows[i]);
     }
 
-    /* --- recognition: one entry for the whole ledger --- */
+    /* --- recognition: the ledger, plus the scanned documents --- */
     var recog = document.getElementById("recognition");
     if (recog) {
       var rN = recog.querySelectorAll(".recog-row").length;
-      add("Recognition", "The mail after Shenzhen", rN + " citations, resolutions, and letters", "CIVIC",
-        "recognition letters citations resolutions proclamation commendation congratulations governor sherrill senator andy kim murphy sarlo turner brennan schepisi singleton mccoy mercer county team usa",
+      add("Recognition", "Official recognition", rN + " citations, resolutions, and letters", "CIVIC",
+        "recognition letters citations resolutions proclamation commendation congratulations legislature governor sherrill senator andy kim murphy singleton singh sarlo turner brennan schepisi mccoy space fantasia inganamort mercer county benson",
         false,
         function () { jump(recog, recog.querySelector(".recog-list") || recog); });
+      var firstDoc = recog.querySelector(".recog-row[data-doc]");
+      if (firstDoc) {
+        var dN = recog.querySelectorAll(".recog-row[data-doc]").length;
+        add("Recognition", "Read the documents", dN + " scans · opens the viewer", "DOCS",
+          "recognition documents scans read view resolution proclamation citation paper letterhead", false,
+          function () { setTimeout(function () { firstDoc.click(); }, 60); });
+      }
     }
 
     /* --- press: every article on the wall, never hardcoded --- */
