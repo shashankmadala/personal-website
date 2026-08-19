@@ -238,7 +238,7 @@
   var statement = document.getElementById("statementText");
   var stWords = [];
   if (statement) {
-    var KEY = { "AI": 1, "understand": 1, "cues,": 1, "interaction,": 1, "countries.": 1 };
+    var KEY = { "AI": 1, "understand": 1, "cues,": 1, "kids,": 1, "countries.": 1 };
     var words = statement.textContent.trim().split(/\s+/);
     statement.innerHTML = words.map(function (w) {
       return "<span class='w" + (KEY[w] ? " key" : "") + "'>" + w + "</span>";
@@ -1383,12 +1383,12 @@
    The scanned recognitions open in the same .lb overlay the photo
    gallery uses — same classes, same body lock, same keys — built as
    its own instance so either module can exist without the other.
-   The triggers are the ledger rows that carry data-doc; they are
-   real buttons, so no role or key wiring is needed here. */
+   The triggers are the wall's zoom buttons around each scan, so
+   no role or key wiring is needed here. */
 (function () {
   "use strict";
 
-  var triggers = document.querySelectorAll(".recog-row[data-doc]");
+  var triggers = document.querySelectorAll(".recog-zoom[data-doc]");
   if (!triggers.length) return;
 
   var reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -1397,7 +1397,9 @@
     { f: "nj-joint-resolution", c: "Joint legislative resolution of the New Jersey Senate and General Assembly, sponsored by Asw. Murphy, Sen. Singleton, and Asm. Singh." },
     { f: "mercer-proclamation", c: "Joint proclamation from Mercer County Executive Dan Benson and the Board of County Commissioners." },
     { f: "nj-24th-citation", c: "Senate and General Assembly citation from the 24th District: Sen. Parker Space, Asw. Dawn Fantasia, and Asm. Michael Inganamort." },
-    { f: "nj-brennan-citation", c: "General Assembly citation from Asw. Katie Brennan, 32nd Legislative District." }
+    { f: "nj-brennan-citation", c: "General Assembly citation from Asw. Katie Brennan, 32nd Legislative District." },
+    { f: "nj-sarlo-letter", c: "Letter of congratulations from Sen. Paul A. Sarlo, Deputy Majority Leader of the New Jersey Senate." },
+    { f: "nb-cahill-letter", c: "Letter of congratulations from Mayor Jim Cahill of New Brunswick." }
   ];
   var SRC = function (n) { return "assets/docs/" + n + ".jpg"; };
 
@@ -1539,6 +1541,249 @@
       open(isNaN(n) ? 0 : n);
     });
   });
+})();
+
+
+/* ============================================================
+   THE RECOGNITION CAROUSEL
+   The six documents ride the classroom's carousel recipe: same
+   classes, same control bar, same centre-frame paint, built as
+   its own instance against the rcr ids. The one behavioural
+   difference is the click: the hit buttons carry .recog-zoom, so
+   the document viewer above opens them itself; here a click only
+   stops the slideshow. Self contained, every lookup guarded.
+   ============================================================ */
+(function () {
+  "use strict";
+
+  var root = document.documentElement;
+  if (!root || root.hasAttribute("data-rcr-carousel")) return;
+
+  var cr = document.getElementById("recogCr");
+  var track = document.getElementById("rcrTrack");
+  if (!cr || !track) return;
+
+  var slides = Array.prototype.slice.call(track.querySelectorAll(".cr-slide"));
+  var n = slides.length;
+  if (n < 2) return;
+
+  root.setAttribute("data-rcr-carousel", "");
+
+  var reduced = false, touch = false;
+  try { reduced = matchMedia("(prefers-reduced-motion: reduce)").matches; } catch (e) {}
+  try { touch = matchMedia("(hover: none), (pointer: coarse)").matches; } catch (e) {}
+
+  var prevBtn = document.getElementById("rcrPrev");
+  var nextBtn = document.getElementById("rcrNext");
+  var dotsBox = document.getElementById("rcrDots");
+  var countEl = document.getElementById("rcrCount");
+  var playBtn = document.getElementById("rcrPlay");
+  var playTxt = playBtn ? playBtn.querySelector(".cr-play-t") : null;
+  var countNum = countEl ? countEl.querySelector("b") : null;
+  var dots = dotsBox ? Array.prototype.slice.call(dotsBox.querySelectorAll(".cr-dot")) : [];
+
+  var idx = -1;
+  var i;
+
+  function two(v) { return (v < 10 ? "0" : "") + v; }
+
+  function paint(k) {
+    if (k < 0) k = 0;
+    if (k > n - 1) k = n - 1;
+    if (k === idx) return;
+    idx = k;
+    var j;
+    for (j = 0; j < n; j++) slides[j].classList.toggle("is-on", j === k);
+    for (j = 0; j < dots.length; j++) {
+      dots[j].classList.toggle("on", j === k);
+      if (j === k) dots[j].setAttribute("aria-current", "true");
+      else dots[j].removeAttribute("aria-current");
+    }
+    if (countNum) countNum.textContent = two(k + 1);
+  }
+
+  function landing(k) {
+    var s = slides[k];
+    if (!s) return 0;
+    var left = s.offsetLeft + (s.offsetWidth / 2) - (track.clientWidth / 2);
+    var max = track.scrollWidth - track.clientWidth;
+    if (max < 0) max = 0;
+    if (left < 0) left = 0;
+    if (left > max) left = max;
+    return left;
+  }
+
+  function nearest() {
+    var mid = track.scrollLeft + track.clientWidth / 2;
+    var best = 0, bd = Infinity, j, d;
+    for (j = 0; j < n; j++) {
+      d = Math.abs(slides[j].offsetLeft + slides[j].offsetWidth / 2 - mid);
+      if (d < bd) { bd = d; best = j; }
+    }
+    return best;
+  }
+
+  function scrollTo(left, smooth) {
+    if (track.scrollTo) {
+      try {
+        track.scrollTo({ left: left, behavior: (smooth && !reduced) ? "smooth" : "auto" });
+        return;
+      } catch (e) {}
+    }
+    track.scrollLeft = left;
+  }
+
+  function goTo(k, smooth) {
+    if (k < 0) k = 0;
+    if (k > n - 1) k = n - 1;
+    scrollTo(landing(k), smooth);
+    paint(k);
+  }
+
+  function step(dir) {
+    var t = idx + dir, wrapped = false;
+    if (t < 0) { t = n - 1; wrapped = true; }
+    if (t > n - 1) { t = 0; wrapped = true; }
+    goTo(t, !wrapped);
+  }
+
+  var raf = 0;
+  track.addEventListener("scroll", function () {
+    if (raf) return;
+    raf = requestAnimationFrame(function () { raf = 0; paint(nearest()); });
+  }, { passive: true });
+
+  /* ---------- autoplay ---------- */
+  var DELAY = 5400;
+  var wanted = !reduced && !touch;
+  var seen = false, hovering = false, focused = false, timer = 0;
+
+  function canRun() {
+    return wanted && seen && !hovering && !focused && !reduced && !document.hidden;
+  }
+  function arm() {
+    if (timer) { clearTimeout(timer); timer = 0; }
+    if (!canRun()) return;
+    timer = setTimeout(function () {
+      timer = 0;
+      if (!canRun()) return;
+      step(1);
+      arm();
+    }, DELAY);
+  }
+  function say() {
+    if (!playBtn) return;
+    playBtn.classList.toggle("is-playing", wanted);
+    playBtn.setAttribute("aria-label", wanted ? "Pause the documents slideshow" : "Play the documents slideshow");
+    if (playTxt) playTxt.textContent = wanted ? "PAUSE" : "PLAY";
+  }
+  function halt() {
+    if (!wanted) return;
+    wanted = false;
+    say();
+    arm();
+  }
+
+  /* ---------- controls ---------- */
+  if (prevBtn) prevBtn.addEventListener("click", function () { halt(); step(-1); });
+  if (nextBtn) nextBtn.addEventListener("click", function () { halt(); step(1); });
+
+  for (i = 0; i < dots.length; i++) {
+    (function (k) {
+      dots[k].addEventListener("click", function () {
+        halt();
+        goTo(k, Math.abs(k - idx) <= 3);
+      });
+    })(i);
+  }
+
+  if (playBtn) {
+    if (reduced) playBtn.hidden = true;
+    playBtn.addEventListener("click", function () {
+      wanted = !wanted;
+      say();
+      arm();
+    });
+  }
+
+  /* ---------- the frames: the viewer opens them, this only pauses ---------- */
+  for (i = 0; i < n; i++) {
+    (function (k) {
+      var hit = slides[k].querySelector(".cr-hit");
+      if (!hit) return;
+      hit.addEventListener("click", halt);
+      hit.addEventListener("focus", function () { if (k !== idx) goTo(k, true); });
+    })(i);
+  }
+
+  /* ---------- keyboard, whenever the focus is inside the carousel ---------- */
+  cr.addEventListener("keydown", function (e) {
+    if (e.metaKey || e.ctrlKey || e.altKey || e.shiftKey) return;
+    var k = e.key;
+    if (k === "ArrowRight") { e.preventDefault(); halt(); step(1); }
+    else if (k === "ArrowLeft") { e.preventDefault(); halt(); step(-1); }
+    else if (k === "Home") { e.preventDefault(); halt(); goTo(0, false); }
+    else if (k === "End") { e.preventDefault(); halt(); goTo(n - 1, false); }
+  });
+
+  /* ---------- what pauses the slideshow ---------- */
+  if (!touch) {
+    cr.addEventListener("mouseenter", function () { hovering = true; arm(); });
+    cr.addEventListener("mouseleave", function () { hovering = false; arm(); });
+  }
+  cr.addEventListener("focusin", function () { focused = true; arm(); });
+  cr.addEventListener("focusout", function () { focused = false; arm(); });
+  document.addEventListener("visibilitychange", arm);
+  track.addEventListener("touchstart", halt, { passive: true });
+  track.addEventListener("wheel", function (e) {
+    if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) halt();
+  }, { passive: true });
+
+  /* ---------- once seen, fetch all six at once ---------- */
+  var fetched = false;
+  function fetchAll() {
+    if (fetched) return;
+    fetched = true;
+    var imgs = track.querySelectorAll("img");
+    for (var j = 0; j < imgs.length; j++) {
+      try { imgs[j].loading = "eager"; } catch (e) {}
+    }
+  }
+
+  if (typeof window.IntersectionObserver === "function") {
+    var io = new IntersectionObserver(function (entries) {
+      for (var j = 0; j < entries.length; j++) seen = entries[j].isIntersecting;
+      if (seen) fetchAll();
+      arm();
+    }, { threshold: 0.2 });
+    io.observe(cr);
+  } else {
+    seen = true;
+    fetchAll();
+  }
+
+  /* ---------- keep the current frame centred through a resize ---------- */
+  var rz = 0;
+  function onResize() {
+    clearTimeout(rz);
+    rz = setTimeout(function () {
+      var left = landing(idx < 0 ? 0 : idx);
+      if (Math.abs(track.scrollLeft - left) > 2) scrollTo(left, false);
+    }, 160);
+  }
+  window.addEventListener("resize", onResize, { passive: true });
+  window.addEventListener("orientationchange", onResize, { passive: true });
+
+  window.addEventListener("pagehide", function () {
+    clearTimeout(timer);
+    clearTimeout(rz);
+  });
+
+  /* ---------- go ---------- */
+  cr.classList.add("is-live");
+  paint(0);
+  paint(nearest());
+  say();
 })();
 
 
@@ -1833,14 +2078,14 @@
     /* --- recognition: the ledger, plus the scanned documents --- */
     var recog = document.getElementById("recognition");
     if (recog) {
-      var rN = recog.querySelectorAll(".recog-row").length;
+      var rN = recog.querySelectorAll(".recog-zoom, .recog-row").length;
       add("Recognition", "Official recognition", rN + " citations, resolutions, and letters", "CIVIC",
         "recognition letters citations resolutions proclamation commendation congratulations legislature governor sherrill senator andy kim murphy singleton singh sarlo turner brennan schepisi mccoy space fantasia inganamort mercer county benson",
         false,
         function () { jump(recog, recog.querySelector(".recog-list") || recog); });
-      var firstDoc = recog.querySelector(".recog-row[data-doc]");
+      var firstDoc = recog.querySelector(".recog-zoom[data-doc]");
       if (firstDoc) {
-        var dN = recog.querySelectorAll(".recog-row[data-doc]").length;
+        var dN = recog.querySelectorAll(".recog-zoom[data-doc]").length;
         add("Recognition", "Read the documents", dN + " scans · opens the viewer", "DOCS",
           "recognition documents scans read view resolution proclamation citation paper letterhead", false,
           function () { setTimeout(function () { firstDoc.click(); }, 60); });
