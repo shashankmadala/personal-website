@@ -1394,6 +1394,7 @@
   var reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   var DOCS = [
+    { f: "us-house-recognition", c: "Certificate of Congressional Recognition from the U.S. House of Representatives, presented by Rep. LaMonica McIver for Kora, first place in the 2025 Congressional App Challenge." },
     { f: "nj-joint-resolution", c: "Joint legislative resolution of the New Jersey Senate and General Assembly, sponsored by Asw. Murphy, Sen. Singleton, and Asm. Singh." },
     { f: "mercer-proclamation", c: "Joint proclamation from Mercer County Executive Dan Benson and the Board of County Commissioners." },
     { f: "nj-24th-citation", c: "Senate and General Assembly citation from the 24th District: Sen. Parker Space, Asw. Dawn Fantasia, and Asm. Michael Inganamort." },

@@ -5089,7 +5089,7 @@ body {
 .cr--docs {
   --crH: clamp(330px, 32vw, 480px);
   --crW: min(78vw, 660px);
-  --crLead: 0.796;
+  --crLead: 1.343;
   --crTail: 0.773;
   margin-bottom: clamp(18px, 2.4vw, 30px);
 }
