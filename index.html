@@ -1099,46 +1099,105 @@ if(v==="light"){var m=document.querySelector('meta[name="theme-color"]');if(m)m.
         <h2 class="sec-title" id="recogTitle">Recognition.</h2>
         <p class="recog-lede">Citations, resolutions, proclamations, and letters from the offices that represent New Jersey.</p>
       </div>
+    </div>
 
-      <div class="recog-wall reveal" aria-label="Scanned recognition documents">
-        <figure class="recog-doc">
-          <button type="button" class="recog-zoom" data-doc="0" aria-haspopup="dialog" aria-label="Enlarge the joint legislative resolution from the New Jersey Legislature">
-            <img src="assets/docs/nj-joint-resolution.jpg" alt="Joint legislative resolution of the New Jersey Senate and General Assembly" width="1432" height="1800" loading="lazy" decoding="async">
-          </button>
-          <figcaption class="mono"><b>JOINT LEGISLATIVE RESOLUTION</b><span>The New Jersey Legislature</span></figcaption>
-        </figure>
-        <figure class="recog-doc">
-          <button type="button" class="recog-zoom" data-doc="1" aria-haspopup="dialog" aria-label="Enlarge the joint proclamation from Mercer County">
-            <img src="assets/docs/mercer-proclamation.jpg" alt="Joint proclamation from the Mercer County Executive and Board of County Commissioners" width="1074" height="1800" loading="lazy" decoding="async">
-          </button>
-          <figcaption class="mono"><b>JOINT PROCLAMATION</b><span>County of Mercer</span></figcaption>
-        </figure>
-        <figure class="recog-doc">
-          <button type="button" class="recog-zoom" data-doc="2" aria-haspopup="dialog" aria-label="Enlarge the Senate and General Assembly citation from the 24th District">
-            <img src="assets/docs/nj-24th-citation.jpg" alt="New Jersey Senate and General Assembly citation from the 24th Legislative District" width="1800" height="1389" loading="lazy" decoding="async">
-          </button>
-          <figcaption class="mono"><b>SENATE &amp; ASSEMBLY CITATION</b><span>24th District of New Jersey</span></figcaption>
-        </figure>
-        <figure class="recog-doc">
-          <button type="button" class="recog-zoom" data-doc="3" aria-haspopup="dialog" aria-label="Enlarge the General Assembly citation from Assemblywoman Katie Brennan">
-            <img src="assets/docs/nj-brennan-citation.jpg" alt="New Jersey General Assembly citation from Assemblywoman Katie Brennan" width="1800" height="1323" loading="lazy" decoding="async">
-          </button>
-          <figcaption class="mono"><b>GENERAL ASSEMBLY CITATION</b><span>Asw. Katie Brennan</span></figcaption>
-        </figure>
-        <figure class="recog-doc">
-          <button type="button" class="recog-zoom" data-doc="4" aria-haspopup="dialog" aria-label="Enlarge the letter of congratulations from Senator Paul Sarlo">
-            <img src="assets/docs/nj-sarlo-letter.jpg" alt="Letter of congratulations from Senator Paul A. Sarlo of the New Jersey Senate" width="1391" height="1800" loading="lazy" decoding="async">
-          </button>
-          <figcaption class="mono"><b>LETTER OF CONGRATULATIONS</b><span>Sen. Paul Sarlo, N.J. Senate</span></figcaption>
-        </figure>
-        <figure class="recog-doc">
-          <button type="button" class="recog-zoom" data-doc="5" aria-haspopup="dialog" aria-label="Enlarge the letter of congratulations from Mayor Jim Cahill of New Brunswick">
-            <img src="assets/docs/nb-cahill-letter.jpg" alt="Letter of congratulations from Mayor Jim Cahill of the City of New Brunswick" width="1391" height="1800" loading="lazy" decoding="async">
-          </button>
-          <figcaption class="mono"><b>LETTER OF CONGRATULATIONS</b><span>Mayor Jim Cahill, New Brunswick</span></figcaption>
-        </figure>
+    <div class="cr cr--docs reveal" id="recogCr">
+      <div class="cr-view">
+        <div class="cr-track" id="rcrTrack" role="group" aria-roledescription="carousel" aria-label="Recognition documents, six frames">
+
+      <div class="cr-slide" role="group" aria-roledescription="slide" aria-label="Document 1 of 6" style="--r: 0.796">
+       <figure class="cr-fig">
+        <button class="cr-hit recog-zoom" type="button" data-doc="0" aria-haspopup="dialog" aria-label="Open document 1 of 6: the joint legislative resolution from the New Jersey Legislature">
+         <span class="cr-shot">
+          <img src="assets/docs/nj-joint-resolution.jpg" alt="Joint legislative resolution of the New Jersey Senate and General Assembly" width="1432" height="1800" loading="lazy" decoding="async">
+          <span class="cr-open" aria-hidden="true">OPEN</span>
+         </span>
+        </button>
+        <figcaption class="cr-cap mono"><b>01</b><span>JOINT RESOLUTION &middot; N.J. LEGISLATURE</span></figcaption>
+       </figure>
+      </div>
+      <div class="cr-slide" role="group" aria-roledescription="slide" aria-label="Document 2 of 6" style="--r: 0.597">
+       <figure class="cr-fig">
+        <button class="cr-hit recog-zoom" type="button" data-doc="1" aria-haspopup="dialog" aria-label="Open document 2 of 6: the joint proclamation from Mercer County">
+         <span class="cr-shot">
+          <img src="assets/docs/mercer-proclamation.jpg" alt="Joint proclamation from the Mercer County Executive and Board of County Commissioners" width="1074" height="1800" loading="lazy" decoding="async">
+          <span class="cr-open" aria-hidden="true">OPEN</span>
+         </span>
+        </button>
+        <figcaption class="cr-cap mono"><b>02</b><span>JOINT PROCLAMATION &middot; MERCER COUNTY</span></figcaption>
+       </figure>
+      </div>
+      <div class="cr-slide" role="group" aria-roledescription="slide" aria-label="Document 3 of 6" style="--r: 1.296">
+       <figure class="cr-fig">
+        <button class="cr-hit recog-zoom" type="button" data-doc="2" aria-haspopup="dialog" aria-label="Open document 3 of 6: the Senate and General Assembly citation from the 24th District">
+         <span class="cr-shot">
+          <img src="assets/docs/nj-24th-citation.jpg" alt="New Jersey Senate and General Assembly citation from the 24th Legislative District" width="1800" height="1389" loading="lazy" decoding="async">
+          <span class="cr-open" aria-hidden="true">OPEN</span>
+         </span>
+        </button>
+        <figcaption class="cr-cap mono"><b>03</b><span>CITATION &middot; 24TH DISTRICT</span></figcaption>
+       </figure>
+      </div>
+      <div class="cr-slide" role="group" aria-roledescription="slide" aria-label="Document 4 of 6" style="--r: 1.361">
+       <figure class="cr-fig">
+        <button class="cr-hit recog-zoom" type="button" data-doc="3" aria-haspopup="dialog" aria-label="Open document 4 of 6: the General Assembly citation from Assemblywoman Katie Brennan">
+         <span class="cr-shot">
+          <img src="assets/docs/nj-brennan-citation.jpg" alt="New Jersey General Assembly citation from Assemblywoman Katie Brennan" width="1800" height="1323" loading="lazy" decoding="async">
+          <span class="cr-open" aria-hidden="true">OPEN</span>
+         </span>
+        </button>
+        <figcaption class="cr-cap mono"><b>04</b><span>CITATION &middot; ASW. KATIE BRENNAN</span></figcaption>
+       </figure>
+      </div>
+      <div class="cr-slide" role="group" aria-roledescription="slide" aria-label="Document 5 of 6" style="--r: 0.773">
+       <figure class="cr-fig">
+        <button class="cr-hit recog-zoom" type="button" data-doc="4" aria-haspopup="dialog" aria-label="Open document 5 of 6: the letter of congratulations from Senator Paul Sarlo">
+         <span class="cr-shot">
+          <img src="assets/docs/nj-sarlo-letter.jpg" alt="Letter of congratulations from Senator Paul A. Sarlo of the New Jersey Senate" width="1391" height="1800" loading="lazy" decoding="async">
+          <span class="cr-open" aria-hidden="true">OPEN</span>
+         </span>
+        </button>
+        <figcaption class="cr-cap mono"><b>05</b><span>LETTER &middot; SEN. PAUL SARLO</span></figcaption>
+       </figure>
+      </div>
+      <div class="cr-slide" role="group" aria-roledescription="slide" aria-label="Document 6 of 6" style="--r: 0.773">
+       <figure class="cr-fig">
+        <button class="cr-hit recog-zoom" type="button" data-doc="5" aria-haspopup="dialog" aria-label="Open document 6 of 6: the letter of congratulations from Mayor Jim Cahill of New Brunswick">
+         <span class="cr-shot">
+          <img src="assets/docs/nb-cahill-letter.jpg" alt="Letter of congratulations from Mayor Jim Cahill of the City of New Brunswick" width="1391" height="1800" loading="lazy" decoding="async">
+          <span class="cr-open" aria-hidden="true">OPEN</span>
+         </span>
+        </button>
+        <figcaption class="cr-cap mono"><b>06</b><span>LETTER &middot; MAYOR CAHILL, NEW BRUNSWICK</span></figcaption>
+       </figure>
       </div>
 
+        </div>
+      </div>
+
+      <div class="wrap cr-bar">
+        <div class="cr-nav">
+        <button class="cr-btn" type="button" id="rcrPrev" aria-label="Previous document"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M8.5 3L4.5 7l4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <button class="cr-btn" type="button" id="rcrNext" aria-label="Next document"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M5.5 3l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        </div>
+
+        <div class="cr-dots" id="rcrDots" role="group" aria-label="Jump to a document">
+          <button class="cr-dot" type="button" data-i="0" aria-label="Document 1 of 6" aria-current="true"></button>
+          <button class="cr-dot" type="button" data-i="1" aria-label="Document 2 of 6"></button>
+          <button class="cr-dot" type="button" data-i="2" aria-label="Document 3 of 6"></button>
+          <button class="cr-dot" type="button" data-i="3" aria-label="Document 4 of 6"></button>
+          <button class="cr-dot" type="button" data-i="4" aria-label="Document 5 of 6"></button>
+          <button class="cr-dot" type="button" data-i="5" aria-label="Document 6 of 6"></button>
+        </div>
+
+        <div class="cr-side">
+          <p class="cr-count mono" id="rcrCount" aria-hidden="true"><b>01</b> / 06</p>
+          <button class="cr-play" type="button" id="rcrPlay" aria-label="Play the documents slideshow"><svg class="cr-i-play" width="10" height="11" viewBox="0 0 10 11" fill="none" aria-hidden="true"><path d="M1.4 1.1v8.8L8.6 5.5z" fill="currentColor"/></svg><svg class="cr-i-pause" width="10" height="11" viewBox="0 0 10 11" fill="none" aria-hidden="true"><rect x="1.2" y="1" width="2.6" height="9" rx="1.1" fill="currentColor"/><rect x="6.2" y="1" width="2.6" height="9" rx="1.1" fill="currentColor"/></svg><span class="cr-play-t">PLAY</span></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="wrap">
       <ol class="recog-list reveal" aria-label="Further official recognitions">
         <li class="recog-row">
           <p class="recog-who">Sen. Andy Kim<i class="recog-org">United States Senate</i></p>
