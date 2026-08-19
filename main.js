@@ -4,6 +4,56 @@
    sticky card stack, receipt printer, tilt, magnetic, cursor
    ============================================================ */
 
+/* ---------- start at the top ----------
+   Browsers restore the previous scroll position on reload, and the
+   work stack is tall enough that a restored position almost always
+   lands somewhere inside "Selected work". A plain open should start
+   at the hero, so restoration goes manual and the page pins to the
+   top. Two visits keep their own position: a hash link, and
+   back/forward. The pin is instant (the inline style sidesteps the
+   page's smooth scrolling), and a reader who starts scrolling before
+   load finishes is never yanked back up. */
+(function () {
+  "use strict";
+
+  if (location.hash) return;
+
+  var type = "navigate";
+  try {
+    var nav = performance.getEntriesByType("navigation")[0];
+    if (nav && nav.type) type = nav.type;
+  } catch (e) {}
+  if (type === "back_forward") return;
+
+  try { if ("scrollRestoration" in history) history.scrollRestoration = "manual"; } catch (e) {}
+
+  /* the first real interaction ends the pinning AND hands scroll
+     restoration back to the browser, so in-session back and forward
+     after a nav jump still return to where the reader was */
+  var moved = false;
+  function mark() {
+    moved = true;
+    try { if ("scrollRestoration" in history) history.scrollRestoration = "auto"; } catch (e) {}
+  }
+  window.addEventListener("wheel", mark, { passive: true, once: true });
+  window.addEventListener("touchstart", mark, { passive: true, once: true });
+  window.addEventListener("pointerdown", mark, { passive: true, once: true });
+  window.addEventListener("keydown", mark, { once: true });
+
+  function pin() {
+    if (moved || !(window.pageYOffset > 0)) return;
+    var root = document.documentElement;
+    var prev = root.style.scrollBehavior;
+    root.style.scrollBehavior = "auto";
+    window.scrollTo(0, 0);
+    root.style.scrollBehavior = prev;
+  }
+
+  pin();
+  document.addEventListener("DOMContentLoaded", pin);
+  window.addEventListener("load", function () { pin(); setTimeout(pin, 0); });
+})();
+
 (function () {
   "use strict";
 
