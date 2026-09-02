@@ -570,6 +570,7 @@ section { padding: 84px 0; }
 .wkm-v em, .wkm-p { font-style: normal; color: var(--blue); font-size: 0.72em; font-weight: 600; }
 .wkm-k { font-size: 9.5px; letter-spacing: 0.08em; color: var(--muted); }
 .wk-desc { color: var(--muted); font-size: 15px; max-width: 66ch; }
+.wk-desc + .wk-desc { margin-top: 12px; }
 .wk-facts {
   margin: 20px 0 0; padding: 16px 18px;
   background: var(--tile-2); border: 1px solid var(--line-soft);
