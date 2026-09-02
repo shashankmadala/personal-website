@@ -584,6 +584,7 @@
     if (!chips.length) return;
     var cells = $$(".hn-cell");
     var tally = $("#hbTally");
+    var allText = tally ? tally.textContent : "";
 
     chips.forEach(function (chip) {
       chip.addEventListener("click", function () {
@@ -598,7 +599,7 @@
         playRows(visible);
         if (tally) {
           tally.textContent = key === "all"
-            ? "11 HONORS · 3 INTL · 6 NATL · 2 STATE"
+            ? allText
             : shown + (shown === 1 ? " HONOR · " : " HONORS · ") + key;
         }
       });
