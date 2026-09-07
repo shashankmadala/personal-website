@@ -462,6 +462,17 @@ if(v==="light"){var m=document.querySelector('meta[name="theme-color"]');if(m)m.
       "abstract": "ASDSpeech is an open-source model that scores autism severity from speech recorded during a clinical assessment, reporting an Autism Diagnostic Observation Schedule, Second Edition (ADOS-2) total. Its input is not the recording itself. Each recording is released as ten matrices whose rows summarize randomly drawn groups of ten consecutive vocalizations, so two choices are made arbitrarily before the model sees anything: which groups are drawn, and what order they are listed in. Neither says anything about the child, yet the released model is sensitive to both. Summarizing one recording a second time moves that child's reported score by a standard deviation of 0.385 ADOS-2 points on the released 25-model ensemble. Reordering alone accounts for 0.325 [0.284, 0.364]; subtracting per-child variances leaves 0.190 [0.116, 0.242] for the choice of groups, a residual estimated by subtraction rather than measured directly. Set against the estimator's own 5.2-point error this is small, but unlike that error it is avoidable. Averaging repeated draws shrinks it no faster than 1/sqrt(K), and an order-invariant estimator with 3,266 parameters, against 1,190,785 in the released network, removes the ordering part entirely, at an accuracy difference this sample cannot resolve. The problem compounds when two such scores are subtracted to track symptom change. In the reported change correlation (r = +0.347, n = 49) the follow-up recording contributes almost nothing on its own, +0.023, against +0.322 for the clinician's own follow-up score. Adjusting for both baseline scores does not repair this; it reduces the change statistic, algebraically, to a cross-sectional correlation."
     },
     {
+      "@type": "Article",
+      "@id": "https://www.shashankmadala.com/#gaparticle",
+      "headline": "Designing for the Gap, Not the Child: What Changes When Assistive Technology Asks the Adult to Learn",
+      "url": "https://autismspectrumnews.org/designing-for-the-gap-not-the-child-what-changes-when-assistive-technology-asks-the-adult-to-learn/",
+      "datePublished": "2026-08",
+      "author": { "@id": "https://www.shashankmadala.com/#person" },
+      "publisher": { "@type": "Organization", "name": "Autism Spectrum News" },
+      "about": ["Autism", "Assistive technology", "Caregiver support"],
+      "mentions": { "@id": "https://www.shashankmadala.com/#kora" }
+    },
+    {
       "@type": "CreativeWork",
       "@id": "https://www.shashankmadala.com/#safestrides",
       "name": "SafeStrides",
