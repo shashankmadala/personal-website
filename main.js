@@ -279,7 +279,7 @@
         'robbinsville, nj <i class="t-key">&middot;</i> class of 2027'
       ]},
       { cmd: "ls ~/building", out: [
-        '<i class="t-key">kora/</i>  <i class="t-key">lumin-ai/</i>  <i class="t-key">safestrides/</i>  <i class="t-key">yale-research/</i>  <i class="t-key">frc-2590/</i>'
+        '<i class="t-key">kora/</i>  <i class="t-key">lumin-ai/</i>  <i class="t-key">safestrides/</i>  <i class="t-key">yale-research/</i>'
       ]},
       { cmd: "cat focus.txt", out: [
         'AI that helps people understand each other.'
@@ -288,8 +288,7 @@
         'research @ yale child study center <i class="t-ok">[ACTIVE]</i>',
         'team usa &middot; econ olympiad 2026 <i class="t-key">[6TH OF 52]</i>',
         'lumin ai &middot; 50+ chapters <i class="t-key">[15,000+ STUDENTS]</i>',
-        'kora &middot; 25 therapy centers <i class="t-key">[700+ USERS]</i>',
-        'fbla &middot; chapter president <i class="t-key">[2X STATE TECH COMMITTEE]</i>'
+        'kora &middot; 25 therapy centers <i class="t-key">[700+ USERS]</i>'
       ]}
     ];
 
